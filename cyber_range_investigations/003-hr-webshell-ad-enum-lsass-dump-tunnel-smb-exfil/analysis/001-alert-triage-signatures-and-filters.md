@@ -116,3 +116,13 @@ Alert triage confirms a deliberate attack lifecycle:
 2. Enumeration of server environment and directories
 3. Service and port scanning using Nmap
 4. Progression toward exploitation (confirmed in subsequent analysis)
+
+## Next Investigative Pivot
+
+Following confirmation of malicious reconnaissance:
+- Packet-level inspection was initiated to identify scanning tools
+- HTTP streams were analyzed for file upload activity
+- Correlation with Zeek `files.log` was performed to validate exploitation
+
+**Next file:**  
+`analysis/002-network-scan-and-recon-attribution.md`
