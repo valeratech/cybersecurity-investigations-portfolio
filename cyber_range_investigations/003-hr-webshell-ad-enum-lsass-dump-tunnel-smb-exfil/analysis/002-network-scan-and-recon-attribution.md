@@ -79,3 +79,6 @@ Following confirmation of reconnaissance tooling, the investigation pivoted to:
 - Identifying successful exploitation events
 - Detecting file upload activity consistent with webshell deployment
 - Correlating IDS alerts with Zeek file metadata and HTTP streams
+
+**Next file:**  
+`analysis/003-webshell-upload-and-http-exploitation.md`
