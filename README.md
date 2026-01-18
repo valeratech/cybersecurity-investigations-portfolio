@@ -4,10 +4,10 @@ This repository is a central collection of my cybersecurity investigations compl
 
 Current investigations include (but are not limited to):
 
-- **SANS** cyber ranges and labs  
-- **CyberDefenders** Blue Team challenges  
-- **Security Blue Team / Blue Team Labs Online**  
-- **Cyberanges** enterprise-style DFIR scenarios  
+- **SANS/Netwars**: Specialized technical mastery and advanced incident handling.
+- **Hack The Box**: Dedicated SOC and DFIR investigative labs.
+- **CyberDefenders**: Artifact-driven challenges centered on real-world memory, endpoint, and network forensics.
+- **Security Blue Team (BTLO)**: Operationally-focused labs simulating real-world Security Operations Center (SOC) environments.
 - Additional **self-built investigations** and forensic exercises  
 
 All investigations follow a consistent methodology, typically including:
