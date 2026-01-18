@@ -11,111 +11,118 @@
 ## 1. Overview
 
 ### Objective
-Investigate initial access via the HR job application portal, identify attacker activity (recon, exploitation, credential access), trace lateral movement into the internal network, and determine what data was accessed and/or exfiltrated during the intrusion.
+Investigate initial access via the HR job application portal, identify attacker activity (reconnaissance, exploitation, credential access), trace lateral movement into the internal network, and determine what data was accessed and/or exfiltrated during the intrusion.
 
 ### Scenario Summary
-The website `hr.compliantsecure.store`, used for handling job applications, was exploited via an unrestricted file upload vulnerability. The attacker uploaded a hidden webshell, used it for reconnaissance and Active Directory enumeration, dumped LSASS process memory to extract credentials, established a tunnel for internal pivoting, accessed SMB file shares on a file server, enumerated sensitive directories, and began exfiltrating documents.
+The website `hr.compliantsecure.store`, used for handling job applications, was exploited via an unrestricted file upload vulnerability. The attacker uploaded a hidden webshell, used it for host and network reconnaissance, performed Active Directory enumeration, dumped LSASS process memory to extract credentials, established a tunnel for internal pivoting, accessed SMB file shares on an internal file server, enumerated sensitive directories, and exfiltrated internal documents.
 
 ### Key Focus Areas
-- Network Forensics (PCAP)
+- Network forensics (PCAP-based analysis)
 - Web exploitation and webshell activity
 - Active Directory enumeration (LDAP)
-- Credential access (LSASS dump parsing/cracking)
-- Tunnel/pivot establishment
-- SMB share access, enumeration, and exfiltration
+- Credential access (LSASS dump parsing and cracking)
+- Tunnel and pivot establishment
+- SMB share access, enumeration, and data exfiltration
 
 ## 2. Environment & Tools Used
 
 ### Environment Description
 - HR website: `hr.compliantsecure.store`
 - Compromised web server: `HRWEBSERVER` (Microsoft-IIS/10.0, ASP.NET) — `10.10.3.115`
-- Domain: `AD` / `ad.compliantsecure.store`
+- Active Directory domain: `AD` / `ad.compliantsecure.store`
 - Domain Controller: `DC01.ad.compliantsecure.store`
 - File server targeted: `FILESERVER01.ad.compliantsecure.store` — `10.10.11.216`
 - Attacker source IP: `3.68.76.39`
 - Remote C2 host: `52.59.195.223`
 
 ### Tools & Frameworks (Observed / Used)
-- Suricata (ET/GPL alert signatures)
-- Zeek (files.log, SMB mapping/metadata)
-- Brim/Zui (log pivoting and filtering)
-- Wireshark (stream inspection, protocol analysis, Export Objects → HTTP)
-- Nmap (attacker scanning activity observed)
+- Suricata (ET / GPL alert signatures)
+- Zeek (files.log, SMB metadata, HTTP transactions)
+- Brim / Zui (log pivoting and correlation)
+- Wireshark (stream inspection, protocol analysis, HTTP object extraction)
+- Nmap (attacker reconnaissance activity)
 - PowerShell (execution via webshell)
-- PowerView.ps1 / PowerSploit (AD enumeration)
-- rundll32 + `comsvcs.dll` (LSASS MiniDump technique)
+- PowerView.ps1 / PowerSploit (Active Directory enumeration)
+- `rundll32.exe` + `comsvcs.dll` (LSASS MiniDump technique)
 - Pypykatz (credential extraction from LSASS dump)
-- John the Ripper + `rockyou.txt` (offline cracking)
-- VirusTotal (hash reputation / classification)
-- Ligolo-NG (tunneling/pivoting framework)
+- John the Ripper with `rockyou.txt` (offline password cracking)
+- VirusTotal (malware classification and reputation)
+- Ligolo-NG (tunneling and network pivoting framework)
 
 ## 3. Evidence Collected
 
-### Evidence Register
+### Evidence Register (Summary)
 | Evidence ID | Description | Source | Format | Hash | Notes |
 |------------|-------------|--------|--------|------|------|
-| E-001 | Network packet capture (primary investigation dataset) | CyberDefenders CyberRange | PCAP | TBD | Use for Suricata/Zeek/Wireshark correlation |
+| E-001 | Network traffic capture (primary dataset) | CyberDefenders CyberRange | PCAP | N/A | Accessed in CyberRange VM only |
+| E-002 | LSASS process memory dump | Compromised host | DMP | N/A | Extracted and analyzed within range |
+| E-003 | Credential extraction output | Analyst-generated | TXT | N/A | Derived from LSASS dump |
+| E-004 | Malicious payload | External C2 | EXE | SHA256 documented | `agent.exe` |
 
-**Chain of custody / integrity (initialization):**
-- Hash the PCAP upon download/export and update the Evidence Register.
-- Store any exported objects (e.g., `lsass.dmp`, `agent.exe`) as separate evidence items with hashes.
+Detailed evidence handling, integrity notes, and platform constraints are documented in `evidence-metadata/`.
+
+### Chain-of-Custody & Integrity Notes
+- Raw PCAP data was **not exportable** from the CyberDefenders CyberRange.
+- All network analysis was performed **in situ** using Zeek, Brim/Zui, and Wireshark.
+- Evidence was not modified outside the controlled lab environment.
+- All timestamps referenced throughout the investigation are normalized to **UTC**.
 
 ## 4. Analysis & Findings
 
-> All timestamps are treated as **UTC** unless explicitly stated otherwise.
-
-### Current Findings (Known)
-- **Initial attacker IP (directory enumeration):** `3.68.76.39`
-- **Recon scanning tool:** `nmap`
-- **Uploaded webshell filename:** `mycv.aspx`
-- **Webshell auth cookie:** `shell_pass=u_h@ck3d`
-- **First webshell command:** `ipconfig /all`
+### Confirmed Findings
+- **Initial attacker IP:** `3.68.76.39`
+- **Reconnaissance scanning tool:** `nmap`
+- **Uploaded webshell:** `mycv.aspx`
+- **Webshell authentication cookie:** `shell_pass=u_h@ck3d`
+- **First command executed via webshell:** `ipconfig /all`
 - **AD enumeration tool (in-memory):** `PowerView.ps1`
-- **Primary protocol for AD recon:** `LDAP`
-- **File server targeted for SMB enumeration:** `FILESERVER01.ad.compliantsecure.store`
-- **LSASS dump DLL:** `comsvcs.dll`
-- **LSASS dump download attempt:** `2025-05-20 18:48Z`
-- **C2 payload URL:** `http://52.59.195.223/agent.exe`
-- **Tunnel tool identified:** `Ligolo-NG`
+- **Primary AD reconnaissance protocol:** `LDAP`
+- **Targeted file server:** `FILESERVER01.ad.compliantsecure.store`
+- **LSASS dump technique:** `rundll32.exe` with `comsvcs.dll`
+- **LSASS dump download:** `2025-05-20 18:48Z`
+- **Malicious payload URL:** `http://52.59.195.223/agent.exe`
+- **Tunnel framework:** Ligolo-NG
 - **Tunnel established:** `2025-05-20 19:07Z`
-- **SMB share access attempt (using Michael creds):** `2025-05-20 19:14Z`
+- **Authenticated SMB access (Michael):** `2025-05-20 19:14Z`
 - **Sensitive directories discovered:** `Documents`, `Finance`, `HR`, `IT`, `Programs`
-- **First PDF exfiltrated:** `company_policy_manual.pdf`
-
+- **First confirmed exfiltrated PDF:** `company_policy_manual.pdf`
 
 ## 5. Timeline (UTC)
 
-- 2025-05-20 18:15Z — Directory enumeration activity observed against HR web server from `3.68.76.39`
-- 2025-05-20 18:28Z — Webshell upload detected (`mycv.aspx`)
-- 2025-05-20 18:48Z — LSASS dump (`lsass.dmp`) download attempted via webshell
-- 2025-05-20 19:07Z — Tunnel connection established between `10.10.3.115` and `52.59.195.223`
-- 2025-05-20 19:14Z — SMB share access attempted against `10.10.11.216` (File Server)
-- 2025-05-20 19:15Z — Share directory enumeration returns sensitive folder names
-- (TBD) — Confirm earliest timestamp for first PDF read/exfil transaction on SMB
-
+- **2025-05-20 18:15Z** — Directory enumeration against HR web server from `3.68.76.39`
+- **2025-05-20 18:28Z** — Webshell uploaded (`mycv.aspx`)
+- **2025-05-20 18:48Z** — LSASS dump (`lsass.dmp`) downloaded via webshell
+- **2025-05-20 19:07Z** — Tunnel established between `10.10.3.115` and `52.59.195.223`
+- **2025-05-20 19:14Z** — Authenticated SMB access to `FILESERVER01`
+- **2025-05-20 19:15Z** — SMB share enumeration and initial file access observed
+- **2025-05-20 19:15Z+** — Internal documents accessed and exfiltrated
 
 ## 6. Indicators of Compromise (IOCs)
 
 ### Network
 - Attacker IP: `3.68.76.39`
 - C2 IP: `52.59.195.223`
-- URL: `http://52.59.195.223/agent.exe`
+- Malicious URL: `http://52.59.195.223/agent.exe`
 
 ### Web
-- Webshell: `mycv.aspx`
-- Webshell auth cookie: `shell_pass=u_h@ck3d`
+- Webshell file: `mycv.aspx`
+- Authentication cookie: `shell_pass=u_h@ck3d`
 
 ### Credential Access
-- LSASS dump method: `rundll32.exe` + `comsvcs.dll` → `lsass.dmp`
+- LSASS dump method: `rundll32.exe` + `comsvcs.dll`
+- Dump file: `lsass.dmp`
 
-### Lateral Movement / Discovery
+### Lateral Movement & Discovery
 - SMB target: `FILESERVER01.ad.compliantsecure.store` (`10.10.11.216`)
-- Share browsed: `\\10.10.11.216\Shares`
+- Share accessed: `\\10.10.11.216\Shares`
 
-## 7. Repo Notes (How this case is organized)
-- `case-notes/` — narrative notes per step/question with packet/frame references
-- `evidence-metadata/` — evidence register, hashes, extracted objects metadata, IOC lists
-- `analysis/` — structured findings (filters used, correlations, timelines)
-- `pcaps/` — original PCAP and/or working copies (do not modify originals)
-- `scripts/` — commands used (pypykatz/john filters, extraction notes)
-- `reports/` — final written report once completed
+## 7. Repository Structure & Notes
+
+- `case-notes/` — Narrative notes and packet/frame references
+- `evidence-metadata/` — Evidence register, handling notes, integrity constraints
+- `analysis/` — Structured findings, filters used, timelines, ATT&CK mapping
+- `pcaps/` — Documentation of PCAP access and analysis (raw PCAP retained in CyberRange VM)
+- `scripts/` — Commands and tooling references used during analysis
+- `reports/` — Final investigation report and summaries
+
+**End of Investigation README**
