@@ -33,7 +33,7 @@ Parsed Microsoft Edge browsing artifacts for user `harrisr` from the CyberRange-
 `C:\Users\Administrator\Desktop\Start Here\Artifacts\C\Users\harrisr\AppData\Local\Microsoft\Edge\User Data\Default`
 
 **Method:**
-- Queried Edge SQLite databases for non-HTTPS URLs.
+Queried Edge SQLite databases for non-HTTPS URLs.
 
 **Finding:**  
 A spoofed Microsoft-related URL was accessed by the user.
