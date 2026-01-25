@@ -32,7 +32,7 @@ cybersecurity-investigations-portfolio/
     └── ...
 ```
 
-Each investigation folder may contain its own detailed report, along with any relevant artefacts, queries, scripts, diagrams, and supporting materials if applicable.
+Each investigation folder may contain its own detailed report, along with any relevant artifacts, queries, scripts, diagrams, and supporting materials if applicable.
 
 ## Purpose
 
