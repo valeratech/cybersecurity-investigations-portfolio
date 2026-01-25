@@ -1,0 +1,23 @@
+Case ID: 004
+Case Name: Office RTF (Equation Editor) → PowerShell Persistence → C2
+Source Platform: CyberDefenders CyberRange
+Time Standard: UTC (unless CyberRange explicitly states otherwise)
+
+Purpose:
+Capture the exact MFTECmd command used to extract NTFS $MFT data for timeline analysis.
+
+Evidence Source:
+...\Artifacts\C\$MFT
+
+Command Executed:
+MFTECmd.exe -f "C:\Users\Administrator\Desktop\Start Here\Artifacts\C\$MFT" --csv "MyOutputFile"
+
+Notes:
+- Output CSV was reviewed in Timeline Explorer.
+- Key artifacts validated from $MFT:
+  - C:\Users\harrisr\Downloads\Financial_Report.rtf
+  - Financial_Report.rtf:Zone.Identifier (ADS / Mark-of-the-Web)
+  - Recent/Office Recent LNK artifacts
+  - C:\Users\harrisr\AppData\Local\Temp\msupdate.ps1
+- Timestamp handling:
+  - Treat all timestamps as UTC unless CyberRange explicitly states otherwise.
