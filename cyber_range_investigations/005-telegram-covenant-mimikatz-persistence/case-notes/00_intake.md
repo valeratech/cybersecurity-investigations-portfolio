@@ -70,19 +70,3 @@ ThreatHunting flagged a suspicious binary in an unusual path based on Sysmon log
 ## 4. Working Hypothesis
 
 Telegram Desktop was installed shortly before the alert and used very briefly, consistent with a “download-only” intent to bypass enterprise monitoring controls. The payload was disguised as `Minecraft.exe` but aligns with Covenant tooling, and additional actions indicate persistence (service + scheduled task), credential-access activity (mimikatz masquerade), and attempted access to sensitive credential material and a remote share.
-
-## 5. Next Steps
-
-1. Consolidate a single UTC timeline across:
-   - NTFS journal events (create/rename timestamps)
-   - Security.evtx (4720, 4663)
-   - Scheduled task registration/start boundaries
-2. Extract and record:
-   - Exact scheduled task action command-line and working directory behavior
-   - Service ImagePath and related parameters from the registry
-3. Validate user activity artifacts:
-   - ShellBags entries supporting share browsing
-   - LNK metadata supporting access to `lansweeper.ps1` on the remote share
-4. Expand IOCs (defanged) into `analysis/iocs-defanged.md` and track them through the timeline.
-
----
