@@ -111,11 +111,4 @@ All timestamps are normalized to UTC.
 - The short Telegram usage window supports controlled acquisition of tooling.
 - NTFS rename evidence strongly supports intentional masquerade.
 - User creation and service/task persistence indicate deliberate foothold establishment.
-- Access to credential-related file and remote share indicates post-exploitation behavior.
-
-## Next Step
-
-- Correlate service creation timestamp with NTFS and Security logs.
-- Validate ImagePath of `cleanup-schedule`.
-- Confirm execution evidence for renamed `svchost.exe`.
-- Map behaviors to MITRE ATT&CK techniques.
+- Access to credential-related file and remote share indicates post-exploitation behavior
