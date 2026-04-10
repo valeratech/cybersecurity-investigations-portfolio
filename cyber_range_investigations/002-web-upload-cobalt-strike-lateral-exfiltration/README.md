@@ -1,6 +1,6 @@
 # Investigation Report
 
-**Document Type:** Investigation Summary  
+**Document Type:** Investigation Summary
 
 **Case Title:** Web Upload Abuse → Cobalt Strike C2 → Lateral Movement & Exfiltration  
 **Case ID:** 002-web-upload-cobalt-strike-lateral-exfiltration  
@@ -37,9 +37,7 @@ A network packet capture (PCAP) was provided for analysis to determine how the a
   - Internal Windows endpoints
 - Network Context:
   - Private internal address space
-  - External attacker-controlled infrastructure  
-- Time Standard:
-  - All timestamps are treated as UTC unless explicitly stated otherwise  
+  - External attacker-controlled infrastructure
 
 ### Tools & Frameworks
 A complete inventory of tools, platforms, protocols, commands, and file artifacts used during this investigation is documented in:
@@ -49,62 +47,75 @@ A complete inventory of tools, platforms, protocols, commands, and file artifact
 ## 3. Evidence Collected
 
 ### Evidence Artifacts
-- Network packet capture (PCAP)  
-- IDS/IPS alert telemetry (Suricata)  
-- Zeek HTTP, DNS, and connection logs  
-- Extracted malicious payload artifacts (ISO, LNK, EXE)  
-- Hashes and metadata for extracted files  
+- Network packet capture (PCAP)
+- IDS/IPS alert telemetry (Suricata)
+- Zeek HTTP, DNS, and connection logs
+- Extracted malicious payload artifacts (ISO, LNK, EXE)
+- Hashes and metadata for extracted files
 
-Detailed acquisition notes, hashes, and tracking are maintained in:
+Detailed acquisition notes, hashes, and usage tracking are maintained in:
 
 `evidence-metadata/evidence-inventory.md`
 
 ## 4. Analysis & Findings
 
-Analysis is documented incrementally and supported by detailed case notes and analytical artifacts located in the `analysis/` and `case-notes/` directories.
+Analysis is documented incrementally and supported by detailed case notes and analytical artifacts.
 
 ### 4.1 Initial Indicators
 Initial alert triage revealed high-volume outbound HTTP traffic flagged by IDS signatures consistent with Cobalt Strike Beacon activity. Alerts predominantly involved repeated connections to an external destination over TCP port 80, along with additional TCP stream anomalies and SMB-related alerts suggesting potential internal lateral movement.
 
 ### 4.2 Timeline Reconstruction
-A complete timeline is maintained in:
-
-`analysis/timeline-utc.md`
+See: `analysis/timeline-utc.md`
 
 ### 4.3 Host-Based Analysis
 Host-based forensic analysis is limited in this scenario due to the absence of disk or memory images. Findings are inferred through network telemetry and protocol-level inspection.
 
 ### 4.4 Network Analysis
 Network analysis focuses on:
-- HTTP-based command-and-control beaconing  
-- Malicious file upload via web application POST request  
-- Internal SMB activity indicative of lateral movement  
-- RDP session activity between compromised internal systems  
+- HTTP-based command-and-control beaconing
+- Malicious file upload via web application POST request
+- Internal SMB activity indicative of lateral movement
+- RDP session activity between compromised internal systems
 
 Supporting queries, filters, and packet-level evidence are documented in the `analysis/` directory.
 
 ### 4.5 Memory Analysis
-Memory analysis was not conducted due to the absence of volatile memory artifacts in the provided evidence set.
+Not applicable. No memory artifacts were provided.
 
 ### 4.6 Malware Behavior
 Malware behavior analysis includes:
-- Delivery via ISO file upload  
-- Embedded PowerShell execution  
-- Disabling of Windows Defender real-time protection  
-- Execution of secondary payloads  
-- Establishment of persistent C2 communication  
+- Delivery via ISO file upload
+- Embedded PowerShell execution
+- Disabling of Windows Defender real-time protection
+- Execution of secondary payloads
+- Establishment of persistent C2 communication
+
+Detailed findings are documented in the `analysis/` and `case-notes/` directories.
 
 ## 5. Indicators of Compromise
 
-Confirmed and normalized indicators of compromise (IOCs) are documented in:
+Confirmed and normalized IOCs are documented in:
 
 `iocs/network-iocs.md`
 
-## 6. Conclusion
+## 6. Current Assessment
 
-This section will be populated upon completion of full timeline reconstruction, validation of all findings, and correlation of attacker activity across the environment.
+- Initial access achieved via malicious file upload through web application
+- Payload delivery via ISO archive
+- Cobalt Strike Beacon established over HTTP (port 80)
+- Evidence of internal lateral movement via SMB and RDP
+- Potential staging for data exfiltration activity
 
-## 7. Appendix (Planned)
-- MITRE ATT&CK Mapping  
-- Detection & Prevention Opportunities  
-- Key Takeaways for Blue Team Operations  
+## 7. Next Steps
+
+- Complete full timeline reconstruction
+- Validate lateral movement paths between internal systems
+- Correlate beaconing intervals and infrastructure usage
+- Confirm data exfiltration scope and destination endpoints
+- Finalize detection opportunities and defensive recommendations
+
+## 8. Appendix (Planned)
+
+- MITRE ATT&CK Mapping
+- Detection & Prevention Opportunities
+- Key Takeaways for Blue Team Operations
