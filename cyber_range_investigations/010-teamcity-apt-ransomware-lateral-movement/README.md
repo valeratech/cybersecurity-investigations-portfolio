@@ -8,7 +8,7 @@
 **Last Updated:** 2026-04-16  
 **Author:** Ryan Valera  
 **Time Standard:** UTC  
-**Source Platform:** Security Blue Team CyberRange  
+**Source Platform:** CyberDefenders CyberRange  
 
 ## 1. Overview
 
