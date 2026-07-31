@@ -1,0 +1,8 @@
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.pcap binary
+*.pcapng binary
+*.raw binary
+*.dmp binary
+*.evtx binary
