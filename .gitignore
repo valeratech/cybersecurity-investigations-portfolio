@@ -1,4 +1,56 @@
+# ---- Evidence artifacts (never commit) ----
+# Network captures
 *.pcap
 *.pcapng
-*.zip
+*.cap
+
+# Memory images and process dumps
 *.raw
+*.mem
+*.vmem
+*.vmss
+*.vmsn
+*.dmp
+*.lime
+*.core
+
+# Disk images and forensic containers
+*.E01
+*.e01
+*.dd
+*.img
+*.ad1
+*.001
+*.aff4
+
+# Windows artifacts
+*.evtx
+*.dat
+*.hve
+NTUSER.DAT*
+UsrClass.dat*
+$MFT
+$J
+$LogFile
+
+# Archives and extracted samples
+*.zip
+*.7z
+*.rar
+*.tar.gz
+*.bin
+*.exe
+*.dll
+
+# Tool output
+*.csv.gz
+KAPE_output/
+volatility_output/
+
+# ---- OS / editor noise ----
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.vscode/
+.idea/

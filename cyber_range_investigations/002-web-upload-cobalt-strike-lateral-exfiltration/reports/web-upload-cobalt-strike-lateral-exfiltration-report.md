@@ -37,7 +37,7 @@ Evidence handling and metadata are documented in:
 
 ### Entry Point
 
-The attacker abused the organization’s public contact form:
+The attacker abused the organization's public contact form:
 
 `http[:]//www[.]mindtech[.]net/contact[.]php`
 
@@ -73,7 +73,7 @@ This command disables Windows Defender real-time protection and executes a secon
 - Port: 80  
 - URI Pattern: `/en_US/all.js`  
 
-Beacon traffic exhibited characteristics consistent with Cobalt Strike’s HTTP-based communication model.
+Beacon traffic exhibited characteristics consistent with Cobalt Strike's HTTP-based communication model.
 
 ## 6. Internal Lateral Movement
 

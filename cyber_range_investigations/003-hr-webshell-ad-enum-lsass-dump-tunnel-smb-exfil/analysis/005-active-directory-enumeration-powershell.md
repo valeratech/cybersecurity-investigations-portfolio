@@ -6,7 +6,7 @@
 **Source Platform:** CyberDefenders CyberRange  
 
 ## Purpose
-This document analyzes the attacker’s Active Directory enumeration activity conducted after establishing webshell access. It identifies the tooling used, execution method, and network protocol leveraged to gather domain information.
+This document analyzes the attacker's Active Directory enumeration activity conducted after establishing webshell access. It identifies the tooling used, execution method, and network protocol leveraged to gather domain information.
 
 ## Data Sources
 - PCAP (E-001)
@@ -34,7 +34,7 @@ The PowerShell command retrieved and executed a well-known Active Directory reco
 - **Tool Name:** PowerView.ps1
 - **Framework:** PowerSploit
 - **Source URL:**  
-  `https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/.../Recon/PowerView.ps1`
+  `hxxps://raw[.]githubusercontent[.]com/PowerShellMafia/PowerSploit/.../Recon/PowerView.ps1`
 
 The script was downloaded and executed in-memory using `Invoke-WebRequest` and `Invoke-Expression`.
 
@@ -50,15 +50,15 @@ Get-Domain"
 This confirms:
 - Remote script retrieval
 - Immediate execution without persistence
-- Use of PowerView’s domain discovery functions
+- Use of PowerView's domain discovery functions
 
 ## Domain Information Retrieved
 
 The PowerView output returned key domain metadata, including:
 
-- **Forest:** `ad.compliantsecure.store`
-- **Domain Name:** `ad.compliantsecure.store`
-- **Domain Controller:** `DC01.ad.compliantsecure.store`
+- **Forest:** `ad[.]compliantsecure[.]store`
+- **Domain Name:** `ad[.]compliantsecure[.]store`
+- **Domain Controller:** `DC01[.]ad[.]compliantsecure[.]store`
 - **Domain Mode Level:** 7
 - **Executing Context:** `SYSTEM` on `HRWEBSERVER`
 

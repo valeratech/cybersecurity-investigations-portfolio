@@ -19,7 +19,7 @@ All timestamps referenced below are treated as **UTC**.
 ## LSASS Dump Retrieval
 
 ### Retrieval Method
-After generating the LSASS dump on the compromised web server, the attacker used the webshell’s file browsing functionality to download the dump file.
+After generating the LSASS dump on the compromised web server, the attacker used the webshell's file browsing functionality to download the dump file.
 
 ### Observed HTTP Response
 Wireshark inspection confirmed the download via an HTTP response with the following characteristics:
@@ -58,7 +58,7 @@ Analysis of the parsed output revealed a domain user account with recoverable cr
 - **Logon Server:** `DC01`
 
 ### Extracted Hash
-`michael:2b52d3f28841abe8c3c1d0568d945fa9`
+`michael:2b52d3f2...` `<REDACTED - full NT hash withheld>`
 
 This NT hash was suitable for offline password cracking.
 
@@ -74,7 +74,8 @@ John the Ripper
 ### Result
 **Username**: `michael`
 
-**Plaintext Password**: `MyPassw0rd123@`
+**Plaintext Password**: `<REDACTED>`  
+*(14 characters; dictionary word + leetspeak substitution + trailing symbol - recovered from a standard wordlist attack in under a minute)*
 
 The successful crack confirms weak password hygiene and directly enabled authenticated SMB access observed later in the investigation.
 

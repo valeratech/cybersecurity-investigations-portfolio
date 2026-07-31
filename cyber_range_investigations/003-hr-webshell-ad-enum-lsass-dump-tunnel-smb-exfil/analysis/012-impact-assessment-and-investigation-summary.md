@@ -17,7 +17,7 @@ This was a **confirmed breach**, not an attempted intrusion.
 ## Attack Chain Overview
 
 ### 1. Initial Access
-- Entry point: HR job application portal (`hr.compliantsecure.store`)
+- Entry point: HR job application portal (`hr[.]compliantsecure[.]store`)
 - Vulnerability exploited: Unrestricted file upload
 - Result: Webshell (`mycv.aspx`) deployed on HR web server
 

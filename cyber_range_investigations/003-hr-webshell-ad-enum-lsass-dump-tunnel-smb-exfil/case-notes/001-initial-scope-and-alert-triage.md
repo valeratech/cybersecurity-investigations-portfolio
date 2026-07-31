@@ -11,8 +11,8 @@ This document captures the initial scope of the investigation and the first roun
 ## Initial Investigation Scope
 
 ### Assets in Scope
-- Public-facing HR website: `hr.compliantsecure.store`
-- Backend web server: `HRWEBSERVER` (`10.10.3.115`)
+- Public-facing HR website: `hr[.]compliantsecure[.]store`
+- Backend web server: `HRWEBSERVER` (`10[.]10[.]3[.]115`)
 - Associated internal infrastructure reachable from the web server
 - Network traffic contained within the provided PCAP
 
@@ -50,8 +50,8 @@ These alerts are commonly associated with:
 
 Multiple high-confidence alerts shared a common source IP address:
 
-- **Suspected attacker IP:** `3.68.76.39`
-- **Target system:** `10.10.3.115` (HRWEBSERVER)
+- **Suspected attacker IP:** `3[.]68[.]76[.]39`
+- **Target system:** `10[.]10[.]3[.]115` (HRWEBSERVER)
 - **Protocol:** HTTP over TCP/80
 
 This IP was repeatedly observed performing actions consistent with directory enumeration and reconnaissance against the HR web application.
@@ -60,21 +60,21 @@ This IP was repeatedly observed performing actions consistent with directory enu
 
 ### GPL WEB_SERVER printenv access
 - **Timestamp:** 2025-05-20 18:15:59Z  
-- **Source IP:** 3.68.76.39  
-- **Destination IP:** 10.10.3.115  
+- **Source IP:** 3[.]68[.]76[.]39  
+- **Destination IP:** 10[.]10[.]3[.]115  
 - **Category:** Access to potentially vulnerable web application  
 
 ### GPL WEB_SERVER /~root access
 - **Timestamp:** 2025-05-20 18:15:52Z  
-- **Source IP:** 3.68.76.39  
-- **Destination IP:** 10.10.3.115  
+- **Source IP:** 3[.]68[.]76[.]39  
+- **Destination IP:** 10[.]10[.]3[.]115  
 - **Category:** Attempted Information Leak  
 
 These alerts strongly suggest intentional probing of the web server rather than benign user activity.
 
 ## Initial Assessment
 
-Based on alert frequency, consistency, and behavior patterns, the activity originating from `3.68.76.39` was assessed as **malicious reconnaissance** rather than false positives or misconfiguration noise.
+Based on alert frequency, consistency, and behavior patterns, the activity originating from `3[.]68[.]76[.]39` was assessed as **malicious reconnaissance** rather than false positives or misconfiguration noise.
 
 At this stage, the working hypothesis was:
 > The HR web server is being actively targeted, and the attacker may be attempting to discover or exploit a web-based vulnerability.

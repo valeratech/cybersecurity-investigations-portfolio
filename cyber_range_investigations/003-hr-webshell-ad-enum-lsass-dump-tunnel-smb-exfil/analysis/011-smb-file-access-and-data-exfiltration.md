@@ -21,12 +21,12 @@ All timestamps referenced are treated as **UTC**.
 After authenticating to the internal file server and enumerating shared directories, the attacker began identifying and accessing individual files of interest. This phase marks the transition from discovery to data theft.
 
 ### Target System
-- **Hostname:** `FILESERVER01.ad.compliantsecure.store`
-- **IP Address:** `10.10.11.216`
+- **Hostname:** `FILESERVER01[.]ad[.]compliantsecure[.]store`
+- **IP Address:** `10[.]10[.]11[.]216`
 - **Service:** `SMB (TCP/445)`
 
 ### Authentication Context
-- **Account Used:** `michael@ad.compliantsecure.store`
+- **Account Used:** `michael@ad[.]compliantsecure[.]store`
 - **Access Method:** Credential reuse following LSASS dump extraction
 
 ## SMB File Enumeration

@@ -20,8 +20,8 @@ All timestamps referenced are treated as **UTC**.
 Following successful SMB authentication using recovered domain credentials, the attacker enumerated file shares hosted on the internal file server.
 
 ### Target System
-- **Hostname:** `FILESERVER01.ad.compliantsecure.store`
-- **IP Address:** `10.10.11.216`
+- **Hostname:** `FILESERVER01[.]ad[.]compliantsecure[.]store`
+- **IP Address:** `10[.]10[.]11[.]216`
 - **Service:** `SMB (TCP/445)`
 
 ### Share Enumerated

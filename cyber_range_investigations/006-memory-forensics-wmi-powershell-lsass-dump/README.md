@@ -16,7 +16,7 @@ Analyze a Windows memory dump to determine the extent of compromise, identify at
 ### Scenario Summary
 You work for a managed service provider and were tasked with analyzing a memory dump from a breached customer environment. The goal is to identify hidden processes, suspicious parent/child relationships, evidence of credential dumping, and any active network connections indicative of command-and-control.
 
-This investigation was performed in a CyberDefenders CyberRange “Memory Forensics” scenario using Volatility plugins and supporting utilities.
+This investigation was performed in a CyberDefenders CyberRange "Memory Forensics" scenario using Volatility plugins and supporting utilities.
 
 ### Key Focus Areas
 - Memory Forensics

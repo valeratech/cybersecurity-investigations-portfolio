@@ -29,8 +29,8 @@ Of particular interest was an alert explicitly referencing a known scanning tool
 ### Relevant Alert
 - **Signature:** `ET SCAN RDP Connection Attempt from Nmap`
 - **Category:** Detection of a Network Scan
-- **Source IP:** `3.68.76.39`
-- **Destination IP:** `10.10.3.115`
+- **Source IP:** `3[.]68[.]76[.]39`
+- **Destination IP:** `10[.]10[.]3[.]115`
 - **Destination Port:** `3389/TCP`
 - **Timestamp:** 2025-05-20 18:20:46Z
 

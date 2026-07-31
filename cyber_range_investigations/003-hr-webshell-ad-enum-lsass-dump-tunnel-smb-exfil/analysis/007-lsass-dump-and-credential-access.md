@@ -6,7 +6,7 @@
 **Source Platform:** CyberDefenders CyberRange  
 
 ## Purpose
-This document analyzes the attacker’s credential access activity by identifying the method used to dump LSASS process memory, the artifacts generated, and how those artifacts enabled credential extraction. This marks a critical escalation in the attack lifecycle.
+This document analyzes the attacker's credential access activity by identifying the method used to dump LSASS process memory, the artifacts generated, and how those artifacts enabled credential extraction. This marks a critical escalation in the attack lifecycle.
 
 ## Data Sources
 - PCAP (E-001)
@@ -61,7 +61,7 @@ This confirms the dump was initiated successfully on the host.
 
 Following dump creation:
 - The file `lsass.dmp` was written to the Windows temporary directory
-- The attacker later accessed the webshell’s file browser functionality to retrieve the dump file
+- The attacker later accessed the webshell's file browser functionality to retrieve the dump file
 
 This behavior indicates intent to perform **offline credential extraction** rather than live credential abuse.
 
@@ -82,7 +82,7 @@ At this point in the attack:
 
 Successful LSASS dumping explains:
 - Subsequent authenticated SMB access using domain user credentials
-- The attacker’s ability to pivot further into the internal network
+- The attacker's ability to pivot further into the internal network
 - Later data exfiltration activity over an established tunnel
 
 ## Next Investigative Pivot

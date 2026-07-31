@@ -16,7 +16,7 @@ The incident represents a **full breach**, not an attempted compromise, with con
 ## 2. Incident Overview
 
 ### Initial Access Vector
-- Entry point: `hr.compliantsecure.store`
+- Entry point: `hr[.]compliantsecure[.]store`
 - Vulnerability: Unrestricted file upload
 - Malicious artifact: `mycv.aspx` (ASP.NET webshell)
 
@@ -30,9 +30,9 @@ The incident represents a **full breach**, not an attempted compromise, with con
 ## 3. Affected Assets
 
 ### Hosts
-- **HR Web Server:** `HRWEBSERVER` (`10.10.3.115`)
-- **Domain Controller:** `DC01.ad.compliantsecure.store`
-- **File Server:** `FILESERVER01.ad.compliantsecure.store` (`10.10.11.216`)
+- **HR Web Server:** `HRWEBSERVER` (`10[.]10[.]3[.]115`)
+- **Domain Controller:** `DC01[.]ad[.]compliantsecure[.]store`
+- **File Server:** `FILESERVER01[.]ad[.]compliantsecure[.]store` (`10[.]10[.]11[.]216`)
 
 ### Accounts
 - Compromised domain user: `michael`
@@ -78,9 +78,9 @@ The incident represents a **full breach**, not an attempted compromise, with con
 ## 6. Indicators of Compromise (IOCs)
 
 ### Network
-- Attacker IP: `3.68.76.39`
-- C2 IP: `52.59.195.223`
-- Malicious URL: `http://52.59.195.223/agent.exe`
+- Attacker IP: `3[.]68[.]76[.]39`
+- C2 IP: `52[.]59[.]195[.]223`
+- Malicious URL: `hxxp://52[.]59[.]195[.]223/agent.exe`
 
 ### Web
 - Webshell: `mycv.aspx`

@@ -8,7 +8,7 @@
 
 ## Trigger Event
 
-An Endpoint Detection and Response (EDR) alert was generated on the organization’s public-facing web server indicating the presence of a malicious file within the upload directory associated with the website’s contact-us form.
+An Endpoint Detection and Response (EDR) alert was generated on the organization's public-facing web server indicating the presence of a malicious file within the upload directory associated with the website's contact-us form.
 
 ## Initial Hypothesis
 

@@ -16,7 +16,7 @@ This analysis provides the foundation for:
 ## Data Source
 - **Evidence ID:** E-001  
 - **Type:** Network packet capture (PCAP)  
-- **Coverage:** Inbound and internal traffic involving `hr.compliantsecure.store` and internal hosts
+- **Coverage:** Inbound and internal traffic involving `hr[.]compliantsecure[.]store` and internal hosts
 
 ## Alert Aggregation Methodology
 
@@ -61,8 +61,8 @@ These alerts repeatedly originated from the same source IP and targeted the HR w
 ## Attacker IP Identification
 
 ### Correlated Attributes
-- **Source IP:** `3.68.76.39`
-- **Destination IP:** `10.10.3.115`
+- **Source IP:** `3[.]68[.]76[.]39`
+- **Destination IP:** `10[.]10[.]3[.]115`
 - **Destination Port:** `80`
 - **Protocol:** HTTP
 
@@ -72,7 +72,7 @@ This IP was consistently associated with:
 - Follow-on scanning activity
 
 **Conclusion:**  
-`3.68.76.39` is identified as the primary attacker IP responsible for reconnaissance and exploitation attempts against the HR web server.
+`3[.]68[.]76[.]39` is identified as the primary attacker IP responsible for reconnaissance and exploitation attempts against the HR web server.
 
 ## Scan Activity & Tool Attribution
 
@@ -93,11 +93,11 @@ The attacker used **Nmap** for service and port reconnaissance following initial
 ### Zui / Brim
 - Group by: `alert.signature`
 - Filter by source IP:
-`src_ip == 3.68.76.39`
+`src_ip == 3[.]68[.]76[.]39`
 
 ### Wireshark
 - Focus on web traffic:
-`http && ip.src == 3.68.76.39`
+`http && ip.src == 3[.]68[.]76[.]39`
 
 - Scan-related confirmation:
 `tcp.port == 3389`

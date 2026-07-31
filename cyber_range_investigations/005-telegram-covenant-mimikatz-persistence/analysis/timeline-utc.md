@@ -68,7 +68,7 @@ All timestamps are normalized to UTC.
 **Event:** Telegram usage recorded  
 **Focus Time:** 383811 milliseconds  
 **Source:** NTUSER.DAT (UserAssist)  
-**Interpretation:** Very limited usage consistent with “download-only” behavior.
+**Interpretation:** Very limited usage consistent with "download-only" behavior.
 
 ### 2022-11-11 19:55:51 UTC
 **Event:** Object access attempt  

@@ -33,6 +33,18 @@ Each investigation follows a structured, analyst-driven workflow:
 > **Note:** All data in this repository is generated in lab environments or fully sanitized.  
 > No real-world client or sensitive information is included.
 
+## Indicator Handling Convention
+
+Indicators of compromise in this repository are **defanged** in prose, IOC
+tables and inline references (`192[.]168[.]1[.]1`, `hxxp://`). Indicators
+inside fenced code blocks are left in their original form so that documented
+queries and filters remain directly runnable - re-fang deliberately before
+reuse.
+
+Recovered credential material is masked. Password hashes are truncated and
+plaintext passwords are redacted; where password *characteristics* are
+analytically relevant they are described rather than reproduced.
+
 ## Repository Structure
 
 ```text
@@ -40,5 +52,6 @@ cybersecurity-investigations-portfolio/
 ├── README.md
 ├── TEMPLATE_Investigation_Report.md
 └── cyber_range_investigations/
-    ├── 0001-macro-malware-data-exfiltration/
+    ├── 001-macro-malware-data-exfiltration/
     └── ...
+```

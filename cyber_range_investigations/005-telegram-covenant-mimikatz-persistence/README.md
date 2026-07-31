@@ -110,7 +110,7 @@ ThreatHunting flagged a suspicious binary path in Sysmon logs suggesting potenti
 
 ## 5. Current Status
 - Baseline host footprinting complete
-- Telegram install and minimal use supports “download-only” hypothesis
+- Telegram install and minimal use supports "download-only" hypothesis
 - Covenant identified and persistence artifacts confirmed (service + scheduled task)
 - Credential access attempt and remote share activity identified
 - Next step: expand timeline correlation across Security.evtx + NTFS events + LNK/ShellBags

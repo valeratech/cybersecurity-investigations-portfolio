@@ -69,4 +69,4 @@ ThreatHunting flagged a suspicious binary in an unusual path based on Sysmon log
 
 ## 4. Working Hypothesis
 
-Telegram Desktop was installed shortly before the alert and used very briefly, consistent with a “download-only” intent to bypass enterprise monitoring controls. The payload was disguised as `Minecraft.exe` but aligns with Covenant tooling, and additional actions indicate persistence (service + scheduled task), credential-access activity (mimikatz masquerade), and attempted access to sensitive credential material and a remote share.
+Telegram Desktop was installed shortly before the alert and used very briefly, consistent with a "download-only" intent to bypass enterprise monitoring controls. The payload was disguised as `Minecraft.exe` but aligns with Covenant tooling, and additional actions indicate persistence (service + scheduled task), credential-access activity (mimikatz masquerade), and attempted access to sensitive credential material and a remote share.

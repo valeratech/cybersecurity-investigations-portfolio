@@ -60,7 +60,7 @@ Zone.Identifier metadata confirmed the document originated from the internet.
 The malicious RTF file exploited the Equation Editor vulnerability, allowing code execution without requiring macros or additional user interaction beyond opening the document.
 
 ### Execution Chain
-Following exploitation, a PowerShell script (`msupdate.ps1`) was dropped into the user’s temporary directory and executed in a hidden context via `cmd.exe`. Process masquerading was observed, with execution behavior referencing a legitimate Windows binary.
+Following exploitation, a PowerShell script (`msupdate.ps1`) was dropped into the user's temporary directory and executed in a hidden context via `cmd.exe`. Process masquerading was observed, with execution behavior referencing a legitimate Windows binary.
 
 - Script Creation Time: `2025-05-23 11:15:43 UTC`
 - Execution Evidence: Sysmon process creation events

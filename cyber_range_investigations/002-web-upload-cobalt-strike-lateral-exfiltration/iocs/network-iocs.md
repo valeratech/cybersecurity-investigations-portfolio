@@ -39,3 +39,4 @@ Only validated indicators are included.
 
 ```text
 Set-MpPreference -DisableRealtimeMonitoring 1; D:\ADOBE.exe
+```

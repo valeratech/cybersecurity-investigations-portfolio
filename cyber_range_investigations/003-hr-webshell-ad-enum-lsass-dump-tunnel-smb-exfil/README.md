@@ -14,7 +14,7 @@
 Investigate initial access via the HR job application portal, identify attacker activity (reconnaissance, exploitation, credential access), trace lateral movement into the internal network, and determine what data was accessed and/or exfiltrated during the intrusion.
 
 ### Scenario Summary
-The website `hr.compliantsecure.store`, used for handling job applications, was exploited via an unrestricted file upload vulnerability. The attacker uploaded a hidden webshell, used it for host and network reconnaissance, performed Active Directory enumeration, dumped LSASS process memory to extract credentials, established a tunnel for internal pivoting, accessed SMB file shares on an internal file server, enumerated sensitive directories, and exfiltrated internal documents.
+The website `hr[.]compliantsecure[.]store`, used for handling job applications, was exploited via an unrestricted file upload vulnerability. The attacker uploaded a hidden webshell, used it for host and network reconnaissance, performed Active Directory enumeration, dumped LSASS process memory to extract credentials, established a tunnel for internal pivoting, accessed SMB file shares on an internal file server, enumerated sensitive directories, and exfiltrated internal documents.
 
 ### Key Focus Areas
 - Network forensics (PCAP-based analysis)
@@ -27,13 +27,13 @@ The website `hr.compliantsecure.store`, used for handling job applications, was 
 ## 2. Environment & Tools Used
 
 ### Environment Description
-- HR website: `hr.compliantsecure.store`
-- Compromised web server: `HRWEBSERVER` (Microsoft-IIS/10.0, ASP.NET) — `10.10.3.115`
-- Active Directory domain: `AD` / `ad.compliantsecure.store`
-- Domain Controller: `DC01.ad.compliantsecure.store`
-- File server targeted: `FILESERVER01.ad.compliantsecure.store` — `10.10.11.216`
-- Attacker source IP: `3.68.76.39`
-- Remote C2 host: `52.59.195.223`
+- HR website: `hr[.]compliantsecure[.]store`
+- Compromised web server: `HRWEBSERVER` (Microsoft-IIS/10.0, ASP.NET) — `10[.]10[.]3[.]115`
+- Active Directory domain: `AD` / `ad[.]compliantsecure[.]store`
+- Domain Controller: `DC01[.]ad[.]compliantsecure[.]store`
+- File server targeted: `FILESERVER01[.]ad[.]compliantsecure[.]store` — `10[.]10[.]11[.]216`
+- Attacker source IP: `3[.]68[.]76[.]39`
+- Remote C2 host: `52[.]59[.]195[.]223`
 
 ### Tools & Frameworks (Observed / Used)
 - Suricata (ET / GPL alert signatures)
@@ -70,17 +70,17 @@ Detailed evidence handling, integrity notes, and platform constraints are docume
 ## 4. Analysis & Findings
 
 ### Confirmed Findings
-- **Initial attacker IP:** `3.68.76.39`
+- **Initial attacker IP:** `3[.]68[.]76[.]39`
 - **Reconnaissance scanning tool:** `nmap`
 - **Uploaded webshell:** `mycv.aspx`
 - **Webshell authentication cookie:** `shell_pass=u_h@ck3d`
 - **First command executed via webshell:** `ipconfig /all`
 - **AD enumeration tool (in-memory):** `PowerView.ps1`
 - **Primary AD reconnaissance protocol:** `LDAP`
-- **Targeted file server:** `FILESERVER01.ad.compliantsecure.store`
+- **Targeted file server:** `FILESERVER01[.]ad[.]compliantsecure[.]store`
 - **LSASS dump technique:** `rundll32.exe` with `comsvcs.dll`
 - **LSASS dump download:** `2025-05-20 18:48Z`
-- **Malicious payload URL:** `http://52.59.195.223/agent.exe`
+- **Malicious payload URL:** `hxxp://52[.]59[.]195[.]223/agent.exe`
 - **Tunnel framework:** Ligolo-NG
 - **Tunnel established:** `2025-05-20 19:07Z`
 - **Authenticated SMB access (Michael):** `2025-05-20 19:14Z`
@@ -89,10 +89,10 @@ Detailed evidence handling, integrity notes, and platform constraints are docume
 
 ## 5. Timeline (UTC)
 
-- **2025-05-20 18:15Z** — Directory enumeration against HR web server from `3.68.76.39`
+- **2025-05-20 18:15Z** — Directory enumeration against HR web server from `3[.]68[.]76[.]39`
 - **2025-05-20 18:28Z** — Webshell uploaded (`mycv.aspx`)
 - **2025-05-20 18:48Z** — LSASS dump (`lsass.dmp`) downloaded via webshell
-- **2025-05-20 19:07Z** — Tunnel established between `10.10.3.115` and `52.59.195.223`
+- **2025-05-20 19:07Z** — Tunnel established between `10[.]10[.]3[.]115` and `52[.]59[.]195[.]223`
 - **2025-05-20 19:14Z** — Authenticated SMB access to `FILESERVER01`
 - **2025-05-20 19:15Z** — SMB share enumeration and initial file access observed
 - **2025-05-20 19:15Z+** — Internal documents accessed and exfiltrated
@@ -100,9 +100,9 @@ Detailed evidence handling, integrity notes, and platform constraints are docume
 ## 6. Indicators of Compromise (IOCs)
 
 ### Network
-- Attacker IP: `3.68.76.39`
-- C2 IP: `52.59.195.223`
-- Malicious URL: `http://52.59.195.223/agent.exe`
+- Attacker IP: `3[.]68[.]76[.]39`
+- C2 IP: `52[.]59[.]195[.]223`
+- Malicious URL: `hxxp://52[.]59[.]195[.]223/agent.exe`
 
 ### Web
 - Webshell file: `mycv.aspx`
@@ -113,8 +113,8 @@ Detailed evidence handling, integrity notes, and platform constraints are docume
 - Dump file: `lsass.dmp`
 
 ### Lateral Movement & Discovery
-- SMB target: `FILESERVER01.ad.compliantsecure.store` (`10.10.11.216`)
-- Share accessed: `\\10.10.11.216\Shares`
+- SMB target: `FILESERVER01[.]ad[.]compliantsecure[.]store` (`10[.]10[.]11[.]216`)
+- Share accessed: `\\10[.]10[.]11[.]216\Shares`
 
 ## 7. Repository Structure & Notes
 

@@ -20,7 +20,7 @@ All timestamps referenced are treated as **UTC**.
 
 Prior investigative steps confirmed:
 - Successful recovery of plaintext domain credentials
-- Valid domain account: `michael@ad.compliantsecure.store`
+- Valid domain account: `michael@ad[.]compliantsecure[.]store`
 - Credentials cracked offline and not tested interactively on the web server
 
 These conditions enabled clean authentication against internal services.
@@ -28,13 +28,13 @@ These conditions enabled clean authentication against internal services.
 ## SMB Authentication Event
 
 ### Target System
-- **Hostname:** `FILESERVER01.ad.compliantsecure.store`
-- **IP Address:** `10.10.11.216`
+- **Hostname:** `FILESERVER01[.]ad[.]compliantsecure[.]store`
+- **IP Address:** `10[.]10[.]11[.]216`
 - **Service:** `SMB (TCP/445)`
 
 ### Source System
 - **Compromised Host:** HRWEBSERVER
-- **IP Address:** 10.10.3.115
+- **IP Address:** 10[.]10[.]3[.]115
 
 ### Authentication Timestamp
 `2025-05-20 19:14:38Z`
@@ -42,14 +42,14 @@ These conditions enabled clean authentication against internal services.
 ### Protocol Details
 - **Protocol:** SMB2
 - **Command:** `Tree Connect`
-- **Authentication Context:** `michael@ad.compliantsecure.store`
+- **Authentication Context:** `michael@ad[.]compliantsecure[.]store`
 - **Session Type:** Authenticated, signed SMB session
 
 The SMB Tree Connect request confirms credential reuse rather than anonymous or guest access.
 
 ### Initial Share Access
 
-`\\10.10.11.216\IPC$`
+`\\10[.]10[.]11[.]216\IPC$`
 
 This connection represents the initial authenticated foothold on the file server and precedes access to user-facing shares.
 

@@ -86,7 +86,7 @@ Extracted and parsed the NTFS Master File Table ($MFT).
 `C:\Users\Administrator\Desktop\Start Here\Artifacts\C\$MFT`
 
 **Finding:**  
-`Financial_Report.rtf` was created in the user’s Downloads directory, and a Zone.Identifier ADS confirms internet origin.
+`Financial_Report.rtf` was created in the user's Downloads directory, and a Zone.Identifier ADS confirms internet origin.
 
 **Creation Time (UTC):**
 `2025-05-23 10:53:22`
@@ -164,7 +164,7 @@ Determine what executed post-exploitation.
 Filtered NTFS timeline and Sysmon logs for script creation and execution.
 
 **Finding:**  
-A PowerShell script was dropped to the user’s TEMP directory.
+A PowerShell script was dropped to the user's TEMP directory.
 
 **Script Name:**
 `msupdate.ps1`
