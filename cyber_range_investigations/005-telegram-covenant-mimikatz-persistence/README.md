@@ -2,8 +2,8 @@
 
 **Case Title:** Disk Forensics — Telegram download of Covenant + mimikatz masquerade + persistence  
 **Case ID:** 005  
-**Date Created:** 2026-02-18  
-**Last Updated:** 2026-02-18  
+**Documentation Started:** 2026-02-18  
+**Documentation Last Updated:** 2026-02-18  
 **Author:** Ryan Valera  
 **Time Standard:** UTC (unless CyberDefenders explicitly states otherwise)  
 **Source Platform:** CyberDefenders (CyberRange)

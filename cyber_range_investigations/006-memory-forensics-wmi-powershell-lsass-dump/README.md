@@ -2,8 +2,8 @@
 
 **Case Title:** WMI-Spawned PowerShell with LSASS Credential Dump  
 **Case ID:** 006  
-**Date Created:** 2026-02-24  
-**Last Updated:** 2026-02-24  
+**Documentation Started:** 2026-02-24  
+**Documentation Last Updated:** 2026-02-26  
 **Author:** Ryan Valera  
 **Time Standard:** UTC  
 **Source Platform:** CyberDefenders CyberRange  

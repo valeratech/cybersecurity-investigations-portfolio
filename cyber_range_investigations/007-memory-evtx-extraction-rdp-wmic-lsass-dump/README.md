@@ -2,8 +2,8 @@
 
 **Case Title:** Memory EVTX Extraction + RDP Intrusion + WMIC Lateral Movement + LSASS Dump  
 **Case ID:** 007-memory-evtx-extraction-rdp-wmic-lsass-dump  
-**Date Created:** 2026-02-26  
-**Last Updated:** 2026-02-26  
+**Documentation Started:** 2026-02-26  
+**Documentation Last Updated:** 2026-02-26  
 **Author:** Ryan Valera  
 **Time Standard:** UTC (All timestamps treated as UTC unless explicitly stated by CyberDefenders)  
 **Source Platform:** CyberDefenders CyberRange – Memory Forensics Module  

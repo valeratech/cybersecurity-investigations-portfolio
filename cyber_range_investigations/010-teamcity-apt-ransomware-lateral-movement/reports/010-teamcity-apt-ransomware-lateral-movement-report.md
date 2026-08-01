@@ -4,8 +4,8 @@
 
 **Case Title:** TeamCity APT Ransomware – Lateral Movement & Data Exfiltration  
 **Case ID:** 010-teamcity-apt-ransomware-lateral-movement  
-**Date Created:** 2026-04-16  
-**Last Updated:** 2026-04-16  
+**Documentation Started:** 2026-04-16  
+**Documentation Last Updated:** 2026-04-18  
 **Author:** Ryan Valera  
 **Time Standard:** UTC  
 **Source Platform:** Security Blue Team CyberRange  

@@ -1,14 +1,11 @@
 # Cybersecurity Investigations Portfolio
 
-This repository is a central collection of my cybersecurity investigations completed across various CyberRanges and lab environments. It serves as a structured record of hands-on **DFIR, SIEM investigation, threat hunting, memory, disk, and network forensics** work across multiple training platforms.
+This repository is a central collection of my cybersecurity investigations completed across CyberRange and lab environments. It serves as a structured record of hands-on **DFIR, SIEM investigation, threat hunting, memory, disk, and network forensics** work.
 
-Current investigations include (but are not limited to):
+Current investigations:
 
-- **SANS/NetWars**: Specialized technical mastery and advanced incident handling  
-- **Hack The Box**: Dedicated SOC and DFIR investigative labs  
-- **CyberDefenders**: Artifact-driven challenges centered on real-world memory, endpoint, and network forensics  
-- **Security Blue Team (BTLO)**: Operationally-focused labs simulating real-world Security Operations Center (SOC) environments  
-- Additional **self-built investigations** and forensic exercises  
+- **CyberDefenders** — 9 investigations: artifact-driven challenges centered on real-world memory, endpoint, and network forensics  
+- **Security Blue Team (BTLO)** — 1 investigation: operationally-focused labs simulating real-world SOC environments  
 
 All investigations follow a consistent methodology, typically including:
 
@@ -32,6 +29,22 @@ Each investigation follows a structured, analyst-driven workflow:
 
 > **Note:** All data in this repository is generated in lab environments or fully sanitized.  
 > No real-world client or sensitive information is included.
+
+## Case Status
+
+- **Complete** — the cyber-range exercise was finished, its final question
+  answered, and the portfolio report and supporting documentation finalised.
+- **In Progress** — the exercise, analysis, evidence collection, or portfolio
+  documentation remains unfinished.
+
+Status describes the state of this repository's documentation, not a formal
+closure process within the range platform.
+
+## Date Fields
+
+Documentation timestamps describe when the portfolio case study was written.
+They are not investigation timestamps. Where the date of the underlying
+range activity was not recorded, it is stated as such rather than inferred.
 
 ## Indicator Handling Convention
 

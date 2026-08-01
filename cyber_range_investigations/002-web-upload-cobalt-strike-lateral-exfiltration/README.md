@@ -4,8 +4,8 @@
 
 **Case Title:** Web Upload Abuse → Cobalt Strike C2 → Lateral Movement & Exfiltration  
 **Case ID:** 002-web-upload-cobalt-strike-lateral-exfiltration  
-**Date Created:** 2026-01-08  
-**Last Updated:** 2026-01-08  
+**Documentation Started:** 2026-01-08  
+**Documentation Last Updated:** 2026-04-16  
 **Author:** Ryan Valera  
 **Time Standard:** UTC  
 **Source Platform:** CyberDefenders CyberRange  

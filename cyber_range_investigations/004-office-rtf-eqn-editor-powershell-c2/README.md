@@ -2,8 +2,8 @@
 
 **Case Title:** Office RTF (Equation Editor) → PowerShell Persistence → C2  
 **Case ID:** 004  
-**Date Created:** 2026-01-25  
-**Last Updated:** 2026-01-25  
+**Documentation Started:** 2026-01-25  
+**Documentation Last Updated:** 2026-01-25  
 **Author:** Ryan Valera  
 **Time Standard:** UTC (unless CyberRange explicitly states otherwise)  
 **Source Platform:** CyberDefenders CyberRange  

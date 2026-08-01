@@ -2,8 +2,8 @@
 
 **Case Title:** HR Webshell → AD Enum → LSASS Dump → Tunnel Pivot → SMB Exfil  
 **Case ID:** 003  
-**Date Created:** 2026-01-08  
-**Last Updated:** 2026-01-08  
+**Documentation Started:** 2026-01-08  
+**Documentation Last Updated:** 2026-01-18  
 **Author:** Ryan Valera  
 **Time Standard:** UTC  
 **Source Platform:** CyberDefenders CyberRange  

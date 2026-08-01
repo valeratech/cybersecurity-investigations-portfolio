@@ -2,8 +2,8 @@
 **Case ID:** 003  
 **Case Title:** HR Webshell → AD Enumeration → LSASS Dump → Tunnel Pivot → SMB Exfiltration  
 **Author:** Ryan Valera  
-**Date Created:** 2026-01-08  
-**Last Updated:** 2026-01-08  
+**Documentation Started:** 2026-01-08  
+**Documentation Last Updated:** 2026-01-18  
 **Time Standard:** UTC  
 **Source Platform:** CyberDefenders CyberRange  
 

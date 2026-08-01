@@ -4,8 +4,8 @@
 
 **Case Title:** OSK Hijack Persistence and Cerber Botnet Activity  
 **Case ID:** 009-osk-hijack-cerber-botnet  
-**Date Created:** 2026-04-16  
-**Last Updated:** 2026-04-16  
+**Documentation Started:** 2026-04-16  
+**Documentation Last Updated:** 2026-04-16  
 **Author:** Ryan Valera  
 **Time Standard:** UTC  
 **Source Platform:** Security Blue Team CyberRange  
