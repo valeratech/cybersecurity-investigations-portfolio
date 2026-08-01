@@ -101,7 +101,7 @@ Not applicable for this investigation.
 
 See:
 - `analysis/findings-summary.md`
-- `reports/009-osk-hijack-cerber-botnet-report.md`
+- `reports/final-report.md`
 
 ## 6. Impact Assessment
 
@@ -117,7 +117,7 @@ See:
 
 ## 8. Reports
 
-- `reports/009-osk-hijack-cerber-botnet-report.md`
+- `reports/final-report.md`
 
 ## 9. Case Status
 

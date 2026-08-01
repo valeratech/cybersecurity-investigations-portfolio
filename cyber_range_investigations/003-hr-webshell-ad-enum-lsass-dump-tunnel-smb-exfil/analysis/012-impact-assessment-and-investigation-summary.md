@@ -93,4 +93,4 @@ This investigation confirms a **successful intrusion with data exfiltration**. T
 - Archive investigation artifacts
 
 **Next file:**  
-`reports/003-final-investigation-report.md`
+`reports/final-report.md`

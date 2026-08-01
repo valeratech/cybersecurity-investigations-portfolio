@@ -9,34 +9,15 @@
 ## Purpose of This Directory
 
 The `analysis/` directory contains **reproducible analytical artifacts** used to derive findings in Case 004.  
-Files here prioritize **exact commands, queries, and filters** over narrative explanation.
+Files here prioritize **exact detection logic and filters** over narrative explanation.
+
+Reproducible commands and queries are in `../scripts/`.
 
 Narrative context and conclusions are documented in:
 - `case-notes/`
-- `reports/` (final report)
+- `reports/final-report.md`
 
 ## File Index
-
-### `edge_sql_queries.sql`
-**Purpose:**  
-Reproducible SQLite queries used to validate:
-- Phishing URL access
-- Malicious RTF download
-- Correlation between URL visits and downloads
-
-**Evidence Sources:**
-- Microsoft Edge Chromium databases under:
-...\Users\harrisr\AppData\Local\Microsoft\Edge\User Data\Default\
-
-### `mftecmd-command.txt`
-**Purpose:**  
-Records the exact `MFTECmd` command used to extract NTFS `$MFT` data.
-
-**Used For:**
-- File creation and modification timestamps
-- Zone.Identifier (Mark-of-the-Web) validation
-- Script and payload discovery
-- LNK artifact correlation
 
 ### `sysmon-filters.md`
 **Purpose:**  
@@ -60,11 +41,9 @@ Documents Sysmon event IDs, filters, and investigative logic used to isolate:
 
 ## Reproducibility Statement
 
-Another analyst with access to the same CyberDefenders CyberRange artifacts should be able to:
-1. Re-run the SQL queries
-2. Re-extract NTFS metadata using the documented MFTECmd command
-3. Apply the Sysmon filters
-4. Reach the same conclusions documented in the case notes and final report
+Another analyst with access to the same CyberDefenders CyberRange artifacts should be able to
+apply the documented Sysmon filters and reach the same conclusions recorded in the case notes
+and final report. Command- and query-level reproduction steps are documented in `../scripts/`.
 
 ## Status
 

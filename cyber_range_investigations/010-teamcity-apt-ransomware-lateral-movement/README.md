@@ -120,7 +120,7 @@ See:
 
 See:
 - `analysis/findings-summary.md`
-- `reports/010-teamcity-apt-ransomware-lateral-movement-report.md`
+- `reports/final-report.md`
 
 ## 6. Impact Assessment
 
@@ -136,7 +136,7 @@ See:
 
 ## 8. Reports
 
-- `reports/010-teamcity-apt-ransomware-lateral-movement-report.md`
+- `reports/final-report.md`
 
 ## 9. Case Status
 
