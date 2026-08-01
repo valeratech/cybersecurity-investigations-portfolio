@@ -36,3 +36,6 @@ chk "No bare HTML redaction markers" $(bare_markers)
 
 echo; echo "  ---- $pass passed, $fail failed ----"
 [ $fail -eq 0 ]
+
+# link integrity (non-zero exit fails the check)
+python3 check-links.py --quiet

@@ -33,7 +33,7 @@ Each investigation follows a structured, analyst-driven workflow:
 ## Case Status
 
 - **Complete** — the cyber-range exercise was finished, its final question
-  answered, and the portfolio report and supporting documentation finalised.
+  answered, and the portfolio report and supporting documentation finalized.
 - **In Progress** — the exercise, analysis, evidence collection, or portfolio
   documentation remains unfinished.
 
