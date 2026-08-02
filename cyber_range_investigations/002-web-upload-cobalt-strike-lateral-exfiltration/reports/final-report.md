@@ -28,6 +28,13 @@ Findings were derived from the provided network telemetry together with the Cybe
 - Network packet capture (PCAP)  
 - Suricata IDS alerts  
 - Zeek HTTP and connection logs  
+- Extracted `Urgent Support.iso` artifact  
+- `DOCUMENT.LNK` string analysis  
+- VirusTotal community YARA enrichment  
+- CyberRange scenario and confirmed question responses  
+
+The ISO and LNK artifacts were recovered from the packet capture; the
+enrichment and range-confirmed context are external to the telemetry.
 
 Evidence handling and metadata are documented in:
 
@@ -126,7 +133,9 @@ This investigation confirms a multi-stage intrusion involving:
 - Lateral movement using SMB and RDP  
 - Internal transfer of web server content for attempted exfiltration  
 
-All conclusions are supported by network-based evidence.
+Conclusions are supported by a combination of network telemetry, extracted
+artifact analysis, VirusTotal enrichment, and CyberRange-confirmed context.
+The applicable evidence source is identified within each section.
 
 ## 10. Indicators of Compromise
 
