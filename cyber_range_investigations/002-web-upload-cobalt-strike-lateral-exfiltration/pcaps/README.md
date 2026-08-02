@@ -17,7 +17,7 @@ Due to platform restrictions, the PCAP file is not exportable and is not stored 
 - Evidence ID: E-001  
 - Evidence Type: Network packet capture (PCAP)  
 - Access Method: CyberDefenders CyberRange VM  
-- Evidence Inventory: `../evidence-metadata/evidence-inventory.md`  
+- Evidence Inventory: [`../evidence-metadata/evidence-inventory.md`](../evidence-metadata/evidence-inventory.md)  
 
 ## Analysis Notes
 

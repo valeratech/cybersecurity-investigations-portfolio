@@ -84,7 +84,7 @@ The compromised system demonstrates characteristics of persistence, command-and-
 ## 6. Indicators of Compromise
 
 See:
-- `../iocs/network-iocs.md`
+- [`../iocs/network-iocs.md`](../iocs/network-iocs.md)
 
 ## 7. Recommendations
 

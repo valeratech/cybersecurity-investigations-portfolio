@@ -85,7 +85,7 @@ An IT technician identified a suspicious file referenced in the Windows registry
 - Threat intelligence (VirusTotal hash lookup)  
 
 See:
-- `evidence-metadata/evidence-inventory.md`
+- [`evidence-metadata/evidence-inventory.md`](evidence-metadata/evidence-inventory.md)
 
 ## 4. Analysis & Findings
 
@@ -96,7 +96,7 @@ See:
 
 ### 4.2 Timeline Reconstruction
 See:
-- `analysis/timeline-utc.md`
+- [`analysis/timeline-utc.md`](analysis/timeline-utc.md)
 
 ### 4.3 Host-Based Analysis
 - Suspicious binary execution path:
@@ -134,8 +134,8 @@ Not applicable for this investigation.
 - Recon activity: external IP lookup via HTTP  
 
 See:
-- `analysis/findings-summary.md`
-- `reports/final-report.md`
+- [`analysis/findings-summary.md`](analysis/findings-summary.md)
+- [`reports/final-report.md`](reports/final-report.md)
 
 ## 6. Impact Assessment
 
@@ -147,11 +147,11 @@ See:
 ## 7. Indicators of Compromise (IOCs)
 
 See:
-- `iocs/network-iocs.md`
+- [`iocs/network-iocs.md`](iocs/network-iocs.md)
 
 ## 8. Reports
 
-- `reports/final-report.md`
+- [`reports/final-report.md`](reports/final-report.md)
 
 ## 9. Case Status
 

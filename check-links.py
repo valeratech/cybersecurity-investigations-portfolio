@@ -144,11 +144,16 @@ def main():
 
     # backticked paths that could be links
     candidates = 0
+    linked = re.compile(r"\[`[^`]+`\]\([^)]+\)")
     for src in md_files():
         text = re.sub(r"```.*?```", "", src.read_text(encoding="utf-8"), flags=re.S)
-        for m in BACKTICK_PATH.findall(text):
-            if (src.parent / m).exists() or (ROOT / m).exists():
-                candidates += 1
+        for line in text.split("\n"):
+            if line.lstrip().startswith("#"):
+                continue
+            bare = linked.sub("", line)
+            for m in BACKTICK_PATH.findall(bare):
+                if (src.parent / m).exists() or (ROOT / m).exists():
+                    candidates += 1
 
     if not args.quiet:
         print(f"  links checked      : {total}")

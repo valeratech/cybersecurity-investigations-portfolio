@@ -72,7 +72,7 @@ A network packet capture (PCAP) was provided for analysis to determine how the a
 ### Tools & Frameworks
 A complete inventory of tools, platforms, protocols, commands, and file artifacts used during this investigation is documented in:
 
-`analysis/tools-and-artifacts-used.md`
+[`analysis/tools-and-artifacts-used.md`](analysis/tools-and-artifacts-used.md)
 
 ## 3. Evidence Collected
 
@@ -85,7 +85,7 @@ A complete inventory of tools, platforms, protocols, commands, and file artifact
 
 Detailed acquisition notes, hashes, and usage tracking are maintained in:
 
-`evidence-metadata/evidence-inventory.md`
+[`evidence-metadata/evidence-inventory.md`](evidence-metadata/evidence-inventory.md)
 
 ## 4. Analysis & Findings
 
@@ -95,7 +95,7 @@ Analysis is documented incrementally and supported by detailed case notes and an
 Initial alert triage revealed high-volume outbound HTTP traffic flagged by IDS signatures consistent with Cobalt Strike Beacon activity. Alerts predominantly involved repeated connections to an external destination over TCP port 80, along with additional TCP stream anomalies and SMB-related alerts suggesting potential internal lateral movement.
 
 ### 4.2 Timeline Reconstruction
-See: `analysis/timeline-utc.md`
+See: [`analysis/timeline-utc.md`](analysis/timeline-utc.md)
 
 ### 4.3 Host-Based Analysis
 Host-based forensic analysis is limited in this scenario due to the absence of disk or memory images. Findings are inferred through network telemetry and protocol-level inspection.
@@ -126,7 +126,7 @@ Detailed findings are documented in the `analysis/` and `case-notes/` directorie
 
 Confirmed and normalized IOCs are documented in:
 
-`iocs/network-iocs.md`
+[`iocs/network-iocs.md`](iocs/network-iocs.md)
 
 ## 6. Current Assessment
 

@@ -102,7 +102,7 @@ The attack concluded with widespread ransomware deployment, encrypting files wit
 - MSSQL logs (Event ID 18456, configuration changes)  
 
 See:
-- `evidence-metadata/evidence-inventory.md`
+- [`evidence-metadata/evidence-inventory.md`](evidence-metadata/evidence-inventory.md)
 
 ## 4. Analysis & Findings
 
@@ -114,7 +114,7 @@ See:
 
 ### 4.2 Timeline Reconstruction
 See:
-- `analysis/timeline-utc.md`
+- [`analysis/timeline-utc.md`](analysis/timeline-utc.md)
 
 ### 4.3 Host-Based Analysis
 - Defender disabled via `Set-MpPreference`  
@@ -149,8 +149,8 @@ See:
 - Impact: Ransomware deployment with `.lsoc` encryption  
 
 See:
-- `analysis/findings-summary.md`
-- `reports/final-report.md`
+- [`analysis/findings-summary.md`](analysis/findings-summary.md)
+- [`reports/final-report.md`](reports/final-report.md)
 
 ## 6. Impact Assessment
 
@@ -162,11 +162,11 @@ See:
 ## 7. Indicators of Compromise (IOCs)
 
 See:
-- `iocs/network-iocs.md`
+- [`iocs/network-iocs.md`](iocs/network-iocs.md)
 
 ## 8. Reports
 
-- `reports/final-report.md`
+- [`reports/final-report.md`](reports/final-report.md)
 
 ## 9. Case Status
 

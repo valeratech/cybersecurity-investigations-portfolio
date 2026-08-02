@@ -49,6 +49,9 @@ Each investigation follows a structured, analyst-driven workflow:
 > **Note:** All data in this repository is generated in lab environments or fully sanitized.  
 > No real-world client or sensitive information is included.
 
+For the standard case-report structure, see the
+[Investigation Report Template](TEMPLATE_Investigation_Report.md).
+
 ## Case Status
 
 - **Complete** — the cyber-range exercise was finished, its final question
