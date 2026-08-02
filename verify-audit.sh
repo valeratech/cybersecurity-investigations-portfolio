@@ -35,7 +35,11 @@ chk "No CRLF"                  $(find . -path ./.git -prune -o -name "*.md" -pri
 chk "No bare HTML redaction markers" $(bare_markers)
 
 echo; echo "  ---- $pass passed, $fail failed ----"
-[ $fail -eq 0 ]
+[ $fail -eq 0 ] || exit 1
 
 # link integrity (non-zero exit fails the check)
-python3 check-links.py --quiet
+python3 check-links.py --quiet || exit 1
+
+# schema validation, advisory mode: reports debt, exits non-zero only on
+# fatal parse errors. Flip to --strict when the metadata migration completes.
+python3 check-schema.py --quiet || exit 1
