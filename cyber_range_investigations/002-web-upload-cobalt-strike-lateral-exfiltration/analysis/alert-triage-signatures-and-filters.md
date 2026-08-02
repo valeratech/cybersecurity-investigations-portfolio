@@ -71,7 +71,11 @@ Content-Length: 0
 - Repeated HTTP requests with consistent user-agent strings and minimal response payloads are indicative of beaconing activity.  
 - Alert distribution and protocol anomalies support further investigation into lateral movement and internal host compromise.  
 
-## Next Steps
+## Planned Follow-Up at Triage Stage
+
+Recorded during initial triage. Outcomes for the items pursued are documented in
+[`findings-summary.md`](findings-summary.md) and the final report; items not
+listed there were not pursued before the range environment became unavailable.
 
 - Correlate beaconing intervals and session persistence  
 - Identify originating internal host(s) communicating with C2  

@@ -2,7 +2,7 @@
 
 **Document Type:** Report
 
-**Case Title:** Web Upload Abuse → Cobalt Strike C2 → Lateral Movement & Exfiltration  
+**Case Title:** Web Upload Abuse → Cobalt Strike C2 → Lateral Movement & Attempted Exfiltration  
 **Case ID:** 002-web-upload-cobalt-strike-lateral-exfiltration  
 **Author:** Ryan Valera  
 **Date Completed:** 2026-01-08  
@@ -13,9 +13,9 @@
 
 This investigation examined a suspected compromise involving a public-facing web application hosted by the organization. An Endpoint Detection and Response (EDR) alert identified a malicious file within the upload directory of a contact-us form.
 
-Network forensic analysis revealed that the contact form was abused to upload a malicious ISO payload, which resulted in the execution of malware on an internal endpoint. The malware established command-and-control (C2) communications using the Cobalt Strike framework over HTTP, enabled lateral movement via SMB and RDP, and staged data for exfiltration from a web server directory.
+Network forensic analysis revealed that the contact form was abused to upload a malicious ISO payload, which resulted in the execution of malware on an internal endpoint. The malware established command-and-control (C2) communications using the Cobalt Strike framework over HTTP, enabled lateral movement via SMB and RDP, and transferred web server content internally over SMB for attempted exfiltration.
 
-All findings were derived exclusively from network telemetry provided by the CyberDefenders CyberRange.
+Findings were derived from the provided network telemetry together with the CyberRange scenario and confirmed question responses. The report distinguishes directly observed activity from range-confirmed context where applicable.
 
 ## 2. Scope & Evidence
 
@@ -94,13 +94,13 @@ This host was identified as the initially compromised internal system based on o
 
 The final RDP session duration was approximately 137 seconds.
 
-## 7. Data Staging & Exfiltration Attempt
+## 7. Internal Transfer & Attempted Exfiltration
 
-Due to outbound restrictions on the web server, the attacker staged data internally.
+The CyberRange scenario states that outbound traffic from the web server was blocked, requiring the attacker to transfer web-server data to a compromised internal endpoint for attempted exfiltration.
 
 - Targeted Directory: `\\WWW\wwwroot`  
 
-SMB traffic and exported objects indicated access to web server content consistent with data staging prior to exfiltration.
+Wireshark SMB object evidence showed the compromised endpoint accessing content under `\\WWW\wwwroot` on the web server. The CyberRange confirms that data was transferred over SMB to the compromised endpoint for attempted exfiltration.
 
 ## 8. Timeline Overview (High-Level)
 
@@ -109,7 +109,7 @@ SMB traffic and exported objects indicated access to web server content consiste
 - Windows Defender disabled  
 - Cobalt Strike beacon established  
 - SMB and RDP activity observed  
-- Web server data staged for exfiltration  
+- Web server content transferred internally over SMB for attempted exfiltration  
 
 A partial evidence-backed timeline of retained observations, together with the
 events established without a recoverable timestamp, is documented in
@@ -124,7 +124,7 @@ This investigation confirms a multi-stage intrusion involving:
 - Defense evasion through PowerShell  
 - Persistent C2 via Cobalt Strike  
 - Lateral movement using SMB and RDP  
-- Staging of sensitive web content for exfiltration  
+- Internal transfer of web server content for attempted exfiltration  
 
 All conclusions are supported by network-based evidence.
 

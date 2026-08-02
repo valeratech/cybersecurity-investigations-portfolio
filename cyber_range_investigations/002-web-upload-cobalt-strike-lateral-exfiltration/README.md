@@ -2,7 +2,7 @@
 
 **Document Type:** Investigation Summary
 
-**Case Title:** Web Upload Abuse → Cobalt Strike C2 → Lateral Movement & Exfiltration  
+**Case Title:** Web Upload Abuse → Cobalt Strike C2 → Lateral Movement & Attempted Exfiltration  
 **Case ID:** 002-web-upload-cobalt-strike-lateral-exfiltration  
 **Documentation Started:** 2026-01-08  
 **Documentation Last Updated:** 2026-04-16  
@@ -55,7 +55,7 @@ A network packet capture (PCAP) was provided for analysis to determine how the a
 - Web Application Abuse  
 - Malware Delivery & Execution  
 - Command-and-Control (C2) Analysis  
-- Lateral Movement & Data Exfiltration  
+- Lateral Movement & Attempted Exfiltration  
 
 ## 2. Environment & Tools Used
 
@@ -134,21 +134,25 @@ Confirmed and normalized IOCs are documented in:
 - Payload delivery via ISO archive
 - Cobalt Strike Beacon established over HTTP (port 80)
 - Evidence of internal lateral movement via SMB and RDP
-- Potential staging for data exfiltration activity
+- Internal SMB transfer of web server content for attempted exfiltration
 
-## 7. Next Steps
+## 7. Evidence Limitations
 
-- Complete full timeline reconstruction
-- Validate lateral movement paths between internal systems
-- Correlate beaconing intervals and infrastructure usage
-- Confirm data exfiltration scope and destination endpoints
-- Finalize detection opportunities and defensive recommendations
+- The retained evidence establishes an internal SMB transfer for attempted
+  exfiltration but does not establish that data left the network.
+- Exact timestamps were not recovered for every event; see
+  [`analysis/timeline-utc.md`](analysis/timeline-utc.md).
+- The original CyberRange and packet capture are no longer accessible, so
+  unresolved details cannot be validated further.
 
-## 8. Appendix (Planned)
+## 8. Optional Future Enhancements
 
-- MITRE ATT&CK Mapping
-- Detection & Prevention Opportunities
-- Key Takeaways for Blue Team Operations
+The following could be authored from the retained analyst notes without access
+to the original range environment:
+
+- MITRE ATT&CK mapping
+- Detection and prevention opportunities
+- Key takeaways for blue team operations
 
 ## 9. Case Status
 

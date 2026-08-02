@@ -110,14 +110,16 @@ Associated alerts include:
 ### Conclusion
 The attacker performed lateral movement within the internal network using SMB for file transfer and RDP for remote access.
 
-## Finding 7 – Data Staging for Exfiltration
+## Finding 7 – Internal Transfer for Attempted Exfiltration
 
 ### Observation
 SMB traffic indicates access to the web server directory:
 
 `\\WWW\wwwroot`
 
-Files were accessed and staged within this location.
+Wireshark SMB object evidence showed the compromised endpoint accessing content
+under this path on the web server. The CyberRange confirms that data was
+transferred over SMB to the compromised endpoint for attempted exfiltration.
 
 ### Evidence
 - SMB file access activity  
@@ -125,7 +127,8 @@ Files were accessed and staged within this location.
 - Directory access patterns  
 
 ### Conclusion
-The attacker staged data from the web server directory in preparation for exfiltration.
+Web server content was transferred internally over SMB to the compromised
+endpoint for attempted exfiltration.
 
 ## Attack Chain Summary
 
@@ -135,11 +138,12 @@ The attacker staged data from the web server directory in preparation for exfilt
 4. Defense evasion (Windows Defender disabled)  
 5. Cobalt Strike C2 established over HTTP  
 6. Lateral movement via SMB and RDP  
-7. Data staging for exfiltration  
+7. Internal transfer of web server content for attempted exfiltration  
 
 ## Current Assessment
 
 - The attack is confirmed as a multi-stage intrusion leveraging web application abuse for initial access.  
 - Cobalt Strike was used for command-and-control and post-exploitation activity.  
 - Internal network compromise and lateral movement were successfully achieved.  
-- Data staging activity indicates intent for exfiltration, though full exfiltration confirmation requires further validation.
+- The retained evidence establishes internal SMB transfer for attempted
+  exfiltration but does not establish that the data subsequently left the network.
