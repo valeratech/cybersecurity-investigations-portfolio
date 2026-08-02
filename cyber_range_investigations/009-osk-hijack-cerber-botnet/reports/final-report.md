@@ -99,3 +99,10 @@ See:
 ## 8. Conclusion
 
 The investigation confirms a high-confidence compromise involving Cerber malware leveraging OSK hijacking for persistence. The infected system is actively participating in botnet-related activity and exhibits behavior consistent with ransomware operations. Immediate containment and remediation actions are required to mitigate further risk.
+
+## Related Documents
+
+- [Case Overview](../README.md)
+- [Timeline](../analysis/timeline-utc.md)
+- [Indicators of Compromise](../iocs/network-iocs.md)
+- [Evidence Inventory](../evidence-metadata/evidence-inventory.md)

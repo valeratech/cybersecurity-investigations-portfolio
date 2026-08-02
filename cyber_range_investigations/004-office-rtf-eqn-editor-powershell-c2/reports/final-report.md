@@ -162,3 +162,9 @@ If this activity had occurred in a production environment, it would warrant:
 The investigation conclusively identified a phishing-driven exploitation chain resulting in persistent compromise of a user workstation. Evidence supports deliberate attacker actions consistent with real-world tradecraft, including exploitation of known vulnerabilities, stealthy execution, redundancy in persistence, and covert command-and-control communication.
 
 This case highlights the continued relevance of disk forensics and host telemetry in detecting and reconstructing sophisticated endpoint intrusions.
+
+## Related Documents
+
+- [Case Overview](../README.md)
+- [Timeline](../case-notes/timeline.md)
+- [Evidence Sources](../evidence-metadata/evidence-sources.md)

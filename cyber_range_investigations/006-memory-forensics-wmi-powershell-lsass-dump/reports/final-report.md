@@ -93,3 +93,9 @@ The attacker:
 The system must be considered fully compromised.
 
 Immediate credential rotation and host remediation would be required in a real-world environment.
+
+## Related Documents
+
+- [Case Overview](../README.md)
+- [Timeline](../analysis/timeline-reconstruction.md)
+- [Indicators of Compromise](../analysis/iocs.md)

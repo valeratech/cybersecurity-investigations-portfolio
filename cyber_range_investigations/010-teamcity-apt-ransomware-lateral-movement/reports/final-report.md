@@ -173,3 +173,10 @@ The final stage involved ransomware deployment across the network.
 This investigation demonstrates a complete attack lifecycle executed by an advanced adversary, from initial access to ransomware deployment. The attacker successfully leveraged vulnerabilities, misconfigurations, and native system tools to evade detection and achieve full network compromise.
 
 Effective detection, rapid response, and improved defensive controls are critical to preventing similar incidents in real-world environments.
+
+## Related Documents
+
+- [Case Overview](../README.md)
+- [Timeline](../analysis/timeline-utc.md)
+- [Indicators of Compromise](../iocs/network-iocs.md)
+- [Evidence Inventory](../evidence-metadata/evidence-inventory.md)

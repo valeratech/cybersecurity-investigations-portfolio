@@ -137,4 +137,9 @@ This investigation confirms a **successful, end-to-end intrusion** beginning wit
 
 This case demonstrates the critical importance of defense-in-depth, credential hygiene, and internal monitoring.
 
+## Related Documents
+
+- [Case Overview](../README.md)
+- [Evidence Register](../evidence-metadata/evidence-register.md)
+
 **End of Report**
