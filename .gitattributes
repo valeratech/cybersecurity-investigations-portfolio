@@ -1,4 +1,5 @@
 * text=auto eol=lf
+*.md whitespace=-trailing-space
 *.png binary
 *.jpg binary
 *.pcap binary
