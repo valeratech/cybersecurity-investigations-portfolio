@@ -30,9 +30,9 @@ All investigations follow a consistent methodology, typically including:
 | 009 | [OSK Hijack Persistence and Cerber Botnet Activity](cyber_range_investigations/009-osk-hijack-cerber-botnet/README.md) | Security Blue Team | Complete | [Report](cyber_range_investigations/009-osk-hijack-cerber-botnet/reports/final-report.md) | [Timeline](cyber_range_investigations/009-osk-hijack-cerber-botnet/analysis/timeline-utc.md) | [IOCs](cyber_range_investigations/009-osk-hijack-cerber-botnet/iocs/network-iocs.md) |
 | 010 | [TeamCity APT Ransomware — Lateral Movement & Data Exfiltration](cyber_range_investigations/010-teamcity-apt-ransomware-lateral-movement/README.md) | CyberDefenders | Complete | [Report](cyber_range_investigations/010-teamcity-apt-ransomware-lateral-movement/reports/final-report.md) | [Timeline](cyber_range_investigations/010-teamcity-apt-ransomware-lateral-movement/analysis/timeline-utc.md) | [IOCs](cyber_range_investigations/010-teamcity-apt-ransomware-lateral-movement/iocs/network-iocs.md) |
 
-Cases 003, 004, 005 and 007 do not have dedicated IOC documents, and case 003 has no
-standalone timeline; in those cases the relevant detail is recorded within the analysis
-files and the final report.
+Cases 003, 004 and 007 record their indicators within the case README rather than a
+dedicated IOC document; those links point to the relevant section. Case 003's timeline
+is likewise recorded in its README. Case 005 has no observed-indicator document.
 
 ## Investigation Methodology
 

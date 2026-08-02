@@ -6,7 +6,7 @@
 **Source Platform:** CyberDefenders (CyberRange)  
 **Time Standard:** UTC  
 
-# 1. Executive Summary
+## 1. Executive Summary
 
 During routine threat hunting, a suspicious binary executed from an unusual directory was identified via Sysmon logs. A forensic triage image was analyzed to determine the origin, intent, and scope of the activity.
 
@@ -21,7 +21,7 @@ Further evidence indicated attempted access to a credential storage file and exp
 
 The activity reflects structured post-exploitation behavior consistent with insider misuse or interactive compromise.
 
-# 2. Scope and Evidence Reviewed
+## 2. Scope and Evidence Reviewed
 
 The investigation was conducted using a structured triage artifact set located at:
 
@@ -39,7 +39,7 @@ Artifacts reviewed included:
 
 No live system interaction occurred. Analysis was performed offline using forensic tools.
 
-# 3. System Baseline
+## 3. System Baseline
 
 | Attribute | Value |
 |-----------|--------|
@@ -53,7 +53,7 @@ No live system interaction occurred. Analysis was performed offline using forens
 Last recorded shutdown:
 2021-07-30 15:25:00 UTC
 
-# 4. Incident Timeline Summary (UTC)
+## 4. Incident Timeline Summary (UTC)
 
 | Timestamp (UTC) | Event |
 |-----------------|-------|
@@ -66,9 +66,9 @@ Last recorded shutdown:
 | 2022-11-11 | Access attempt to `Credentials.txt` |
 | 2022-11-11 | Remote share accessed: `lansweeper.ps1` |
 
-# 5. Key Findings
+## 5. Key Findings
 
-## 5.1 Tool Transfer via Telegram
+### 5.1 Tool Transfer via Telegram
 
 Telegram Desktop was installed and used briefly. NTFS journal evidence confirms file creation shortly after installation.
 
@@ -77,7 +77,7 @@ UserAssist Focus Time:
 
 This short execution window suggests Telegram was used primarily to obtain tooling.
 
-## 5.2 Covenant C2 Deployment
+### 5.2 Covenant C2 Deployment
 
 The file `Minecraft.exe` was analyzed via SHA-256 hash:
 
@@ -85,29 +85,29 @@ b384fd495a751060f890fb785c68ed765d517e26b815c06655924348943ed2a5
 
 Threat intelligence lookup identified the payload as Covenant (C2 framework).
 
-## 5.3 Credential Harvesting Tool Staging
+### 5.3 Credential Harvesting Tool Staging
 
 `mimikatz.exe` was created and later renamed to `svchost.exe` in the Downloads directory.
 
 NTFS journal correlation confirms both filenames share the same FileReferenceNumber, indicating deliberate masquerade behavior.
 
-## 5.4 Persistence Mechanisms
+### 5.4 Persistence Mechanisms
 
-### New Account Creation
+#### New Account Creation
 - Event ID 4720
 - Account: cpitter
 
-### Windows Service
+#### Windows Service
 - Service name: cleanup-schedule
 - Registry path:
   HKLM\SYSTEM\ControlSet001\Services\cleanup-schedule
 
-### Scheduled Task
+#### Scheduled Task
 - Task: \spawn
 - StartBoundary: 2022-11-11 20:10:00 UTC
 - Task action references execution from Downloads directory.
 
-## 5.5 Credential Targeting
+### 5.5 Credential Targeting
 
 Security Event ID 4663 revealed access attempt against:
 
@@ -115,7 +115,7 @@ Security Event ID 4663 revealed access attempt against:
 
 This suggests active search for credential material.
 
-## 5.6 Lateral Movement Indicators
+### 5.6 Lateral Movement Indicators
 
 ShellBags and LNK analysis confirm access to:
 
@@ -123,7 +123,7 @@ ShellBags and LNK analysis confirm access to:
 
 This behavior indicates exploration of remote systems, possibly for reconnaissance or credential harvesting.
 
-# 6. ATT&CK Alignment
+## 6. ATT&CK Alignment
 
 The observed behaviors map to:
 
@@ -137,7 +137,7 @@ The observed behaviors map to:
 - T1021 – Remote Services
 - T1071 – Application Layer Protocol
 
-# 7. Conclusion
+## 7. Conclusion
 
 The host experienced structured post-exploitation activity involving:
 
@@ -151,7 +151,7 @@ The host experienced structured post-exploitation activity involving:
 
 The combination of C2 framework usage, credential tooling, and layered persistence strongly indicates intentional malicious activity rather than benign misuse.
 
-# 8. Recommendations
+## 8. Recommendations
 
 - Disable and remove unauthorized account (`cpitter`)
 - Remove malicious service and scheduled task
@@ -164,7 +164,7 @@ The combination of C2 framework usage, credential tooling, and layered persisten
   - Suspicious process execution from Downloads directory
 - Restrict unauthorized application installation (e.g., Telegram)
 
-# 9. Portfolio Note
+## 9. Portfolio Note
 
 This investigation demonstrates:
 

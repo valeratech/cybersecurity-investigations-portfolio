@@ -150,15 +150,7 @@ Detailed evidence handling, integrity notes, and platform constraints are docume
 - SMB target: `FILESERVER01[.]ad[.]compliantsecure[.]store` (`10[.]10[.]11[.]216`)
 - Share accessed: `\\10[.]10[.]11[.]216\Shares`
 
-## 7. Repository Structure & Notes
-
-- `case-notes/` — Narrative notes and packet/frame references
-- `evidence-metadata/` — Evidence register, handling notes, integrity constraints
-- `analysis/` — Structured findings, filters used, timelines, ATT&CK mapping
-- `pcaps/` — Documentation of PCAP access and analysis (raw PCAP retained in CyberRange VM)
-- `scripts/` — Commands and tooling references used during analysis
-- `reports/` — Final investigation report and summaries
-## 8. Case Status
+## 7. Case Status
 
 **Status:** Complete  
 **Confidence Level:** High  
