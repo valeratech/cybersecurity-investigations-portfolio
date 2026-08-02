@@ -172,3 +172,8 @@ Observed ports:
 - Evidence is derived from CyberDefenders CyberRange artifact paths; original full disk images/PCAPs may not be available.
 - All timestamps recorded in UTC unless the CyberRange evidence explicitly states otherwise.
 - Defanging was applied to all IOCs and script/command representations to prevent EDR/AV triggers in a public repo.
+
+## 7. Case Status
+
+**Status:** Complete  
+**Confidence Level:** High  

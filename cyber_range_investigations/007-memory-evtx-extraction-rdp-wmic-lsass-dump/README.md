@@ -221,3 +221,8 @@ Investigation ongoing.
 - Correlate logon events with process execution
 - Identify additional impacted systems
 - Validate scope of credential compromise
+
+## 10. Case Status
+
+**Status:** In Progress  
+**Confidence Level:** Medium  

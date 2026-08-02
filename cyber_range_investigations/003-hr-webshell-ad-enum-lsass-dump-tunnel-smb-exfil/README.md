@@ -158,5 +158,9 @@ Detailed evidence handling, integrity notes, and platform constraints are docume
 - `pcaps/` — Documentation of PCAP access and analysis (raw PCAP retained in CyberRange VM)
 - `scripts/` — Commands and tooling references used during analysis
 - `reports/` — Final investigation report and summaries
+## 8. Case Status
+
+**Status:** Complete  
+**Confidence Level:** High  
 
 **End of Investigation README**

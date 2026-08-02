@@ -183,3 +183,8 @@ MFT parsing (mftparser) indicates file creation:
 ## 8. Notes / Caveats
 - This is a memory-focused CyberRange investigation; disk artifacts are referenced where supported by MFT parsing and recovered file properties.
 - Evidence files are not included; metadata, analysis steps, and findings are documented for portfolio purposes.
+
+## 9. Case Status
+
+**Status:** Complete  
+**Confidence Level:** High  
