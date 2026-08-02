@@ -8,6 +8,40 @@
 **Time Standard:** UTC  
 **Source Platform:** CyberDefenders CyberRange  
 
+## Case Contents
+
+### Analysis
+
+- [Alert Triage Signatures and Filters](analysis/001-alert-triage-signatures-and-filters.md)
+- [Network Scan and Recon Attribution](analysis/002-network-scan-and-recon-attribution.md)
+- [Webshell Upload and HTTP Exploitation](analysis/003-webshell-upload-and-http-exploitation.md)
+- [Webshell Authentication and Command Execution](analysis/004-webshell-authentication-and-command-execution.md)
+- [Active Directory Enumeration (PowerShell)](analysis/005-active-directory-enumeration-powershell.md)
+- [Internal Host Targeting and SMB Discovery](analysis/006-internal-host-targeting-and-smb-discovery.md)
+- [LSASS Dump and Credential Access](analysis/007-lsass-dump-and-credential-access.md)
+- [LSASS Dump Retrieval and Offline Credential Extraction](analysis/008-lsass-dump-retrieval-and-offline-credential-extraction.md)
+- [Authenticated SMB Access and Lateral Movement](analysis/009-authenticated-smb-access-and-lateral-movement.md)
+- [SMB Share Enumeration and Sensitive Data Discovery](analysis/010-smb-share-enumeration-and-sensitive-data-discovery.md)
+- [SMB File Access and Data Exfiltration](analysis/011-smb-file-access-and-data-exfiltration.md)
+- [Impact Assessment and Investigation Summary](analysis/012-impact-assessment-and-investigation-summary.md)
+
+### Case Notes
+
+- [Initial Scope and Alert Triage](case-notes/initial-scope-and-alert-triage.md)
+
+### Evidence Metadata
+
+- [Evidence Handling and Limitations](evidence-metadata/evidence-handling-and-limitations.md)
+- [Evidence Register](evidence-metadata/evidence-register.md)
+
+### Reports
+
+- [Final Report](reports/final-report.md)
+
+### Supporting Directories
+
+Evidence-handling notes for artifacts excluded from version control: [pcaps](pcaps/README.md).
+
 ## 1. Overview
 
 ### Objective

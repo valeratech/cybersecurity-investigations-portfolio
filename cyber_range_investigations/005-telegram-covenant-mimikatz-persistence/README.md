@@ -8,6 +8,36 @@
 **Time Standard:** UTC (unless CyberDefenders explicitly states otherwise)  
 **Source Platform:** CyberDefenders (CyberRange)
 
+## Case Contents
+
+### Analysis
+
+- [Detection Engineering Notes](analysis/detection-engineering-notes.md)
+- [Hunt Queries](analysis/hunt-queries.md)
+- [MITRE ATT&CK Mapping](analysis/mitre-attack-mapping.md)
+- [Timeline (UTC)](analysis/timeline-utc.md)
+- [Tools and Commands](analysis/tools-and-commands.md)
+
+### Case Notes
+
+- [Intake](case-notes/intake.md)
+
+### Evidence Metadata
+
+- [Evidence Log](evidence-metadata/evidence-log.md)
+
+### Diagrams
+
+- [Incident Flow](diagrams/incident-flow.md)
+
+### Reports
+
+- [Final Report](reports/final-report.md)
+
+### Supporting Directories
+
+Evidence-handling notes for artifacts excluded from version control: [scripts](scripts/README.md), [pcaps](pcaps/README.md).
+
 ## 1. Overview
 
 ### Objective

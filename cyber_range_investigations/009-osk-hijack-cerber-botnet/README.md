@@ -10,6 +10,40 @@
 **Time Standard:** UTC  
 **Source Platform:** Security Blue Team CyberRange  
 
+## Case Contents
+
+### Analysis
+
+- [Findings Summary](analysis/findings-summary.md)
+- [Host Analysis](analysis/host-analysis.md)
+- [Initial Indicators](analysis/initial-indicators.md)
+- [Malware Behavior](analysis/malware-behavior.md)
+- [Network Analysis](analysis/network-analysis.md)
+- [Network Top Talkers](analysis/network-top-talkers.md)
+- [Timeline (UTC)](analysis/timeline-utc.md)
+
+### Case Notes
+
+- [Analysis Tools and Methods](case-notes/analysis-tools-and-methods.md)
+- [Investigation Procedure and Findings](case-notes/investigation-procedure-and-findings.md)
+
+### Evidence Metadata
+
+- [Evidence Inventory](evidence-metadata/evidence-inventory.md)
+- [Tools Usage Documentation](evidence-metadata/tools-usage-documentation.md)
+
+### Indicators of Compromise
+
+- [Network IOCs](iocs/network-iocs.md)
+
+### Reports
+
+- [Final Report](reports/final-report.md)
+
+### Supporting Directories
+
+Evidence-handling notes for artifacts excluded from version control: [scripts](scripts/README.md), [pcaps](pcaps/README.md), [screenshots](screenshots/README.md).
+
 ## 1. Overview
 
 ### Objective

@@ -8,6 +8,33 @@
 **Time Standard:** UTC (unless CyberRange explicitly states otherwise)  
 **Source Platform:** CyberDefenders CyberRange  
 
+## Case Contents
+
+### Analysis
+
+- [Overview](analysis/README.md)
+- [Sysmon Filters](analysis/sysmon-filters.md)
+
+### Case Notes
+
+- [Investigation Log](case-notes/investigation-log.md)
+- [Timeline](case-notes/timeline.md)
+
+### Evidence Metadata
+
+- [Artifacts of Interest](evidence-metadata/artifacts-of-interest.md)
+- [Evidence Sources](evidence-metadata/evidence-sources.md)
+
+### Scripts
+
+- [Overview](scripts/README.md)
+- [Edge SQL Queries](scripts/edge-sql-queries.sql)
+- [MFTECmd Command](scripts/mftecmd-command.txt)
+
+### Reports
+
+- [Final Report](reports/final-report.md)
+
 ## 1. Overview
 
 ### Objective

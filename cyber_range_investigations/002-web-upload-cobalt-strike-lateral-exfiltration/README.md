@@ -10,6 +10,36 @@
 **Time Standard:** UTC  
 **Source Platform:** CyberDefenders CyberRange  
 
+## Case Contents
+
+### Analysis
+
+- [Alert Triage Signatures and Filters](analysis/alert-triage-signatures-and-filters.md)
+- [Findings Summary](analysis/findings-summary.md)
+- [Timeline (UTC)](analysis/timeline-utc.md)
+- [Tools and Artifacts Used](analysis/tools-and-artifacts-used.md)
+
+### Case Notes
+
+- [Alert Triage Initial Scope](case-notes/alert-triage-initial-scope.md)
+- [Initial Scope and Alert](case-notes/initial-scope-and-alert.md)
+
+### Evidence Metadata
+
+- [Evidence Inventory](evidence-metadata/evidence-inventory.md)
+
+### Indicators of Compromise
+
+- [Network IOCs](iocs/network-iocs.md)
+
+### Reports
+
+- [Final Report](reports/final-report.md)
+
+### Supporting Directories
+
+Evidence-handling notes for artifacts excluded from version control: [pcaps](pcaps/README.md), [screenshots](screenshots/README.md).
+
 ## 1. Overview
 
 ### Objective

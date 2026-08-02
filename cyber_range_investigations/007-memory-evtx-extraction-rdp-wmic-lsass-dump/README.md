@@ -19,6 +19,25 @@ No disk image or external log sources were provided.
 - System clock was accurate at the time of acquisition.
 - All timestamps are normalized to UTC.
 
+## Case Contents
+
+### Analysis
+
+- [Initial Findings](analysis/initial-findings.md)
+- [Timeline](analysis/timeline.md)
+
+### Case Notes
+
+- [Intake](case-notes/intake.md)
+
+### Evidence Metadata
+
+- [Evidence Register](evidence-metadata/evidence-register.md)
+
+### Reports
+
+- [Pending Report](reports/README.md)
+
 ## 1. Overview
 
 ### Objective
