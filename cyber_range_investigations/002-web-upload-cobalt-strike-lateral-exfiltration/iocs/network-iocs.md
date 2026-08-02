@@ -26,7 +26,7 @@ Only validated indicators are included.
 
 ## URLs / URI Paths
 
-- `http[:]//www[.]mindtech[.]net/contact[.]php`
+- `hxxp://www[.]mindtech[.]net/contact[.]php`
 - `/en_US/all.js`
 
 ## Files Associated with Malicious Activity
@@ -34,6 +34,15 @@ Only validated indicators are included.
 - `Urgent Support.iso`
 - `DOCUMENT.LNK`
 - `ADOBE.exe`
+
+## File Hashes
+
+- `Urgent Support.iso` — SHA-256 `935492b3714f140ff4567c14fe0fc13cba6f5df13a2be8a8b14912f2da24d475`
+
+## Rule-Based Detections
+
+- `CobaltStrike_Resources_Artifact64_v3_14_to_v4_x` (THOR APT Scanner, community
+  YARA rule via VirusTotal) — identifies the payload as a Cobalt Strike artifact
 
 ## Observed Commands
 

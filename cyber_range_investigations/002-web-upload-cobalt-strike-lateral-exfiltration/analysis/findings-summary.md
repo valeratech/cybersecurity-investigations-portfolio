@@ -71,9 +71,12 @@ Repeated requests followed a consistent pattern:
 - Suricata alert: ET MALWARE Cobalt Strike Beacon Observed  
 - Zeek HTTP logs  
 - Packet-level stream inspection  
+- SHA-256 of the delivered payload: `935492b3714f140ff4567c14fe0fc13cba6f5df13a2be8a8b14912f2da24d475`  
+- VirusTotal community YARA match (THOR APT Scanner):
+  `CobaltStrike_Resources_Artifact64_v3_14_to_v4_x`, 12 / 60 detections  
 
 ### Conclusion
-The compromised system established persistent command-and-control communications with external infrastructure consistent with Cobalt Strike Beacon behavior.
+The compromised system established persistent command-and-control communications with external infrastructure. The network behaviour is consistent with Cobalt Strike Beacon activity, and the delivered payload was independently identified as a Cobalt Strike artifact by rule-based analysis of its hash.
 
 ## Finding 5 – Identification of Compromised Internal Host
 

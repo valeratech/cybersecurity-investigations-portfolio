@@ -57,5 +57,5 @@ cannot be recovered; the analyst notes are the sole surviving record.
 
 The VirusTotal detection timestamp for `Urgent Support.iso` (2023-02-20 19:06)
 is post-analysis enrichment recorded three days after the observed activity. It
-is retained in the analyst notes and deliberately excluded from this activity
+is recorded with the case evidence metadata and deliberately excluded from this activity
 timeline.
