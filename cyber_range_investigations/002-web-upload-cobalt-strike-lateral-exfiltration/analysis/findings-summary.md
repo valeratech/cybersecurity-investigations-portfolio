@@ -1,7 +1,6 @@
 # Findings Summary
 
-**Document Type:** Findings
-
+**Document Type:** Findings Summary  
 **Case ID:** 002-web-upload-cobalt-strike-lateral-exfiltration  
 **Time Standard:** UTC  
 **Source Platform:** CyberDefenders CyberRange  

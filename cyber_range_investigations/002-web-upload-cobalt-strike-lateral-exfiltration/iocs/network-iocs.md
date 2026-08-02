@@ -1,7 +1,6 @@
 # Network Indicators of Compromise
 
-**Document Type:** IOC Collection
-
+**Document Type:** IOC Collection  
 **Case ID:** 002-web-upload-cobalt-strike-lateral-exfiltration  
 **Time Standard:** UTC  
 **Source Platform:** CyberDefenders CyberRange  

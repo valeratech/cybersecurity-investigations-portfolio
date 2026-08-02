@@ -1,9 +1,7 @@
 # Alert Triage & Initial Scoping
 
-**Document Type:** Analysis
-
+**Document Type:** Case Note  
 **Case ID:** 002-web-upload-cobalt-strike-lateral-exfiltration  
-**Date:** 2026-01-08  
 **Time Standard:** UTC  
 **Source Platform:** CyberDefenders CyberRange  
 

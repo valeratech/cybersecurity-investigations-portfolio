@@ -1,11 +1,11 @@
 # Final Investigation Report
 
-**Document Type:** Report
-
+**Document Type:** Final Report  
 **Case Title:** Web Upload Abuse → Cobalt Strike C2 → Lateral Movement & Attempted Exfiltration  
 **Case ID:** 002-web-upload-cobalt-strike-lateral-exfiltration  
+**Documentation Started:** 2026-01-08  
+**Documentation Last Updated:** 2026-04-16  
 **Author:** Ryan Valera  
-**Date Completed:** 2026-01-08  
 **Time Standard:** UTC  
 **Source Platform:** CyberDefenders CyberRange  
 

@@ -1,7 +1,11 @@
 # Evidence Register
 
-**Case ID:** 002  
+**Document Type:** Evidence Inventory  
+**Case ID:** 002-web-upload-cobalt-strike-lateral-exfiltration  
 **Time Standard:** UTC  
+**Source Platform:** CyberDefenders CyberRange  
+
+## Evidence Register
 
 | Evidence ID | Description | Source | Format | Hash | Notes |
 |------------|------------|--------|--------|------|-------|

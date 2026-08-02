@@ -1,6 +1,6 @@
 # Observed Timeline and Evidence Gaps
 
-**Document Type:** Analysis  
+**Document Type:** Timeline  
 **Case ID:** 002-web-upload-cobalt-strike-lateral-exfiltration  
 **Time Standard:** UTC  
 **Source Platform:** CyberDefenders CyberRange  

@@ -1,9 +1,8 @@
 # Screenshots
 
-**Document Type:** Evidence Metadata
-
+**Document Type:** Directory Index  
 **Case ID:** 002-web-upload-cobalt-strike-lateral-exfiltration  
-**Time Standard:** UTC  
+**Source Platform:** CyberDefenders CyberRange  
 
 ## Purpose
 

@@ -1,7 +1,6 @@
 # Tools, Platforms, Frameworks, and Artifacts Used
 
-**Document Type:** Reference
-
+**Document Type:** Reference  
 **Case ID:** 002-web-upload-cobalt-strike-lateral-exfiltration  
 **Time Standard:** UTC  
 **Source Platform:** CyberDefenders CyberRange  

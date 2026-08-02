@@ -1,7 +1,6 @@
 # Investigation Report
 
-**Document Type:** Investigation Summary
-
+**Document Type:** Case Overview  
 **Case Title:** Web Upload Abuse → Cobalt Strike C2 → Lateral Movement & Attempted Exfiltration  
 **Case ID:** 002-web-upload-cobalt-strike-lateral-exfiltration  
 **Documentation Started:** 2026-01-08  
