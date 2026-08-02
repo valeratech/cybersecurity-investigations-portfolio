@@ -51,6 +51,8 @@ Each investigation follows a structured, analyst-driven workflow:
 
 For the standard case-report structure, see the
 [Investigation Report Template](TEMPLATE_Investigation_Report.md).
+Document structure, metadata, terminology and evidence-attribution rules are
+specified in [docs/SCHEMA.md](docs/SCHEMA.md).
 
 ## Case Status
 
