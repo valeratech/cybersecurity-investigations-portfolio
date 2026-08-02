@@ -111,9 +111,9 @@ SMB traffic and exported objects indicated access to web server content consiste
 - SMB and RDP activity observed  
 - Web server data staged for exfiltration  
 
-A detailed timestamp-level timeline is documented within:
-
-`analysis/timeline-utc.md`
+A partial evidence-backed timeline of retained observations, together with the
+events established without a recoverable timestamp, is documented in
+[`analysis/timeline-utc.md`](../analysis/timeline-utc.md).
 
 ## 9. Conclusions
 
