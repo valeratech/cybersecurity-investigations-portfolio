@@ -82,7 +82,7 @@ Scheduled tasks created:
 - `Scheduled AutoCheck`
 
 #### Query Used
-`event.code:106 AND host.ip:10.10.0.4` 
+`event.code:106 AND host.ip:10[.]10[.]0[.]4` 
 
 #### Finding
 - Persistence established on Domain Controller and IT workstation

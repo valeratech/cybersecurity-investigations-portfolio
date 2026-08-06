@@ -89,11 +89,11 @@ index=wineventlog sourcetype="WinEventLog:Security" EventCode=4663
 ## H) Network share access indicators (Security 5140) and UNC references
 index=wineventlog sourcetype="WinEventLog:Security" EventCode=5140
 | eval share=coalesce(ShareName,Share_Name)
-| search share="\\\\10.10.5.86\\*" OR like(Message,"%\\\\10.10.5.86\\%")
+| search share="\\\\10[.]10[.]5[.]86\\*" OR like(Message,"%\\\\10[.]10[.]5[.]86\\%")
 | table _time host AccountName share RelativeTargetName IpAddress Message
 
 ### Search for lansweeper.ps1 references in any logs
-index=* ("lansweeper.ps1" OR "\\\\10.10.5.86\\shared\\lansweeper.ps1")
+index=* ("lansweeper.ps1" OR "\\\\10[.]10[.]5[.]86\\shared\\lansweeper.ps1")
 | table _time host source sourcetype user Message
 
 ## I) Covenant / .NET stager hints (process + network)
@@ -146,7 +146,7 @@ event.code: "4663" and (winlog.event_data.ObjectName: "*\\Credentials.txt" or me
 ---
 
 ## F) SMB share access (5140) — remote host
-event.code: "5140" and (winlog.event_data.ShareName: "\\\\10.10.5.86\\*" or message: "*\\\\10.10.5.86\\*")
+event.code: "5140" and (winlog.event_data.ShareName: "\\\\10[.]10[.]5[.]86\\*" or message: "*\\\\10[.]10[.]5[.]86\\*")
 
 ## G) Sysmon network connection (EID 3) from user-writable paths
 event.code: "3" and event.provider: "Microsoft-Windows-Sysmon" and

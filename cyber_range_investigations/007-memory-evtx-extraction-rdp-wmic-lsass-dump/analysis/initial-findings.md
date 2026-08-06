@@ -37,9 +37,7 @@ This timestamp serves as the upper bound for all attacker activity contained in 
 ### Observation
 Event log artifacts extracted from memory indicate the host accepted an RDP connection from:
 
-`192.168.19.159`
-
-(Defanged: `192[.]168[.]19[.]159`)
+`192[.]168[.]19[.]159`
 
 ### Conclusion
 An internal host at `192[.]168[.]19[.]159` initiated an RDP session to the compromised machine.

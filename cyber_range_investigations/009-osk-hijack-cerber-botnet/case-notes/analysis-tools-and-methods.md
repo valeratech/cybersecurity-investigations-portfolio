@@ -102,7 +102,7 @@ This document enumerates the tools, platforms, queries, and methodologies used d
 - Pivoted from Sysmon → Fortigate UTM:
   - `index="botsv1" sourcetype=fortigate_utm dest_port=6892`
 - Pivoted from Sysmon → Suricata:
-  - `index="botsv1" sourcetype=suricata dest_ip=54.148.194.58 event_type=alert`
+  - `index="botsv1" sourcetype=suricata dest_ip=54[.]148[.]194[.]58 event_type=alert`
 
 ### 6. Hash Extraction and Identification
 

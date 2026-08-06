@@ -69,7 +69,7 @@ This document records how each tool and data source was used during the investig
 - Confirmed reconnaissance behavior  
 
 **Key Query:**
-- `index="botsv1" sourcetype=suricata dest_ip=54.148.194.58 event_type=alert`
+- `index="botsv1" sourcetype=suricata dest_ip=54[.]148[.]194[.]58 event_type=alert`
 
 **Evidence Produced:**
 - Alert signature:

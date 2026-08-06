@@ -146,7 +146,7 @@ Identified HTTP connection:
 
 Pivoted to Suricata:
 
-`index="botsv1" sourcetype=suricata dest_ip=54.148.194.58 event_type=alert`
+`index="botsv1" sourcetype=suricata dest_ip=54[.]148[.]194[.]58 event_type=alert`
 
 Alert:
 

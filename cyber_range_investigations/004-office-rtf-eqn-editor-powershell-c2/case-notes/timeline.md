@@ -25,7 +25,7 @@ This timeline consolidates **browser artifacts, NTFS $MFT data, registry activit
 | 2025-05-23 10:53:35 | Recent file shortcut created | NTFS $MFT | `...\Windows\Recent\Financial_Report.lnk` |
 | 2025-05-23 10:54:02 | Outbound connection to external host on non-standard port | Sysmon EID 3 | `PowerShell → 63[.]176[.]96[.]97:4444` |
 | 2025-05-23 10:59:18 | Network discovery command executed (`netstat`) | Sysmon EID 1 | `NETSTAT.EXE` |
-| 2025-05-23 10:59:33 | Connectivity test executed (`ping`) | Sysmon EID 1 | `PING.EXE 8.8.8.8` |
+| 2025-05-23 10:59:33 | Connectivity test executed (`ping`) | Sysmon EID 1 | `PING.EXE 8[.]8[.]8[.]8` |
 | 2025-05-23 10:59:48 | System network configuration discovery (`ipconfig /all`) | Sysmon EID 1 | `IPCONFIG.EXE` |
 | 2025-05-23 11:15:43 | Malicious PowerShell script created | NTFS $MFT | `%TEMP%\msupdate.ps1` |
 | 2025-05-23 11:17:44 | Hidden PowerShell execution via cmd.exe | Sysmon EID 1 | `cmd.exe → powershell (hidden)` |

@@ -132,7 +132,7 @@ wmic /node:192.168.19.163 /user:noah /password:"<REDACTED>"
 ```
 
 Associated Target:
-- `192.168.19.163`
+- `192[.]168[.]19[.]163`
 - Remote host: `DESKTOP-U98A16J`
 
 Associated SID:
