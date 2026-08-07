@@ -1,12 +1,13 @@
 # Investigation Report
 
+**Document Type:** Case Overview  
 **Case Title:** Memory EVTX Extraction + RDP Intrusion + WMIC Lateral Movement + LSASS Dump  
 **Case ID:** 007-memory-evtx-extraction-rdp-wmic-lsass-dump  
 **Documentation Started:** 2026-02-26  
 **Documentation Last Updated:** 2026-02-26  
 **Author:** Ryan Valera  
-**Time Standard:** UTC (All timestamps treated as UTC unless explicitly stated by CyberDefenders)  
-**Source Platform:** CyberDefenders CyberRange – Memory Forensics Module  
+**Time Standard:** UTC  
+**Source Platform:** CyberDefenders CyberRange  
 
 ## Scope
 
@@ -71,6 +72,7 @@ Primary investigative focus was extraction of EVTX artifacts from memory using V
 
 ### Environment Description
 
+- CyberDefenders module: Memory Forensics Module
 - OS Profile: `Win10x64_17763`
 - Hostname: `WIN-2O66FDBAHOG`
 - Memory Image: `Server.raw`
@@ -201,6 +203,7 @@ Observed behaviors:
 
 - Only memory image provided (no disk image).
 - Possible incomplete EVTX reconstruction due to `.vacb` fragment limitations.
+- All timestamps are treated as UTC unless explicitly stated by CyberDefenders.
 
 ## 8. Conclusion (Interim)
 

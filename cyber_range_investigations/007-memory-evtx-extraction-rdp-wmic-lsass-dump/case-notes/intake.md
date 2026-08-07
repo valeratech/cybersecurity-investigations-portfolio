@@ -1,12 +1,13 @@
 # Case-Notes-00-Intake
 
+**Document Type:** Case Note  
 **Case ID:** 007-memory-evtx-extraction-rdp-wmic-lsass-dump  
-**Investigation Start Date:** 2026-02-26  
-**Analyst:** Ryan Valera  
-**Source Platform:** CyberDefenders CyberRange – Memory Forensics Module  
 **Time Standard:** UTC  
+**Source Platform:** CyberDefenders CyberRange  
 
 ## 1. Evidence Received
+
+The documented investigation start date is `2026-02-26`.
 
 ### Primary Evidence
 - Memory Image: `Server.raw`

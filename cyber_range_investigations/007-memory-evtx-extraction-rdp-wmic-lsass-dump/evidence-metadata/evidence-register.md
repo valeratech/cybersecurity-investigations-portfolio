@@ -1,8 +1,9 @@
 # Evidence Register
 
+**Document Type:** Evidence Inventory  
 **Case ID:** 007-memory-evtx-extraction-rdp-wmic-lsass-dump  
 **Time Standard:** UTC  
-**Source Platform:** CyberDefenders CyberRange – Memory Forensics Module  
+**Source Platform:** CyberDefenders CyberRange  
 
 ## 1. Primary Evidence
 

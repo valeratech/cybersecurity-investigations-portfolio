@@ -1,8 +1,9 @@
 # Reports
 
-**Document Type:** Reference  
+**Document Type:** Directory Index  
 **Case ID:** 007-memory-evtx-extraction-rdp-wmic-lsass-dump  
 **Status:** In Progress  
+**Source Platform:** CyberDefenders CyberRange  
 
 ## Current Status
 

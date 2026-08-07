@@ -1,7 +1,9 @@
 # Initial Findings
 
+**Document Type:** Findings Summary  
 **Case ID:** 007-memory-evtx-extraction-rdp-wmic-lsass-dump  
 **Time Standard:** UTC  
+**Source Platform:** CyberDefenders CyberRange  
 
 ## Executive Summary of Confirmed Findings
 

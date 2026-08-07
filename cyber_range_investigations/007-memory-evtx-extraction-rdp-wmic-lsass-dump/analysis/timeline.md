@@ -1,7 +1,9 @@
 # Timeline Reconstruction
 
+**Document Type:** Timeline  
 **Case ID:** 007-memory-evtx-extraction-rdp-wmic-lsass-dump  
 **Time Standard:** UTC  
+**Source Platform:** CyberDefenders CyberRange  
 
 ## Timeline Overview
 
