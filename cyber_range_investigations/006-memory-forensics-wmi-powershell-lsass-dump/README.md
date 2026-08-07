@@ -1,7 +1,8 @@
 # 006 – Memory Forensics: WMI → PowerShell → LSASS Dump
 
+**Document Type:** Case Overview  
 **Case Title:** WMI-Spawned PowerShell with LSASS Credential Dump  
-**Case ID:** 006  
+**Case ID:** 006-memory-forensics-wmi-powershell-lsass-dump  
 **Documentation Started:** 2026-02-24  
 **Documentation Last Updated:** 2026-02-26  
 **Author:** Ryan Valera  

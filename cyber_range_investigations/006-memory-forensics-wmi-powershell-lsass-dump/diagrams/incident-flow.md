@@ -1,7 +1,9 @@
 # Incident Flow Diagram
 
-**Case ID:** 006  
+**Document Type:** Analysis  
+**Case ID:** 006-memory-forensics-wmi-powershell-lsass-dump  
 **Time Standard:** UTC  
+**Source Platform:** CyberDefenders CyberRange  
 
 ## Attack Sequence
 ```

@@ -1,7 +1,9 @@
 # Indicators of Compromise (IOCs)
 
-**Case ID:** 006  
+**Document Type:** IOC Collection  
+**Case ID:** 006-memory-forensics-wmi-powershell-lsass-dump  
 **Time Standard:** UTC  
+**Source Platform:** CyberDefenders CyberRange  
 
 ## 1. Network Indicators (Defanged)
 

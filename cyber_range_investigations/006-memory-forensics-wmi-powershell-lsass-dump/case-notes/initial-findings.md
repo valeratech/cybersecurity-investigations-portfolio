@@ -1,6 +1,7 @@
 # Initial Findings – 006 Memory Forensics Investigation
 
-**Case ID:** 006  
+**Document Type:** Case Note  
+**Case ID:** 006-memory-forensics-wmi-powershell-lsass-dump  
 **Time Standard:** UTC  
 **Source Platform:** CyberDefenders CyberRange  
 
@@ -143,4 +144,4 @@ Based on evidence:
 
 Requires cross-validation with additional plugins.
 
-**Status:** Confirmed compromise with credential dumping and C2 activity.
+**Assessment:** Confirmed compromise with credential dumping and C2 activity.

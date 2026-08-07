@@ -1,7 +1,11 @@
 # Final Investigation Report
 
-**Case ID:** 006  
-**Case Title:** Memory Forensics – WMI → PowerShell → LSASS Dump  
+**Document Type:** Final Report  
+**Case Title:** WMI-Spawned PowerShell with LSASS Credential Dump  
+**Case ID:** 006-memory-forensics-wmi-powershell-lsass-dump  
+**Documentation Started:** 2026-02-24  
+**Documentation Last Updated:** 2026-02-26  
+**Author:** Ryan Valera  
 **Time Standard:** UTC  
 **Source Platform:** CyberDefenders CyberRange  
 
@@ -98,4 +102,5 @@ Immediate credential rotation and host remediation would be required in a real-w
 
 - [Case Overview](../README.md)
 - [Timeline](../analysis/timeline-reconstruction.md)
+- [Evidence Inventory](../evidence-metadata/memory-image-details.md)
 - [Indicators of Compromise](../analysis/iocs.md)

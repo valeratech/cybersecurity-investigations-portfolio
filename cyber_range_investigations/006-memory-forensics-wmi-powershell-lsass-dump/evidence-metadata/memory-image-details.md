@@ -1,7 +1,7 @@
 # Memory Image Evidence Metadata
 
-**Case ID:** 006  
-**Investigation:** Memory Forensics – WMI → PowerShell → LSASS Dump  
+**Document Type:** Evidence Inventory  
+**Case ID:** 006-memory-forensics-wmi-powershell-lsass-dump  
 **Time Standard:** UTC  
 **Source Platform:** CyberDefenders CyberRange  
 

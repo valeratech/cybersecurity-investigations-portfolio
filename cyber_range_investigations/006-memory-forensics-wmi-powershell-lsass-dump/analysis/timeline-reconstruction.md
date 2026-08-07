@@ -1,10 +1,11 @@
 # Timeline Reconstruction
 
-**Case ID:** 006  
+**Document Type:** Timeline  
+**Case ID:** 006-memory-forensics-wmi-powershell-lsass-dump  
 **Time Standard:** UTC  
 **Source Platform:** CyberDefenders CyberRange  
 
-## 1. Objective
+## 1. Evidence Basis and Objective
 
 Construct a chronological sequence of attacker activity using process creation times, file artifacts, and network connections recovered from memory.
 
