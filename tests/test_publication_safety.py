@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Unit tests for check-publication-safety.py (Commit A scope).
+"""Unit tests for check-publication-safety.py.
 
 Locked constraints:
   - fixture documents exist only as Python string literals in this file;
@@ -26,8 +26,8 @@ SPEC.loader.exec_module(cps)
 
 
 def findings(text):
-    f, _ = cps.scan_text(text)
-    return f
+    red, _ips, _open = cps.scan_text(text)
+    return red
 
 
 def tokens(text):
@@ -36,6 +36,15 @@ def tokens(text):
 
 def lines_hit(text):
     return [ln for ln, _ in findings(text)]
+
+
+def ip_findings(text):
+    _red, ips, _open = cps.scan_text(text)
+    return ips
+
+
+def ips(text):
+    return [ip for _, ip in ip_findings(text)]
 
 
 class FenceParsing(unittest.TestCase):
@@ -64,9 +73,10 @@ class FenceParsing(unittest.TestCase):
         self.assertEqual(lines_hit(text), [4])
 
     def test_unclosed_fence_is_fatal(self):
-        f, fence_open = cps.scan_text("```\n<REDACTED>\n")
+        f, ip, fence_open = cps.scan_text("```\n<REDACTED>\n")
         self.assertTrue(fence_open)
         self.assertEqual(f, [])
+        self.assertEqual(ip, [])
 
     def test_shorter_same_character_fence_closes_for_schema_parity(self):
         # Deliberate non-CommonMark behaviour, locked for byte-parity with
@@ -139,6 +149,72 @@ class RedactionPlacement(unittest.TestCase):
         self.assertEqual(findings("<summary> and <br> are fine\n"), [])
 
 
+class Ipv4Defanging(unittest.TestCase):
+    # Must fail
+    def test_prose(self):
+        self.assertEqual(ips("Connection to 54.148.194.58 observed\n"),
+                         ["54.148.194.58"])
+
+    def test_inline_code_not_exempt(self):
+        # inline code is presentation formatting, not the runnable-code
+        # exemption
+        self.assertEqual(ips("`ping 8.8.8.8`\n"), ["8.8.8.8"])
+
+    def test_table_cell(self):
+        self.assertEqual(ips("| Source | 10.0.128.2 |\n"), ["10.0.128.2"])
+
+    def test_heading(self):
+        self.assertEqual(ips("## Activity from 192.168.19.159\n"),
+                         ["192.168.19.159"])
+
+    def test_list_item(self):
+        self.assertEqual(ips("- 10.10.0.4 responded\n"), ["10.10.0.4"])
+
+    def test_duplicates_on_one_line_each_reported(self):
+        self.assertEqual(ips("10.10.5.86 and 10.10.5.86\n"),
+                         ["10.10.5.86", "10.10.5.86"])
+
+    # Boundary punctuation does not defang
+    def test_boundaries_detected(self):
+        for line, ip in [
+            ("port pair 10.0.0.1:443 seen\n", "10.0.0.1"),
+            ("(10.0.0.1)\n", "10.0.0.1"),
+            ("subnet 10.0.0.1/24\n", "10.0.0.1"),
+            ("share \\\\10.0.0.1\\c$\n", "10.0.0.1"),
+            ("`source.ip:10.0.0.1`\n", "10.0.0.1"),
+            ('query dest_ip=54.148.194.58 here\n', "54.148.194.58"),
+        ]:
+            self.assertEqual(ips(line), [ip], line)
+
+    # Must pass
+    def test_defanged_forms_never_match(self):
+        for line in [
+            "54[.]148[.]194[.]58\n",
+            "8[.]8[.]8[.]8\n",
+            "http[:]//10[.]0[.]128[.]2/path\n",
+        ]:
+            self.assertEqual(ips(line), [], line)
+
+    def test_fenced_block_exempt(self):
+        text = "```powershell\nTest-NetConnection 10.0.128.2 -Port 4337\n```\n"
+        self.assertEqual(ips(text), [])
+
+    def test_invalid_octets_and_shapes_ignored(self):
+        for line in [
+            "999.10.10.10\n",
+            "10.300.1.2\n",
+            "1.2.3\n",
+            "1.2.3.4.5\n",
+            "version1.2.3.4beta\n",
+        ]:
+            self.assertEqual(ips(line), [], line)
+
+    def test_redaction_and_ipv4_independent(self):
+        text = "<REDACTED> from 10.10.0.4\n"
+        self.assertEqual(tokens(text), ["<REDACTED>"])
+        self.assertEqual(ips(text), ["10.10.0.4"])
+
+
 class Cli(unittest.TestCase):
     def _run(self, files):
         with tempfile.TemporaryDirectory() as td:
@@ -164,6 +240,17 @@ class Cli(unittest.TestCase):
         self.assertEqual(rc, 1)
         self.assertIn("notes.md:1:", out)
         self.assertIn("<REDACTED>", out)
+
+    def test_one_raw_ipv4_exits_one_and_prints_location(self):
+        rc, out = self._run({"case/net.md": "beacon to 54.148.194.58\n"})
+        self.assertEqual(rc, 1)
+        self.assertIn("net.md:1:", out)
+        self.assertIn("54.148.194.58", out)
+        self.assertIn("54[.]148[.]194[.]58", out)
+
+    def test_defanged_tree_exits_zero(self):
+        rc, out = self._run({"a.md": "seen at 54[.]148[.]194[.]58\n"})
+        self.assertEqual(rc, 0)
 
     def test_all_findings_printed(self):
         rc, out = self._run({"a.md": "<REDACTED>\n<sensitive>\n"})

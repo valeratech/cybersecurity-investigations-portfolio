@@ -22,6 +22,6 @@ python3 check-links.py --quiet || exit 1
 # fatal parse errors. Flip to --strict when the metadata migration completes.
 python3 check-schema.py --quiet || exit 1
 
-# publication safety: redaction-marker placement (blocking). Replaces the
-# retired shell-embedded bare_markers() parser with a Markdown-aware checker.
+# publication safety: redaction-marker placement and raw IPv4 defanging
+# (blocking). Markdown-aware checker replacing bare_markers().
 python3 check-publication-safety.py --quiet || exit 1

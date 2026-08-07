@@ -1,20 +1,28 @@
 #!/usr/bin/env python3
 """Publication-safety checker.
 
-Commit A scope: redaction-marker placement.
+Two blocking checks:
 
-Question enforced:
-    Is a redaction-family marker exposed outside an inline-code span or
-    fenced block?
+1. Redaction-marker placement (Stage 1A).
+   Question: Is a redaction-family marker exposed outside an inline-code
+   span or fenced block?
+   Placement only. Canonical-vocabulary enforcement (the marker must be
+   exactly `<REDACTED>`) remains the responsibility of check-schema.py for
+   case-owned documentation and becomes gate-blocking under --strict in
+   Stage 3.
 
-Placement only. Canonical-vocabulary enforcement (the marker must be exactly
-`<REDACTED>`) remains the responsibility of check-schema.py for case-owned
-documentation and becomes gate-blocking under --strict in Stage 3.
+2. Raw IPv4 defanging (Stage 1C).
+   Question: Will future raw IPv4 publication fail the gate?
+   Every syntactically valid dotted quad outside a fenced block is a
+   finding, including occurrences in prose, headings, lists, tables, and
+   inline-code spans: inline code is presentation formatting, not the
+   runnable-code exemption. Defanged forms (a[.]b[.]c[.]d) never match.
 
 Behaviour by Markdown context:
-    prose / headings / lists / tables : any family token is a finding
-    inline code span                  : any family token passes placement
-    fenced block (``` or ~~~)         : exempt
+    prose / headings / lists / tables : family token or raw IPv4 -> finding
+    inline code span                  : family token passes placement;
+                                        raw IPv4 is still a finding
+    fenced block (``` or ~~~)         : exempt from both checks
     unclosed fence at EOF             : fatal parse finding
 
 Fence semantics deliberately mirror check-schema.py's mask_fences(): a fence
@@ -83,10 +91,45 @@ def find_redaction_violations(masked_lines):
     return findings
 
 
+# A dotted quad is a candidate only when not glued to word characters,
+# dots, or digits on either side: '=10.0.0.1', ':10.0.0.1', '(10.0.0.1)',
+# '\\10.0.0.1\', '10.0.0.1:443', '10.0.0.1/24' are all detected, while
+# 'version1.2.3.4beta' and '1.2.3.4.5' are not addresses. Defanged forms
+# (a[.]b[.]c[.]d) can never match the literal-dot pattern.
+IPV4_RE = re.compile(r"(?<![A-Za-z0-9._])((?:\d{1,3}\.){3}\d{1,3})"
+                     r"(?![A-Za-z0-9._])")
+
+
+def _valid_octets(ip):
+    return all(0 <= int(o) <= 255 for o in ip.split("."))
+
+
+def find_ipv4_violations(masked_lines):
+    """Return [(line_number, address), ...] for raw IPv4 outside fences.
+
+    Inline-code spans are NOT masked: inline code is presentation
+    formatting, not the runnable-code exemption. Each occurrence is
+    reported individually, including duplicates on one line.
+    """
+    findings = []
+    for i, line in enumerate(masked_lines, 1):
+        if not line:
+            continue
+        for m in IPV4_RE.finditer(line):
+            if _valid_octets(m.group(1)):
+                findings.append((i, m.group(1)))
+    return findings
+
+
 def scan_text(text):
-    """Scan one document's text. Returns (findings, fence_open_at_eof)."""
+    """Scan one document's text.
+
+    Returns (redaction_findings, ipv4_findings, fence_open_at_eof).
+    """
     masked, fence_open = mask_fenced_lines(text.split("\n"))
-    return find_redaction_violations(masked), fence_open
+    return (find_redaction_violations(masked),
+            find_ipv4_violations(masked),
+            fence_open)
 
 
 def iter_markdown(root):
@@ -111,7 +154,8 @@ def main(argv=None):
         return 2
 
     n_files = 0
-    n_findings = 0
+    n_red = 0
+    n_ip = 0
     n_fatal = 0
     for p in iter_markdown(root):
         rel = p.relative_to(root)
@@ -122,18 +166,25 @@ def main(argv=None):
             print(f"{rel}: FATAL cannot read file: {ex}")
             n_fatal += 1
             continue
-        findings, fence_open = scan_text(text)
+        red, ips, fence_open = scan_text(text)
         if fence_open:
             print(f"{rel}: FATAL unclosed code fence at end of file")
             n_fatal += 1
-        for line_no, tok in findings:
+        for line_no, tok in red:
             print(f"{rel}:{line_no}: redaction token '{tok}' appears outside "
                   f"inline code or a fenced block; use backticked `<REDACTED>`")
-            n_findings += 1
+            n_red += 1
+        for line_no, ip in ips:
+            print(f"{rel}:{line_no}: raw IPv4 address '{ip}' outside a "
+                  f"fenced block; defang as "
+                  f"{ip.replace('.', '[.]')}")
+            n_ip += 1
 
+    n_findings = n_red + n_ip
     if not args.quiet or n_findings or n_fatal:
         print(f"  Publication safety: {n_files} files checked")
-        print(f"  Redaction placement findings : {n_findings}")
+        print(f"  Redaction placement findings : {n_red}")
+        print(f"  Raw IPv4 findings            : {n_ip}")
         print(f"  Fatal parse errors           : {n_fatal}")
 
     if n_fatal:
