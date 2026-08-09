@@ -1,11 +1,12 @@
 # Final Investigation Report — Case 004
 
+**Document Type:** Final Report  
 **Case Title:** Office RTF (Equation Editor) → PowerShell Persistence → C2  
-**Case ID:** 004  
-**Analyst:** Ryan Valera  
+**Case ID:** 004-office-rtf-eqn-editor-powershell-c2  
 **Documentation Started:** 2026-01-25  
 **Documentation Last Updated:** 2026-01-25  
-**Time Standard:** UTC (unless explicitly stated otherwise)  
+**Author:** Ryan Valera  
+**Time Standard:** UTC  
 **Source Platform:** CyberDefenders CyberRange  
 
 ## 1. Executive Summary
@@ -167,4 +168,5 @@ This case highlights the continued relevance of disk forensics and host telemetr
 
 - [Case Overview](../README.md)
 - [Timeline](../case-notes/timeline.md)
+- [Indicators of Compromise](../evidence-metadata/artifacts-of-interest.md)
 - [Evidence Sources](../evidence-metadata/evidence-sources.md)

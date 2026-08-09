@@ -1,12 +1,11 @@
 # Investigation Timeline — Case 004
 
-**Case ID:** 004  
-**Case Name:** Office RTF (Equation Editor) → PowerShell Persistence → C2  
-**Analyst:** Ryan Valera  
+**Document Type:** Timeline  
+**Case ID:** 004-office-rtf-eqn-editor-powershell-c2  
+**Time Standard:** UTC  
 **Source Platform:** CyberDefenders CyberRange  
-**Time Standard:** UTC (unless explicitly stated otherwise)
 
-## Timeline Methodology
+## Evidence Basis and Timeline Methodology
 
 This timeline consolidates **browser artifacts, NTFS $MFT data, registry activity, and Sysmon telemetry** into a single chronological view.
 
@@ -41,7 +40,7 @@ This timeline consolidates **browser artifacts, NTFS $MFT data, registry activit
 - Multiple discovery commands indicate **post-exploitation situational awareness**
 - Redundant persistence suggests intent for **long-term access**
 
-## Notes
+## Limitations and Notes
 
 - Timeline entries are correlated across **browser artifacts, NTFS metadata, and Sysmon telemetry**
 - Some Sysmon event descriptions were unavailable in the viewer; conclusions rely on parsed event fields

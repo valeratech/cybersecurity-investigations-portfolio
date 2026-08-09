@@ -1,10 +1,9 @@
 # Sysmon Filters & Event Analysis — Case 004
 
-**Case ID:** 004  
-**Case Name:** Office RTF (Equation Editor) → PowerShell Persistence → C2  
-**Analyst:** Ryan Valera  
+**Document Type:** Analysis  
+**Case ID:** 004-office-rtf-eqn-editor-powershell-c2  
+**Time Standard:** UTC  
 **Source Platform:** CyberDefenders CyberRange  
-**Time Standard:** UTC (unless explicitly stated otherwise)
 
 ## Purpose of This File
 

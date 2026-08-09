@@ -1,10 +1,8 @@
 # Scripts Directory — Case 004
 
+**Document Type:** Directory Index  
 **Case ID:** 004-office-rtf-eqn-editor-powershell-c2  
-**Case Name:** Office RTF (Equation Editor) → PowerShell Persistence → C2  
-**Analyst:** Ryan Valera  
 **Source Platform:** CyberDefenders CyberRange  
-**Time Standard:** UTC (unless CyberRange explicitly states otherwise)  
 
 ## Purpose of This Directory
 

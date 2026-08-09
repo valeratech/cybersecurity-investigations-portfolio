@@ -1,11 +1,12 @@
 # Investigation Report
 
+**Document Type:** Case Overview  
 **Case Title:** Office RTF (Equation Editor) → PowerShell Persistence → C2  
-**Case ID:** 004  
+**Case ID:** 004-office-rtf-eqn-editor-powershell-c2  
 **Documentation Started:** 2026-01-25  
 **Documentation Last Updated:** 2026-01-25  
 **Author:** Ryan Valera  
-**Time Standard:** UTC (unless CyberRange explicitly states otherwise)  
+**Time Standard:** UTC  
 **Source Platform:** CyberDefenders CyberRange  
 
 ## Case Contents

@@ -1,10 +1,9 @@
 # Artifacts of Interest & IOCs — Case 004
 
-**Case ID:** 004  
-**Case Name:** Office RTF (Equation Editor) → PowerShell Persistence → C2  
-**Analyst:** Ryan Valera  
+**Document Type:** IOC Collection  
+**Case ID:** 004-office-rtf-eqn-editor-powershell-c2  
+**Time Standard:** UTC  
 **Source Platform:** CyberDefenders CyberRange  
-**Time Standard:** UTC (unless explicitly stated otherwise)
 
 > **Defanging Notice:**  
 > All URLs, IP addresses, and command strings in this document are **defanged**.  
@@ -156,4 +155,3 @@ It acts as a single reference point for:
 ## Status
 
 Artifacts of interest are fully documented for the current scope of Case 004.  
-This file will be updated if additional payloads, hashes, or infrastructure are identified.
