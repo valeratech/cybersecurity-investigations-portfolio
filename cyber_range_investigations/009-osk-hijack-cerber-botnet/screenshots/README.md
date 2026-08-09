@@ -1,9 +1,7 @@
 # Screenshots Directory
 
-**Document Type:** Reference
-
+**Document Type:** Directory Index  
 **Case ID:** 009-osk-hijack-cerber-botnet  
-**Time Standard:** UTC  
 **Source Platform:** Security Blue Team CyberRange  
 
 ## Purpose

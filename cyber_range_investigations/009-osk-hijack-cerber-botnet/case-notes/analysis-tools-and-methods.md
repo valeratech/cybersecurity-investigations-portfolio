@@ -1,7 +1,6 @@
 # Analysis Tools and Methods
 
-**Document Type:** Reference
-
+**Document Type:** Reference  
 **Case ID:** 009-osk-hijack-cerber-botnet  
 **Time Standard:** UTC  
 **Source Platform:** Security Blue Team CyberRange  

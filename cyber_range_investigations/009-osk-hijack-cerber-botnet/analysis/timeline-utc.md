@@ -1,7 +1,6 @@
 # Timeline (UTC)
 
-**Document Type:** Analysis
-
+**Document Type:** Timeline  
 **Case ID:** 009-osk-hijack-cerber-botnet  
 **Time Standard:** UTC  
 **Source Platform:** Security Blue Team CyberRange  

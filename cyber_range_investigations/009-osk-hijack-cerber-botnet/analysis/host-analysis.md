@@ -1,7 +1,6 @@
 # Host-Based Analysis
 
-**Document Type:** Analysis
-
+**Document Type:** Analysis  
 **Case ID:** 009-osk-hijack-cerber-botnet  
 **Time Standard:** UTC  
 **Source Platform:** Security Blue Team CyberRange  

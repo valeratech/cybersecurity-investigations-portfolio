@@ -1,7 +1,6 @@
 # Evidence Inventory
 
-**Document Type:** Evidence Metadata
-
+**Document Type:** Evidence Inventory  
 **Case ID:** 009-osk-hijack-cerber-botnet  
 **Time Standard:** UTC  
 **Source Platform:** Security Blue Team CyberRange  

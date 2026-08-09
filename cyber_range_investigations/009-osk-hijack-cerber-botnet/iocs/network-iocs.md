@@ -1,7 +1,6 @@
 # Network Indicators of Compromise
 
-**Document Type:** IOC Collection
-
+**Document Type:** IOC Collection  
 **Case ID:** 009-osk-hijack-cerber-botnet  
 **Time Standard:** UTC  
 **Source Platform:** Security Blue Team CyberRange  

@@ -1,7 +1,6 @@
 # Investigation Report – Case 009: OSK Hijack Persistence and Cerber Botnet Activity
 
-**Document Type:** Investigation Summary (Root README)
-
+**Document Type:** Case Overview  
 **Case Title:** OSK Hijack Persistence and Cerber Botnet Activity  
 **Case ID:** 009-osk-hijack-cerber-botnet  
 **Documentation Started:** 2026-04-16  

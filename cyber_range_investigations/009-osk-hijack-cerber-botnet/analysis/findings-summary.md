@@ -1,7 +1,6 @@
 # Findings Summary
 
-**Document Type:** Findings
-
+**Document Type:** Findings Summary  
 **Case ID:** 009-osk-hijack-cerber-botnet  
 **Time Standard:** UTC  
 **Source Platform:** Security Blue Team CyberRange  
