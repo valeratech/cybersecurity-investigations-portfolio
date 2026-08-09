@@ -1,7 +1,6 @@
 # Investigation Report – TeamCity APT Ransomware
 
-**Document Type:** Investigation Summary (Root README)
-
+**Document Type:** Case Overview  
 **Case Title:** TeamCity APT Ransomware – Lateral Movement & Data Exfiltration  
 **Case ID:** 010-teamcity-apt-ransomware-lateral-movement  
 **Documentation Started:** 2026-04-16  

@@ -1,6 +1,9 @@
 # Tools Usage Documentation – TeamCity APT Ransomware Investigation
 
-**Document Type:** Evidence Metadata
+**Document Type:** Reference  
+**Case ID:** 010-teamcity-apt-ransomware-lateral-movement  
+**Time Standard:** UTC  
+**Source Platform:** CyberDefenders CyberRange  
 
 ## Overview
 

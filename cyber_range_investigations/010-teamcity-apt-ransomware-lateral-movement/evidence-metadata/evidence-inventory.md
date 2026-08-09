@@ -1,6 +1,9 @@
 # Evidence Inventory – TeamCity APT Ransomware Investigation
 
-**Document Type:** Evidence Metadata
+**Document Type:** Evidence Inventory  
+**Case ID:** 010-teamcity-apt-ransomware-lateral-movement  
+**Time Standard:** UTC  
+**Source Platform:** CyberDefenders CyberRange  
 
 ## Overview
 

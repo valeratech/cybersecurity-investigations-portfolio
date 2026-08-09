@@ -1,6 +1,9 @@
 # Network Indicators of Compromise – TeamCity APT Ransomware Investigation
 
-**Document Type:** IOC Collection
+**Document Type:** IOC Collection  
+**Case ID:** 010-teamcity-apt-ransomware-lateral-movement  
+**Time Standard:** UTC  
+**Source Platform:** CyberDefenders CyberRange  
 
 ## Overview
 

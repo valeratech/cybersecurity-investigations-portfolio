@@ -1,6 +1,9 @@
 # Timeline – TeamCity APT Ransomware Investigation
 
-**Document Type:** Analysis
+**Document Type:** Timeline  
+**Case ID:** 010-teamcity-apt-ransomware-lateral-movement  
+**Time Standard:** UTC  
+**Source Platform:** CyberDefenders CyberRange  
 
 ## Overview
 

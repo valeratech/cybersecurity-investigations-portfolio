@@ -1,6 +1,8 @@
 # Screenshots Directory
 
-**Document Type:** Reference
+**Document Type:** Directory Index  
+**Case ID:** 010-teamcity-apt-ransomware-lateral-movement  
+**Source Platform:** CyberDefenders CyberRange  
 
 ## Overview
 

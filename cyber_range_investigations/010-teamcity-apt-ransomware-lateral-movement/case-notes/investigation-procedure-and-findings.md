@@ -1,6 +1,9 @@
 # Investigation Procedure and Findings – TeamCity APT Ransomware Investigation
 
-**Document Type:** Analysis
+**Document Type:** Analysis  
+**Case ID:** 010-teamcity-apt-ransomware-lateral-movement  
+**Time Standard:** UTC  
+**Source Platform:** CyberDefenders CyberRange  
 
 ## Overview
 

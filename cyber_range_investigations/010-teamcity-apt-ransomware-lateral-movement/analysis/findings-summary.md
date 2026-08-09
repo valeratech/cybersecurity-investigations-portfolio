@@ -1,6 +1,9 @@
 # Findings Summary – TeamCity APT Ransomware Investigation
 
-**Document Type:** Findings
+**Document Type:** Findings Summary  
+**Case ID:** 010-teamcity-apt-ransomware-lateral-movement  
+**Time Standard:** UTC  
+**Source Platform:** CyberDefenders CyberRange  
 
 ## Executive Summary
 
@@ -8,7 +11,7 @@ This investigation confirms a full-scope advanced persistent threat (APT) intrus
 
 The attacker successfully achieved initial access through exploitation of a vulnerable TeamCity server, established persistence, conducted extensive reconnaissance, moved laterally across multiple systems, performed credential harvesting, and executed ransomware across the network.
 
-## Confirmed Attack Flow
+## Confirmed Findings and Attack Flow
 
 ### 1. Initial Access
 - Exploited TeamCity vulnerability (CVE-2024-27198)
