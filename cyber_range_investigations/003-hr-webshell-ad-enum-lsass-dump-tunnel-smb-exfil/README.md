@@ -1,7 +1,8 @@
 # Investigation Report
 
+**Document Type:** Case Overview  
 **Case Title:** HR Webshell → AD Enum → LSASS Dump → Tunnel Pivot → SMB Exfil  
-**Case ID:** 003  
+**Case ID:** 003-hr-webshell-ad-enum-lsass-dump-tunnel-smb-exfil  
 **Documentation Started:** 2026-01-08  
 **Documentation Last Updated:** 2026-01-18  
 **Author:** Ryan Valera  

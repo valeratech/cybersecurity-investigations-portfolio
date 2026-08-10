@@ -1,9 +1,7 @@
 # PCAP Evidence — Access Notes
 
-**Case ID:** 003  
-**Case Title:** HR Webshell → AD Enum → LSASS Dump → Tunnel Pivot → SMB Exfil  
-**Author:** Ryan Valera  
-**Time Standard:** UTC  
+**Document Type:** Directory Index  
+**Case ID:** 003-hr-webshell-ad-enum-lsass-dump-tunnel-smb-exfil  
 **Source Platform:** CyberDefenders CyberRange  
 
 ## Purpose

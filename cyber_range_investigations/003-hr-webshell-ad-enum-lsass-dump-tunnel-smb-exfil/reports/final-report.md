@@ -1,9 +1,10 @@
 # Final Investigation Report  
-**Case ID:** 003  
-**Case Title:** HR Webshell → AD Enumeration → LSASS Dump → Tunnel Pivot → SMB Exfiltration  
-**Author:** Ryan Valera  
+**Document Type:** Final Report  
+**Case Title:** HR Webshell → AD Enum → LSASS Dump → Tunnel Pivot → SMB Exfil  
+**Case ID:** 003-hr-webshell-ad-enum-lsass-dump-tunnel-smb-exfil  
 **Documentation Started:** 2026-01-08  
 **Documentation Last Updated:** 2026-01-18  
+**Author:** Ryan Valera  
 **Time Standard:** UTC  
 **Source Platform:** CyberDefenders CyberRange  
 

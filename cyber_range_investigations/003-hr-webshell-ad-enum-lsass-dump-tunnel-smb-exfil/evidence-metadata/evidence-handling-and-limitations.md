@@ -1,9 +1,9 @@
 # Evidence Handling & Platform Limitations
 
-**Case ID:** 003  
-**Author:** Ryan Valera  
-**Platform:** CyberDefenders CyberRange  
+**Document Type:** Reference  
+**Case ID:** 003-hr-webshell-ad-enum-lsass-dump-tunnel-smb-exfil  
 **Time Standard:** UTC  
+**Source Platform:** CyberDefenders CyberRange  
 
 ## CyberRange Evidence Constraints
 

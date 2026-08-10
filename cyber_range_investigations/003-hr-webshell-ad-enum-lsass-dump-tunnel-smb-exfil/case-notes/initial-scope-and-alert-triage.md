@@ -1,7 +1,7 @@
 # Case 003 — Initial Scope & Alert Triage
 
-**Case ID:** 003  
-**Author:** Ryan Valera  
+**Document Type:** Case Note  
+**Case ID:** 003-hr-webshell-ad-enum-lsass-dump-tunnel-smb-exfil  
 **Time Standard:** UTC  
 **Source Platform:** CyberDefenders CyberRange  
 

@@ -1,7 +1,7 @@
 # Case 003 — Alert Triage: Signatures & Filters
 
-**Case ID:** 003  
-**Author:** Ryan Valera  
+**Document Type:** Analysis  
+**Case ID:** 003-hr-webshell-ad-enum-lsass-dump-tunnel-smb-exfil  
 **Time Standard:** UTC  
 **Source Platform:** CyberDefenders CyberRange  
 

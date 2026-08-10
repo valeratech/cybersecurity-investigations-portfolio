@@ -1,8 +1,7 @@
 # Evidence Register
 
-**Case ID:** 003  
-**Case Title:** HR Webshell → AD Enum → LSASS Dump → Tunnel Pivot → SMB Exfil  
-**Author:** Ryan Valera  
+**Document Type:** Evidence Inventory  
+**Case ID:** 003-hr-webshell-ad-enum-lsass-dump-tunnel-smb-exfil  
 **Time Standard:** UTC  
 **Source Platform:** CyberDefenders CyberRange  
 

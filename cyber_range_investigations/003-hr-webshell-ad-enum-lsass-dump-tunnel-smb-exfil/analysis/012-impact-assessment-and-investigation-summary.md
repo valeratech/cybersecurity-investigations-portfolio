@@ -1,7 +1,7 @@
 # Case 003 — Impact Assessment & Investigation Summary
 
-**Case ID:** 003  
-**Author:** Ryan Valera  
+**Document Type:** Findings Summary  
+**Case ID:** 003-hr-webshell-ad-enum-lsass-dump-tunnel-smb-exfil  
 **Time Standard:** UTC  
 **Source Platform:** CyberDefenders CyberRange  
 
@@ -14,7 +14,7 @@ The investigation confirmed a multi-stage intrusion beginning with exploitation 
 
 This was a **confirmed breach**, not an attempted intrusion.
 
-## Attack Chain Overview
+## Confirmed Findings and Attack Chain Overview
 
 ### 1. Initial Access
 - Entry point: HR job application portal (`hr[.]compliantsecure[.]store`)
@@ -84,13 +84,6 @@ This was a **confirmed breach**, not an attempted intrusion.
 ## Investigation Conclusion
 
 This investigation confirms a **successful intrusion with data exfiltration**. The attacker demonstrated methodical execution, leveraging common but effective techniques at each stage of the kill chain. Defensive failures at multiple layers enabled escalation from a single web vulnerability to internal data theft.
-
-## Next Steps
-
-- Produce final investigation report
-- Map attacker actions to MITRE ATT&CK
-- Document remediation recommendations
-- Archive investigation artifacts
 
 **Next file:**  
 `reports/final-report.md`
