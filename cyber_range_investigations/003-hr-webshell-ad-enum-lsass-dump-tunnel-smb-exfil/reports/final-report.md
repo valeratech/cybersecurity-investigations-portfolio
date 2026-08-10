@@ -85,7 +85,7 @@ The incident represents a **full breach**, not an attempted compromise, with con
 
 ### Web
 - Webshell: `mycv.aspx`
-- Auth cookie: `shell_pass=u_h@ck3d`
+- Auth cookie: `shell_pass=<REDACTED>`
 
 ### Credential Theft
 - LSASS dump: `lsass.dmp`

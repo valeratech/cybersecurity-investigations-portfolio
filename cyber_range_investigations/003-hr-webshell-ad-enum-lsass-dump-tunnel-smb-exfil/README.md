@@ -109,7 +109,7 @@ Detailed evidence handling, integrity notes, and platform constraints are docume
 - **Initial attacker IP:** `3[.]68[.]76[.]39`
 - **Reconnaissance scanning tool:** `nmap`
 - **Uploaded webshell:** `mycv.aspx`
-- **Webshell authentication cookie:** `shell_pass=u_h@ck3d`
+- **Webshell authentication cookie:** `shell_pass=<REDACTED>`
 - **First command executed via webshell:** `ipconfig /all`
 - **AD enumeration tool (in-memory):** `PowerView.ps1`
 - **Primary AD reconnaissance protocol:** `LDAP`
@@ -142,7 +142,7 @@ Detailed evidence handling, integrity notes, and platform constraints are docume
 
 ### Web
 - Webshell file: `mycv.aspx`
-- Authentication cookie: `shell_pass=u_h@ck3d`
+- Authentication cookie: `shell_pass=<REDACTED>`
 
 ### Credential Access
 - LSASS dump method: `rundll32.exe` + `comsvcs.dll`

@@ -32,10 +32,13 @@ This endpoint provided interactive command execution functionality through HTTP 
 Inspection of HTTP request headers revealed that the webshell enforced authentication via a hardcoded cookie value.
 
 - **Cookie Name:** `shell_pass`
-- **Cookie Value:** `u_h@ck3d`
+- **Cookie Value:** `<REDACTED>`
+
+Publication note: The recovered `shell_pass` value is redacted as credential
+material; the cookie name is retained for analytical context.
 
 Example request header excerpt:
-`Cookie: shell_pass=u_h@ck3d; ASP.NET_SessionId=...`
+`Cookie: shell_pass=<REDACTED>; ASP.NET_SessionId=...`
 
 The presence of this cookie was required to successfully execute commands through the webshell interface.
 
