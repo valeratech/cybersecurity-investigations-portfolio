@@ -90,9 +90,10 @@ The website `hr[.]compliantsecure[.]store`, used for handling job applications, 
 | Evidence ID | Description | Source | Format | Hash | Notes |
 |------------|-------------|--------|--------|------|------|
 | E-001 | Network traffic capture (primary dataset) | CyberDefenders CyberRange | PCAP | N/A | Accessed in CyberRange VM only |
-| E-002 | LSASS process memory dump | Compromised host | DMP | N/A | Extracted and analyzed within range |
-| E-003 | Credential extraction output | Analyst-generated | TXT | N/A | Derived from LSASS dump |
-| E-004 | Malicious payload | External C2 | EXE | SHA256 documented | `agent.exe` |
+| E-002 | Webshell upload artifact | Derived from PCAP analysis | HTTP | N/A | Observed via Suricata, Zeek, and Wireshark |
+| E-003 | LSASS process memory dump | Compromised host | DMP | N/A | Extracted and analyzed within range |
+| E-004 | Credential extraction output | Analyst-generated | TXT | N/A | Derived from LSASS dump |
+| E-005 | Malicious payload | External C2 | EXE | SHA256 documented | `agent.exe` |
 
 Detailed evidence handling, integrity notes, and platform constraints are documented in `evidence-metadata/`.
 
