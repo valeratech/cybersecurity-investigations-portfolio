@@ -18,9 +18,9 @@ echo; echo "  ---- $pass passed, $fail failed ----"
 # link integrity (non-zero exit fails the check)
 python3 check-links.py --quiet || exit 1
 
-# schema validation, advisory mode: reports debt, exits non-zero only on
-# fatal parse errors. Flip to --strict when the metadata migration completes.
-python3 check-schema.py --quiet || exit 1
+# schema validation, strict mode: violations fail the gate. Profile notices
+# remain advisory and never affect exit status.
+python3 check-schema.py --quiet --strict || exit 1
 
 # publication safety: redaction-marker placement and raw IPv4 defanging
 # (blocking). Markdown-aware checker replacing bare_markers().
