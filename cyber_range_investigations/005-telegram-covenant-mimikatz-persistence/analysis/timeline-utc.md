@@ -1,9 +1,9 @@
 # Unified Timeline (UTC)
 
-**Case ID:** 005  
-**Case Title:** Disk Forensics — Telegram download of Covenant + mimikatz masquerade + persistence  
+**Document Type:** Timeline  
+**Case ID:** 005-telegram-covenant-mimikatz-persistence  
 **Time Standard:** UTC  
-**Source Platform:** CyberDefenders (CyberRange)
+**Source Platform:** CyberDefenders CyberRange  
 
 ## Timeline Construction Method
 

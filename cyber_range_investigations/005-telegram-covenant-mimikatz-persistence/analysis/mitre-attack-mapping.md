@@ -1,16 +1,16 @@
 # MITRE ATT&CK Mapping
 
-**Case ID:** 005  
-**Case Title:** Disk Forensics — Telegram download of Covenant + mimikatz masquerade + persistence  
+**Document Type:** Analysis  
+**Case ID:** 005-telegram-covenant-mimikatz-persistence  
 **Time Standard:** UTC  
-**Source Platform:** CyberDefenders (CyberRange)
+**Source Platform:** CyberDefenders CyberRange  
 
 ## Overview
 
 This document maps observed attacker behaviors to MITRE ATT&CK tactics and techniques.  
 Mapping is based strictly on validated forensic evidence (registry, NTFS, event logs, LNK artifacts).
 
-# Tactic: Initial Access
+## Tactic: Initial Access
 
 ### T1105 – Ingress Tool Transfer
 
@@ -22,7 +22,7 @@ Evidence:
 Interpretation:
 Telegram was likely used to transfer offensive tooling into the environment.
 
-# Tactic: Execution
+## Tactic: Execution
 
 ### T1059 – Command and Scripting Interpreter (PowerShell)
 
@@ -42,7 +42,7 @@ Evidence:
 Interpretation:
 User-initiated execution behavior consistent with insider or compromised interactive account.
 
-# Tactic: Persistence
+## Tactic: Persistence
 
 ### T1136 – Create Account
 
@@ -73,7 +73,7 @@ Evidence:
 Interpretation:
 Scheduled task configured for recurring or delayed execution.
 
-# Tactic: Defense Evasion
+## Tactic: Defense Evasion
 
 ### T1036 – Masquerading
 
@@ -84,7 +84,7 @@ Evidence:
 Interpretation:
 Renaming to a legitimate Windows process name to evade detection.
 
-# Tactic: Credential Access
+## Tactic: Credential Access
 
 ### T1003 – OS Credential Dumping
 
@@ -96,7 +96,7 @@ Evidence:
 Interpretation:
 Credential harvesting activity likely attempted.
 
-# Tactic: Lateral Movement
+## Tactic: Lateral Movement
 
 ### T1021 – Remote Services
 
@@ -108,7 +108,7 @@ Evidence:
 Interpretation:
 Exploration of remote host for scripts or credentials.
 
-# Tactic: Command and Control
+## Tactic: Command and Control
 
 ### T1071 – Application Layer Protocol
 
@@ -119,7 +119,7 @@ Evidence:
 Interpretation:
 Covenant is a post-exploitation C2 framework supporting HTTP/HTTPS communications.
 
-# ATT&CK Summary Table
+## ATT&CK Summary Table
 
 | Tactic              | Technique ID | Technique Name                           | Evidence Source |
 |--------------------|-------------|-------------------------------------------|-----------------|

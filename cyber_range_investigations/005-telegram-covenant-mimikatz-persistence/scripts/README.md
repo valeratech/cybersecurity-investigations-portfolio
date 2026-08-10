@@ -1,5 +1,11 @@
 # Scripts
 
+**Document Type:** Directory Index  
+**Case ID:** 005-telegram-covenant-mimikatz-persistence  
+**Source Platform:** CyberDefenders CyberRange  
+
+## Availability
+
 No custom scripts were required for this investigation.
 
 All analysis was conducted using forensic tooling:

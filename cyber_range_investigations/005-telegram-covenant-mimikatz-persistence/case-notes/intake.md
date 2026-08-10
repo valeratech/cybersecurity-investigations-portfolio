@@ -1,12 +1,13 @@
 # Case Notes — Intake
 
-**Case ID:** 005  
-**Case Title:** Disk Forensics — Telegram download of Covenant + mimikatz masquerade + persistence  
-**Source Platform:** CyberDefenders (CyberRange)  
-**Time Standard:** UTC (unless CyberDefenders explicitly states otherwise)  
-**Primary Evidence Root:** `C:\Users\Administrator\Desktop\Start Here\Artifacts\`
+**Document Type:** Case Note  
+**Case ID:** 005-telegram-covenant-mimikatz-persistence  
+**Time Standard:** UTC  
+**Source Platform:** CyberDefenders CyberRange  
 
 ## 1. Request Summary
+
+**Primary Evidence Root:** `C:\Users\Administrator\Desktop\Start Here\Artifacts\`  
 
 ThreatHunting flagged a suspicious binary in an unusual path based on Sysmon logs and raised a possible insider incident. A triage image was provided for analysis to determine what occurred on the host and what actions were executed around the alert timeframe.
 

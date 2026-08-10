@@ -1,12 +1,13 @@
 # Evidence Log
 
-**Case ID:** 005  
-**Case Title:** Disk Forensics — Telegram download of Covenant + mimikatz masquerade + persistence  
-**Source Platform:** CyberDefenders (CyberRange)  
+**Document Type:** Evidence Inventory  
+**Case ID:** 005-telegram-covenant-mimikatz-persistence  
 **Time Standard:** UTC  
-**Evidence Type:** Triage image artifact set  
+**Source Platform:** CyberDefenders CyberRange  
 
 ## 1. Evidence Overview
+
+**Evidence Type:** Triage image artifact set  
 
 This investigation is based on a structured artifact directory provided within the CyberDefenders lab:
 

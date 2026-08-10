@@ -1,12 +1,13 @@
 # Investigation Report
 
+**Document Type:** Case Overview  
 **Case Title:** Disk Forensics — Telegram download of Covenant + mimikatz masquerade + persistence  
-**Case ID:** 005  
+**Case ID:** 005-telegram-covenant-mimikatz-persistence  
 **Documentation Started:** 2026-02-18  
 **Documentation Last Updated:** 2026-02-18  
 **Author:** Ryan Valera  
-**Time Standard:** UTC (unless CyberDefenders explicitly states otherwise)  
-**Source Platform:** CyberDefenders (CyberRange)
+**Time Standard:** UTC  
+**Source Platform:** CyberDefenders CyberRange  
 
 ## Case Contents
 
@@ -52,6 +53,8 @@ A suspected insider incident was flagged during routine hunting. Analysis focuse
 - Windows Event Log analysis
 - Persistence mechanisms (services, scheduled tasks)
 - Lateral movement / network share access artifacts
+
+All timestamps are recorded in UTC unless CyberDefenders explicitly states otherwise.
 
 ## 2. Environment & Tools Used
 
@@ -140,7 +143,6 @@ ThreatHunting flagged a suspicious binary path in Sysmon logs suggesting potenti
 
 ## 5. Current Status
 
-**Status:** Complete  
 **Confidence Level:** High  
 
 - Baseline host footprinting complete
@@ -149,3 +151,7 @@ ThreatHunting flagged a suspicious binary path in Sysmon logs suggesting potenti
 - Credential access attempt and remote share activity identified
 
 **Optional Future Enhancement:** Expand timeline correlation across `Security.evtx`, NTFS events, and LNK/ShellBags artifacts.
+
+## 6. Case Status
+
+**Status:** Complete  

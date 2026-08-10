@@ -1,11 +1,13 @@
 # Incident Flow Diagram (Outline)
 
-**Case ID:** 005  
-**Case Title:** Disk Forensics — Telegram download of Covenant + mimikatz masquerade + persistence  
+**Document Type:** Analysis  
+**Case ID:** 005-telegram-covenant-mimikatz-persistence  
 **Time Standard:** UTC  
-**Purpose:** Provide a clean, reproducible incident flow diagram outline suitable for later conversion to Mermaid, draw.io, or PowerPoint.
+**Source Platform:** CyberDefenders CyberRange  
 
 ## 1. Entities
+
+**Purpose:** Provide a clean, reproducible incident flow diagram outline suitable for later conversion to Mermaid, draw.io, or PowerPoint.  
 
 - **User/Actor:** Administrator (interactive)
 - **Host:** MAGENTA (polo[.]shirts[.]corp)

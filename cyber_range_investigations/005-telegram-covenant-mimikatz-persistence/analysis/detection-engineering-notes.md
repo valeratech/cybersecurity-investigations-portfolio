@@ -1,11 +1,13 @@
 # Detection Engineering Notes
 
-**Case ID:** 005  
-**Case Title:** Disk Forensics — Telegram download of Covenant + mimikatz masquerade + persistence  
+**Document Type:** Analysis  
+**Case ID:** 005-telegram-covenant-mimikatz-persistence  
 **Time Standard:** UTC  
-**Focus:** Translate findings into actionable detections, controls, and SOC tuning.
+**Source Platform:** CyberDefenders CyberRange  
 
 ## 1. High-Signal Detections (Priority)
+
+**Focus:** Translate findings into actionable detections, controls, and SOC tuning.  
 
 ### A) svchost.exe execution outside System32/SysWOW64
 **Why it matters:** High-confidence masquerade indicator.

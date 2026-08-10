@@ -1,10 +1,13 @@
 # Final Investigation Report
 
-**Case ID:** 005  
+**Document Type:** Final Report  
 **Case Title:** Disk Forensics — Telegram download of Covenant + mimikatz masquerade + persistence  
+**Case ID:** 005-telegram-covenant-mimikatz-persistence  
+**Documentation Started:** 2026-02-18  
+**Documentation Last Updated:** 2026-02-18  
 **Author:** Ryan Valera  
-**Source Platform:** CyberDefenders (CyberRange)  
 **Time Standard:** UTC  
+**Source Platform:** CyberDefenders CyberRange  
 
 ## 1. Executive Summary
 
@@ -178,3 +181,9 @@ This investigation demonstrates:
 - ATT&CK technique mapping
 - Structured forensic documentation
 
+
+## Related Documents
+
+- [Case Overview](../README.md)
+- [Timeline](../analysis/timeline-utc.md)
+- [Evidence Inventory](../evidence-metadata/evidence-log.md)

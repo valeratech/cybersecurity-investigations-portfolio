@@ -1,5 +1,11 @@
 # PCAP Artifacts
 
+**Document Type:** Directory Index  
+**Case ID:** 005-telegram-covenant-mimikatz-persistence  
+**Source Platform:** CyberDefenders CyberRange  
+
+## Availability
+
 No packet capture (PCAP) files were provided for this investigation.
 
 This case is based on Windows disk forensic artifacts from a triage image
