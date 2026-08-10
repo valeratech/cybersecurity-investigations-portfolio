@@ -58,7 +58,9 @@ Analysis of the parsed output revealed a domain user account with recoverable cr
 - **Logon Server:** `DC01`
 
 ### Extracted Hash
-`michael:2b52d3f2...` `<REDACTED - full NT hash withheld>`
+`michael:2b52d3f2...`
+
+*NT hash truncated; the full value is withheld as credential material.*
 
 This NT hash was suitable for offline password cracking.
 
