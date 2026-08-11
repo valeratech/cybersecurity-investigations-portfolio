@@ -17,10 +17,9 @@ All timestamps referenced in this document are treated as **UTC**.
 
 ## Reconnaissance Indicators
 
-During alert triage, multiple signatures suggested active service discovery, including:
-- RDP connection attempts
-- Scanning of non-web services (PostgreSQL, VNC)
-- Broad probing behavior inconsistent with normal web traffic
+During alert triage, several signatures were consistent with service discovery:
+- RDP connection attempts, source-attributed to `3[.]68[.]76[.]39`
+- Non-web-service scan alerts including PostgreSQL and VNC; their source IPs are not recorded in the surviving notes
 
 Of particular interest was an alert explicitly referencing a known scanning tool.
 
@@ -50,23 +49,20 @@ The `mstshash` value is a well-known identifier used by **nmap** during RDP scan
 ## Analytical Assessment
 
 The presence of:
-- IDS alerts explicitly naming nmap
+- An IDS alert explicitly naming nmap
 - An RDP negotiation cookie containing `mstshash=nmap`
-- Consistent scanning behavior across multiple services
 
-Provides high-confidence attribution that the attacker used **nmap** to perform service and port scanning against the target infrastructure.
+Provides high-confidence attribution of the RDP scanning activity to **nmap**.
 
 This confirms that reconnaissance was:
 - Intentional
-- Automated
 - Conducted prior to exploitation
 
 ## Impact on Investigation Flow
 
-Attributing reconnaissance to nmap establishes:
+Attributing the RDP scanning activity to nmap establishes:
 - The attacker followed a structured attack lifecycle
 - Service discovery preceded exploitation
-- The web server was likely identified as a viable pivot point early in the attack
 
 This attribution justified further analysis of:
 - HTTP traffic for exploitation attempts

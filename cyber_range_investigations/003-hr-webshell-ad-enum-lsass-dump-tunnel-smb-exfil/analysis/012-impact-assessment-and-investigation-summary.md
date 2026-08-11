@@ -21,9 +21,9 @@ This was a **confirmed breach**, not an attempted intrusion.
 - Vulnerability exploited: Unrestricted file upload
 - Result: Webshell (`mycv.aspx`) deployed on HR web server
 
-### 2. Post-Exploitation & Reconnaissance
+### 2. Reconnaissance and Post-Exploitation
+- Network scanning observed using `nmap` at 18:20:46Z, preceding the webshell upload at 18:28:03Z
 - Webshell used for host reconnaissance
-- Network scanning observed using `nmap`
 - Internal system information gathered via command execution
 
 ### 3. Credential Access
