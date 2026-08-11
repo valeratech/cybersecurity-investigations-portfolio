@@ -98,7 +98,7 @@ Subsequent analysis focuses on **PowerShell-based domain enumeration activity**.
 Following confirmation of command execution:
 - Identify PowerShell activity executed via the webshell
 - Attribute domain enumeration tooling
-- Correlate traffic with LDAP-based reconnaissance
+- Correlate subsequent traffic with the observed PowerView enumeration activity
 
 **Next file:**  
 `analysis/005-active-directory-enumeration-powershell.md`

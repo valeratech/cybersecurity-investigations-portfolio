@@ -22,9 +22,9 @@ Following initial command execution through the webshell, the attacker transitio
 ### Execution Characteristics
 - **Interpreter:** PowerShell
 - **Execution Policy:** Bypassed
-- **Execution Method:** In-memory (no script written to disk)
+- **Execution Method:** In-memory invocation inferred from the `IEX (IWR …)` construction; the surviving notes do not record a script write to disk
 
-This execution pattern is consistent with attempts to evade host-based detection.
+In-memory execution of this kind is commonly associated with evading host-based detection. That characterisation is general tradecraft commentary, not an observation from this capture.
 
 ## Tool Identification
 
@@ -54,7 +54,7 @@ This confirms:
 
 ## Domain Information Retrieved
 
-The PowerView output returned key domain metadata, including:
+The `Get-Domain` output recorded in the capture contained:
 
 - **Forest:** `ad[.]compliantsecure[.]store`
 - **Domain Name:** `ad[.]compliantsecure[.]store`
@@ -62,22 +62,20 @@ The PowerView output returned key domain metadata, including:
 - **Domain Mode Level:** 7
 - **Executing Context:** `SYSTEM` on `HRWEBSERVER`
 
-This information provided the attacker with a complete view of the domain structure and primary controller.
+`Get-Domain` returned domain and forest information including the domain name, domain controller, functional mode, and FSMO role-owner information. It does not enumerate users, groups, computers, ACLs or trusts, and no such enumeration appears in the surviving notes.
 
-## Network Protocol Used
+## Network Protocol
 
-Although the command execution occurred over HTTP, the enumeration itself relied on:
+**Range-reported protocol:** LDAP
 
-**Primary Protocol:** LDAP
-
-PowerView uses LDAP queries to communicate with the Domain Controller and retrieve directory objects, group memberships, and system information.
+The CyberRange identified LDAP as the protocol used for the directory enumeration. The surviving evidence records PowerView `Get-Domain` output, which is consistent with LDAP-backed enumeration, but no LDAP packet, port 389 traffic or directory query is preserved in the notes. The command execution itself is observed over HTTP.
 
 ## Analytical Assessment
 
 The use of:
 - PowerView.ps1
 - In-memory PowerShell execution
-- LDAP-based directory queries
+- Domain metadata retrieval consistent with LDAP-backed enumeration
 
 Demonstrates deliberate and informed Active Directory reconnaissance. This activity strongly indicates preparation for:
 - Credential targeting
@@ -86,10 +84,9 @@ Demonstrates deliberate and informed Active Directory reconnaissance. This activ
 
 ## Impact on Investigation Flow
 
-Successful AD enumeration enabled the attacker to:
-- Identify domain-joined systems
-- Locate high-value targets (e.g., file servers)
-- Plan credential access and pivoting strategies
+The recorded `Get-Domain` output identified the domain and its controller.
+
+Q8 refers to three prior commands but does not identify them in the surviving notes; the intervening host-enumeration steps therefore cannot be reconstructed from the surviving record.
 
 Subsequent analysis focuses on **host targeting and SMB-based enumeration** within the internal network.
 

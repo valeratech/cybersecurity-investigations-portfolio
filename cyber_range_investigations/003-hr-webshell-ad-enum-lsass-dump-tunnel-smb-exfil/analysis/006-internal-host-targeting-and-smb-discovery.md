@@ -17,7 +17,7 @@ All timestamps referenced below are treated as **UTC**.
 
 ## Transition from AD Enumeration to Host Targeting
 
-After completing Active Directory enumeration, the attacker possessed sufficient information to identify domain-joined systems of interest. Network traffic following the PowerShell enumeration revealed SMB communication initiated from the compromised web server toward an internal file server.
+Network traffic following the PowerShell enumeration revealed SMB communication initiated from the compromised web server toward an internal file server. How the attacker selected this host is not recorded — see the unrecoverable commands noted in `analysis/005-active-directory-enumeration-powershell.md`.
 
 ## Target Host Identified
 
@@ -27,7 +27,7 @@ SMB session setup and tree connect requests revealed the following target:
 - **IP Address:** `10[.]10[.]11[.]216`
 - **Service:** SMB over TCP/445
 
-This system was selected for further exploration, indicating it was assessed as a high-value target for sensitive data access.
+The surviving notes record SMB activity directed at this host; they do not record why it was selected.
 
 ## SMB Discovery Evidence
 
@@ -39,7 +39,7 @@ Wireshark analysis revealed SMB2 Session Setup requests originating from the com
 - **Protocol:** SMB2
 - **Authentication Context:** Domain machine account (`HRWEBSERVER$`)
 
-This indicates authenticated domain-level access was already in place prior to credential harvesting.
+The compromised HR web server authenticated to `FILESERVER01` over SMB using its machine account, `HRWEBSERVER$`. This occurred before Michael's recovered credentials were later used for SMB authentication.
 
 ## Share Enumeration Activity
 
@@ -57,7 +57,7 @@ This is a common initial step to:
 Zeek SMB mapping logs corroborated packet-level findings:
 
 - **Mapped Path:** `\\FILESERVER01[.]ad[.]compliantsecure[.]store\IPC$`
-- **Timestamp:** 2025-05-20 18:45Z (approximate)
+- **Timestamp:** `2025-05-20 18:45:29.586745Z`
 - **Initiator:** `10[.]10[.]3[.]115`
 
 This correlation confirms that the SMB activity was not incidental but part of a deliberate discovery process.
@@ -69,7 +69,7 @@ The observed behavior demonstrates:
 - Selection of a file server likely to contain sensitive organizational data
 - Use of SMB discovery techniques to enumerate accessible resources
 
-At this stage, the attacker had successfully pivoted from a web-facing system into the internal network.
+At `2025-05-20 18:45:29.586745Z`, the compromised web server authenticated to `FILESERVER01` over SMB using `HRWEBSERVER$`. This demonstrates internal network reach from the compromised host; it does not evidence use of the tunnel-related connection initiated at 19:07:43Z.
 
 ## Impact on Investigation Flow
 

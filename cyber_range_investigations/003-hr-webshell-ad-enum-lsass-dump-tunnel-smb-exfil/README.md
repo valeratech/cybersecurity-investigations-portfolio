@@ -54,7 +54,7 @@ The website `hr[.]compliantsecure[.]store`, used for handling job applications, 
 ### Key Focus Areas
 - Network forensics (PCAP-based analysis)
 - Web exploitation and webshell activity
-- Active Directory enumeration (LDAP)
+- Active Directory enumeration via PowerView
 - Credential access (LSASS dump parsing and cracking)
 - Tunnel-related connection and pivot activity
 - SMB authentication, share enumeration, and file discovery
@@ -114,7 +114,7 @@ Detailed evidence handling, integrity notes, and platform constraints are docume
 - **Webshell authentication cookie:** `shell_pass=<REDACTED>`
 - **First command via webshell (range-reported):** `ipconfig /all` — not evidenced by the surviving notes
 - **AD enumeration tool (in-memory):** `PowerView.ps1`
-- **Primary AD reconnaissance protocol:** `LDAP`
+- **AD reconnaissance protocol (range-reported):** `LDAP` — consistent with PowerView's behaviour; no LDAP traffic is preserved in the notes
 - **Targeted file server:** `FILESERVER01[.]ad[.]compliantsecure[.]store`
 - **LSASS dump technique:** `rundll32.exe` with `comsvcs.dll`
 - **LSASS dump download:** `2025-05-20 18:48Z`
