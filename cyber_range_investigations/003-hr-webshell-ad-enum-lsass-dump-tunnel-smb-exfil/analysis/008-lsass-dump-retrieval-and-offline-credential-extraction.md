@@ -94,7 +94,7 @@ The surviving notes record retrieval of `lsass.dmp` at 18:48:00 UTC and later sh
 Recovered credentials explain:
 - Authenticated SMB session establishment
 - Access to sensitive file shares
-- Subsequent directory enumeration and data exfiltration
+- Subsequent directory and share enumeration
 
 This step represents the transition from **post-exploitation** to **lateral movement**.
 
@@ -103,7 +103,7 @@ This step represents the transition from **post-exploitation** to **lateral move
 Following credential recovery:
 - Correlate cracked credentials with SMB authentication events
 - Identify first authenticated access timestamp
-- Track directory enumeration and file access activity
+- Track directory enumeration and filename discovery activity
 
 **Next file:**  
 `analysis/009-authenticated-smb-access-and-lateral-movement.md`

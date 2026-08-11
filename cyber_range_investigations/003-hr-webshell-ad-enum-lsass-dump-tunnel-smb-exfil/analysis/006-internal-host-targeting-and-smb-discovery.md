@@ -76,7 +76,7 @@ At this stage, the attacker had successfully pivoted from a web-facing system in
 Identification of `FILESERVER01[.]ad[.]compliantsecure[.]store` as the next target explains:
 - Subsequent SMB authentication attempts using harvested credentials
 - Directory enumeration of shared folders
-- Later data exfiltration activity
+- Later SMB share enumeration activity
 
 ## Next Investigative Pivot
 

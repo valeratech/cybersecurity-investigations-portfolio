@@ -1,7 +1,7 @@
 # Investigation Report
 
 **Document Type:** Case Overview  
-**Case Title:** HR Webshell → AD Enum → LSASS Dump → Tunnel Pivot → SMB Exfil  
+**Case Title:** HR Webshell → AD Enum → LSASS Dump → Tunnel Pivot → SMB Enumeration  
 **Case ID:** 003-hr-webshell-ad-enum-lsass-dump-tunnel-smb-exfil  
 **Documentation Started:** 2026-01-08  
 **Documentation Last Updated:** 2026-01-18  
@@ -23,7 +23,7 @@
 - [LSASS Dump Retrieval and Offline Credential Extraction](analysis/008-lsass-dump-retrieval-and-offline-credential-extraction.md)
 - [Authenticated SMB Access and Lateral Movement](analysis/009-authenticated-smb-access-and-lateral-movement.md)
 - [SMB Share Enumeration and Sensitive Data Discovery](analysis/010-smb-share-enumeration-and-sensitive-data-discovery.md)
-- [SMB File Access and Data Exfiltration](analysis/011-smb-file-access-and-data-exfiltration.md)
+- [SMB Share Enumeration and File Discovery](analysis/011-smb-share-enumeration-and-file-discovery.md)
 - [Impact Assessment and Investigation Summary](analysis/012-impact-assessment-and-investigation-summary.md)
 
 ### Case Notes
@@ -46,10 +46,10 @@ Evidence-handling notes for artifacts excluded from version control: [pcaps](pca
 ## 1. Overview
 
 ### Objective
-Investigate initial access via the HR job application portal, identify attacker activity (reconnaissance, exploitation, credential access), trace lateral movement into the internal network, and determine what data was accessed and/or exfiltrated during the intrusion.
+Investigate initial access via the HR job application portal, identify attacker activity (reconnaissance, exploitation, credential access), trace lateral movement into the internal network, and determine which internal directories and filenames were exposed through SMB enumeration.
 
 ### Scenario Summary
-The website `hr[.]compliantsecure[.]store`, used for handling job applications, was exploited via an unrestricted file upload vulnerability. The attacker uploaded a hidden webshell, used it for host and network reconnaissance, performed Active Directory enumeration, dumped LSASS process memory to extract credentials, established a tunnel for internal pivoting, accessed SMB file shares on an internal file server, enumerated sensitive directories, and exfiltrated internal documents.
+The website `hr[.]compliantsecure[.]store`, used for handling job applications, was exploited via an unrestricted file upload vulnerability. The attacker uploaded a hidden webshell, used it for host and network reconnaissance, performed Active Directory enumeration, dumped LSASS process memory to extract credentials, established a tunnel for internal pivoting, authenticated to SMB shares on an internal file server, and enumerated sensitive directories and observed filenames in the resulting listing.
 
 ### Key Focus Areas
 - Network forensics (PCAP-based analysis)
@@ -57,7 +57,7 @@ The website `hr[.]compliantsecure[.]store`, used for handling job applications, 
 - Active Directory enumeration (LDAP)
 - Credential access (LSASS dump parsing and cracking)
 - Tunnel-related connection and pivot activity
-- SMB share access, enumeration, and data exfiltration
+- SMB authentication, share enumeration, and file discovery
 
 ## 2. Environment & Tools Used
 
@@ -123,7 +123,7 @@ Detailed evidence handling, integrity notes, and platform constraints are docume
 - **Tunnel-related connection initiated:** `2025-05-20 19:07:43Z`
 - **Authenticated SMB access (Michael):** `2025-05-20 19:14Z`
 - **Sensitive directories discovered:** `Documents`, `Finance`, `HR`, `IT`, `Programs`
-- **First confirmed exfiltrated PDF:** `company_policy_manual.pdf`
+- **First PDF observed in the share listing:** `company_policy_manual.pdf`
 
 ## 5. Timeline (UTC)
 
@@ -132,8 +132,7 @@ Detailed evidence handling, integrity notes, and platform constraints are docume
 - **2025-05-20 18:48Z** — LSASS dump (`lsass.dmp`) downloaded via webshell
 - **2025-05-20 19:07:43Z** — Tunnel-related connection initiated from `10[.]10[.]3[.]115` to `52[.]59[.]195[.]223`
 - **2025-05-20 19:14Z** — Authenticated SMB access to `FILESERVER01`
-- **2025-05-20 19:15Z** — SMB share enumeration and initial file access observed
-- **2025-05-20 19:15Z+** — Internal documents accessed and exfiltrated
+- **2025-05-20 19:15Z** — SMB share enumeration and directory listing observed
 
 ## 6. Indicators of Compromise (IOCs)
 

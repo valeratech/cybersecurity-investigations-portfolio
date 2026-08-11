@@ -1,6 +1,6 @@
 # Final Investigation Report  
 **Document Type:** Final Report  
-**Case Title:** HR Webshell → AD Enum → LSASS Dump → Tunnel Pivot → SMB Exfil  
+**Case Title:** HR Webshell → AD Enum → LSASS Dump → Tunnel Pivot → SMB Enumeration  
 **Case ID:** 003-hr-webshell-ad-enum-lsass-dump-tunnel-smb-exfil  
 **Documentation Started:** 2026-01-08  
 **Documentation Last Updated:** 2026-01-18  
@@ -10,9 +10,9 @@
 
 ## 1. Executive Summary
 
-This investigation identified a confirmed multi-stage intrusion originating from a publicly accessible HR job application portal. The attacker exploited an unrestricted file upload vulnerability to deploy a webshell, escalated access through credential harvesting, pivoted into the internal network after initiating tunnel-related connectivity, and successfully exfiltrated sensitive corporate documents via SMB.
+This investigation identified a confirmed multi-stage intrusion originating from a publicly accessible HR job application portal. The attacker exploited an unrestricted file upload vulnerability to deploy a webshell, escalated access through credential harvesting, pivoted into the internal network after initiating tunnel-related connectivity, and enumerated sensitive corporate document names via SMB.
 
-The incident represents a **full breach**, not an attempted compromise, with confirmed lateral movement and data exfiltration.
+The incident represents a **confirmed intrusion** with authenticated SMB access to an internal file share and enumeration of directories and filenames. No SMB read or file-transfer activity is recorded in the surviving evidence.
 
 ## 2. Incident Overview
 
@@ -26,7 +26,7 @@ The incident represents a **full breach**, not an attempted compromise, with con
 - Enumerate Active Directory
 - Harvest credentials
 - Pivot into internal systems
-- Identify and exfiltrate sensitive data
+- Identify sensitive data
 
 ## 3. Affected Assets
 
@@ -48,7 +48,6 @@ The incident represents a **full breach**, not an attempted compromise, with con
 | 19:07:43 | Tunnel-related connection initiated to remote host |
 | 19:14 | SMB authentication to file server |
 | 19:15 | Share enumeration completed |
-| 19:15+ | Document access and exfiltration |
 
 ## 5. Technical Analysis Summary
 
@@ -67,14 +66,14 @@ The incident represents a **full breach**, not an attempted compromise, with con
 - Authenticated SMB access achieved using recovered credentials
 - No brute-force or exploit-based SMB activity observed
 
-### Data Discovery & Exfiltration
+### Data Discovery
 - Sensitive directories enumerated:
   - `Documents`
   - `Finance`
   - `HR`
   - `IT`
   - `Programs`
-- Confirmed exfiltration of internal PDF documentation
+- Internal PDF and Office document names observed in the share listing
 
 ## 6. Indicators of Compromise (IOCs)
 
@@ -134,7 +133,7 @@ Primary contributing factors:
 
 ## 10. Conclusion
 
-This investigation confirms a **successful, end-to-end intrusion** beginning with a web application flaw and resulting in internal data exfiltration. The attacker leveraged well-known techniques executed with discipline, highlighting how a single exposed application can lead to enterprise-wide compromise when layered defenses are insufficient.
+This investigation confirms an intrusion beginning with a web application flaw and reaching authenticated access to internal file shares. The attacker leveraged well-known techniques executed with discipline, highlighting how a single exposed application can lead to enterprise-wide compromise when layered defenses are insufficient.
 
 This case demonstrates the critical importance of defense-in-depth, credential hygiene, and internal monitoring.
 

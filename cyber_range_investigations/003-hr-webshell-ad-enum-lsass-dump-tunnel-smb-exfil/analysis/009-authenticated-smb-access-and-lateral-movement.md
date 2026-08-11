@@ -91,13 +91,13 @@ This behavior aligns with credential-based lateral movement, rather than exploit
 
 Following authenticated SMB access:
 
-- Enumerate directories and files accessed
+- Enumerate directories and filenames returned in SMB listings
 
 - Identify sensitive data exposure
 
-- Correlate SMB Find responses with file read activity
+- Determine whether SMB read activity is recorded alongside the Find responses
 
-- Determine first exfiltrated artifacts
+- Determine the first filenames disclosed
 
 Next file:
 `analysis/010-smb-share-enumeration-and-sensitive-data-discovery.md`

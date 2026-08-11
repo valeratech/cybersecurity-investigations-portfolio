@@ -6,7 +6,7 @@
 **Source Platform:** CyberDefenders CyberRange  
 
 ## Purpose
-This document analyzes SMB share enumeration activity following authenticated lateral movement. It identifies accessible shared directories, highlights sensitive data exposure, and establishes context for subsequent data exfiltration.
+This document analyzes SMB share enumeration activity following authenticated lateral movement. It identifies accessible shared directories, highlights sensitive data exposure, and establishes context for the subsequent directory listing.
 
 ## Data Sources
 - PCAP (E-001)
@@ -62,9 +62,9 @@ These directories indicate broad access permissions and represent a high-value d
 - Lack of network segmentation between web infrastructure and internal file servers
 - Domain user account granted excessive read access across multiple departments
 
-## Relationship to Exfiltration Phase
+## Relationship to Subsequent SMB Activity
 
-This enumeration phase directly preceded confirmed file access and data exfiltration activity.
+This enumeration directly preceded the SMB directory listing that named individual files.
 
 Key observations:
 
@@ -72,16 +72,16 @@ Key observations:
 - Subsequent SMB Find responses included file names of interest
 - PDF and document files were identified shortly after directory discovery
 
-This step represents the reconnaissance-to-exfiltration transition within the internal network.
+This step represents the share-to-contents transition within the internal network.
 
 ## Next Investigative Pivot
 
 Following directory discovery:
 
-- Identify first accessed files
-- Confirm read/open operations over SMB
-- Correlate file access with tunnel traffic
-- Determine earliest exfiltrated artifact
+- Identify the first filenames observed in the SMB listing
+- Determine whether SMB read/open operations are recorded
+- Assess whether SMB activity can be correlated with tunnel-related traffic
+- Determine the earliest filename observed in the SMB listing
 
 **Next file**:
-`analysis/011-smb-file-access-and-data-exfiltration.md`
+`analysis/011-smb-share-enumeration-and-file-discovery.md`

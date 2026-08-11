@@ -83,7 +83,7 @@ At this point in the attack:
 Successful LSASS dumping explains:
 - Subsequent authenticated SMB access using domain user credentials
 - The attacker's ability to pivot further into the internal network
-- Later data exfiltration activity over an established tunnel
+- Later SMB share enumeration activity
 
 ## Next Investigative Pivot
 

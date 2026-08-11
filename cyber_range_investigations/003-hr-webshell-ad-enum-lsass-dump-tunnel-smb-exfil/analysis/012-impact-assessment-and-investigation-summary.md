@@ -6,11 +6,11 @@
 **Source Platform:** CyberDefenders CyberRange  
 
 ## Purpose
-This document provides a consolidated assessment of the intrusion, including the scope of compromise, confirmed attacker actions, exposed assets, and overall business and security impact. It summarizes the investigation from initial access through data exfiltration.
+This document provides a consolidated assessment of the intrusion, including the scope of compromise, confirmed attacker actions, exposed assets, and overall business and security impact. It summarizes the investigation from initial access through SMB share enumeration.
 
 ## Executive Summary
 
-The investigation confirmed a multi-stage intrusion beginning with exploitation of a web application vulnerability and culminating in successful internal data exfiltration. The attacker demonstrated deliberate tradecraft, progressing from web compromise to credential harvesting, lateral movement, and targeted document theft.
+The investigation confirmed a multi-stage intrusion beginning with exploitation of a web application vulnerability and culminating in authenticated access to an internal file share and enumeration of its directories and filenames. The attacker demonstrated deliberate tradecraft, progressing from web compromise to credential harvesting, lateral movement, and filename discovery.
 
 This was a **confirmed breach**, not an attempted intrusion.
 
@@ -39,10 +39,10 @@ This was a **confirmed breach**, not an attempted intrusion.
 
 `52[.]59[.]195[.]223` served `agent.exe`. VirusTotal enrichment identified the payload as Ligolo-NG. At 19:07:43 UTC, the compromised host sent a TCP SYN to the same remote host on port 11601, evidencing initiation of a connection associated with the suspected tunnel activity.
 
-### 5. Discovery & Exfiltration
+### 5. Discovery
 - Sensitive directories enumerated
 - Business documents identified
-- Confirmed exfiltration of confidential PDF files
+- Names of confidential PDF files observed in the share listing
 
 ## Scope of Compromise
 
@@ -54,7 +54,7 @@ This was a **confirmed breach**, not an attempted intrusion.
 ### Data Exposed
 - Corporate policy documentation
 - Potential access to HR and Finance records
-- Unknown total volume of exfiltrated data
+- No file read or transfer volume is recorded in the surviving evidence
 
 ## Security Impact Assessment
 
@@ -84,7 +84,7 @@ This was a **confirmed breach**, not an attempted intrusion.
 
 ## Investigation Conclusion
 
-This investigation confirms a **successful intrusion with data exfiltration**. The attacker demonstrated methodical execution, leveraging common but effective techniques at each stage of the kill chain. Defensive failures at multiple layers enabled escalation from a single web vulnerability to internal data theft.
+This investigation confirms an intrusion reaching authenticated enumeration of an internal file share. The attacker demonstrated methodical execution, leveraging common but effective techniques at each stage of the kill chain. Defensive failures at multiple layers enabled escalation from a single web vulnerability to internal file share access.
 
 **Next file:**  
 `reports/final-report.md`
