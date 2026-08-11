@@ -23,8 +23,7 @@ This was a **confirmed breach**, not an attempted intrusion.
 
 ### 2. Reconnaissance and Post-Exploitation
 - Network scanning observed using `nmap` at 18:20:46Z, preceding the webshell upload at 18:28:03Z
-- Webshell used for host reconnaissance
-- Internal system information gathered via command execution
+- Active Directory enumeration performed through the webshell using PowerView
 
 ### 3. Credential Access
 - LSASS memory dumped using `rundll32.exe` and `comsvcs.dll`

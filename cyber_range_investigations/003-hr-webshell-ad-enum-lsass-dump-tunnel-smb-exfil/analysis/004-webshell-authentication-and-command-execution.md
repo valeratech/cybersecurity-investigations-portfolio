@@ -6,7 +6,7 @@
 **Source Platform:** CyberDefenders CyberRange  
 
 ## Purpose
-This document analyzes how the attacker authenticated to the uploaded webshell and documents the initial commands executed on the compromised web server. This confirms interactive control and marks the transition from exploitation to post-exploitation.
+This document analyzes how the attacker authenticated to the uploaded webshell and records what the surviving notes establish about commands executed on the compromised web server. This confirms interactive control and marks the transition from exploitation to post-exploitation.
 
 ## Data Sources
 - PCAP (E-001)
@@ -24,7 +24,7 @@ Following the successful upload of the webshell (`mycv.aspx`), the attacker bega
 - **Action Parameter:** `act=cmd`
 - **Method:** POST
 
-This endpoint provided interactive command execution functionality through HTTP form parameters.
+The observed requests to this endpoint carried command input in HTTP form parameters.
 
 ## Authentication Mechanism
 
@@ -40,51 +40,46 @@ material; the cookie name is retained for analytical context.
 Example request header excerpt:
 `Cookie: shell_pass=<REDACTED>; ASP.NET_SessionId=...`
 
-The presence of this cookie was required to successfully execute commands through the webshell interface.
+The observed request included the `shell_pass` cookie with the recovered value redacted. The surviving notes contain no request without it, so whether the cookie was required is not established.
 
 ## Command Execution Interface
 
 Commands were supplied via an HTTP POST parameter:
 
 - **Form Parameter:** `cmd_txt`
-- **Execution Context:** Server-side command execution under IIS worker process
+- **Execution Context:** The webshell banner reported `SYSTEM`
 
-This confirms the webshell provided direct command execution capability without additional server-side authentication controls.
+The surviving request evidence records command input in the `cmd_txt` form value.
 
-## First Observed Command Executed
+## Range-Reported and Evidenced Commands
 
-### Command
+### Range-reported first command
 `ipconfig /all`
 
-### Purpose
-This command was used to:
-- Enumerate network interfaces
-- Identify IP configuration
-- Determine domain membership and internal network visibility
+The CyberRange recorded this as the accepted answer for the first command executed through the webshell. The surviving Q5 narrative duplicates Q4 and reproduces Q4's packet; no `cmd_txt` value carrying this command appears anywhere in the notes. It is preserved here as a range assertion and is not evidenced by the surviving record.
 
-This is a common first-stage reconnaissance command following initial access.
+### Earliest command with surviving command evidence
+A PowerShell one-liner retrieving and invoking PowerView.ps1, recorded as a `cmd_txt` form value. Full treatment in `analysis/005-active-directory-enumeration-powershell.md`.
 
 ## Timing Evidence
 
-- **Webshell interaction timestamp:** Shortly after upload at `2025-05-20 18:28Z`
-- **Command execution confirmed:** Immediately following authentication
+- **Webshell upload:** `2025-05-20 18:28:03Z`
+- **Q4 authentication request excerpt:** no timestamp preserved in the notes
+- **Earliest timestamped webshell interaction:** HTTP response at `2025-05-20 18:30:27Z`
 
-This rapid progression indicates:
-- Automated or well-rehearsed attacker workflow
-- No trial-and-error interaction
-- Prior familiarity with the webshell functionality
+The timestamped response occurs after the recorded upload. It does not establish when the first interaction occurred, and the surviving notes support no conclusion about the pace of the attacker's workflow.
 
 ## Analytical Assessment
 
 The use of:
-- A static authentication cookie
+- The observed `shell_pass` authentication cookie
 - Direct command execution via POST parameters
-- Immediate execution of system reconnaissance commands
+- Execution of PowerShell through the `cmd_txt` parameter
 
 Confirms that the attacker obtained **interactive remote code execution** on the HR web server.
 
 At this point, the attacker had sufficient access to:
-- Enumerate the local system
+- Perform Active Directory enumeration
 - Identify domain context
 - Stage additional tooling
 

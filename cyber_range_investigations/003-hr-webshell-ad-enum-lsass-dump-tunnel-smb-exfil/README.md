@@ -112,7 +112,7 @@ Detailed evidence handling, integrity notes, and platform constraints are docume
 - **Reconnaissance scanning tool:** `nmap`
 - **Uploaded webshell:** `mycv.aspx`
 - **Webshell authentication cookie:** `shell_pass=<REDACTED>`
-- **First command executed via webshell:** `ipconfig /all`
+- **First command via webshell (range-reported):** `ipconfig /all` — not evidenced by the surviving notes
 - **AD enumeration tool (in-memory):** `PowerView.ps1`
 - **Primary AD reconnaissance protocol:** `LDAP`
 - **Targeted file server:** `FILESERVER01[.]ad[.]compliantsecure[.]store`
