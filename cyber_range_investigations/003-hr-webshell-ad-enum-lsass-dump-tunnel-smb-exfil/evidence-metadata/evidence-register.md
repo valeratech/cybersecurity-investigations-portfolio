@@ -17,7 +17,7 @@ This document records all evidence sources referenced during the investigation, 
 | E-002 | Webshell upload artifact | Derived from PCAP analysis | HTTP | See Artifact Hashes | Observed via Suricata, Zeek, and Wireshark |
 | E-003 | LSASS process memory dump | Compromised host | DMP | N/A | Extracted and analyzed within CyberRange |
 | E-004 | Credential extraction output | Analyst-generated | TXT | N/A | Pypykatz output derived from LSASS dump |
-| E-005 | Malicious payload | External C2 server | EXE | See Artifact Hashes | agent.exe analyzed via VirusTotal |
+| E-005 | Malicious payload | Remote host | EXE | See Artifact Hashes | agent.exe analyzed via VirusTotal |
 
 ### Artifact Hashes
 

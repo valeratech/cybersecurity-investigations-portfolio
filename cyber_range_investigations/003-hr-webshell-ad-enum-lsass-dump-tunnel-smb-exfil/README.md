@@ -56,7 +56,7 @@ The website `hr[.]compliantsecure[.]store`, used for handling job applications, 
 - Web exploitation and webshell activity
 - Active Directory enumeration (LDAP)
 - Credential access (LSASS dump parsing and cracking)
-- Tunnel and pivot establishment
+- Tunnel-related connection and pivot activity
 - SMB share access, enumeration, and data exfiltration
 
 ## 2. Environment & Tools Used
@@ -68,7 +68,7 @@ The website `hr[.]compliantsecure[.]store`, used for handling job applications, 
 - Domain Controller: `DC01[.]ad[.]compliantsecure[.]store`
 - File server targeted: `FILESERVER01[.]ad[.]compliantsecure[.]store` — `10[.]10[.]11[.]216`
 - Attacker source IP: `3[.]68[.]76[.]39`
-- Remote C2 host: `52[.]59[.]195[.]223`
+- Remote host: `52[.]59[.]195[.]223`
 
 ### Attacker-Used / Attributed Tooling
 - Nmap (attacker reconnaissance activity)
@@ -95,7 +95,7 @@ The website `hr[.]compliantsecure[.]store`, used for handling job applications, 
 | E-002 | Webshell upload artifact | Derived from PCAP analysis | HTTP | N/A | Observed via Suricata, Zeek, and Wireshark |
 | E-003 | LSASS process memory dump | Compromised host | DMP | N/A | Extracted and analyzed within range |
 | E-004 | Credential extraction output | Analyst-generated | TXT | N/A | Derived from LSASS dump |
-| E-005 | Malicious payload | External C2 | EXE | SHA256 documented | `agent.exe` |
+| E-005 | Malicious payload | Remote host | EXE | See Artifact Hashes | `agent.exe` |
 
 Detailed evidence handling, integrity notes, and platform constraints are documented in `evidence-metadata/`.
 
@@ -119,8 +119,8 @@ Detailed evidence handling, integrity notes, and platform constraints are docume
 - **LSASS dump technique:** `rundll32.exe` with `comsvcs.dll`
 - **LSASS dump download:** `2025-05-20 18:48Z`
 - **Malicious payload URL:** `hxxp://52[.]59[.]195[.]223/agent.exe`
-- **Tunnel framework:** Ligolo-NG
-- **Tunnel established:** `2025-05-20 19:07Z`
+- **Payload identification:** Ligolo-NG (VirusTotal enrichment)
+- **Tunnel-related connection initiated:** `2025-05-20 19:07:43Z`
 - **Authenticated SMB access (Michael):** `2025-05-20 19:14Z`
 - **Sensitive directories discovered:** `Documents`, `Finance`, `HR`, `IT`, `Programs`
 - **First confirmed exfiltrated PDF:** `company_policy_manual.pdf`
@@ -130,7 +130,7 @@ Detailed evidence handling, integrity notes, and platform constraints are docume
 - **2025-05-20 18:15Z** — Directory enumeration against HR web server from `3[.]68[.]76[.]39`
 - **2025-05-20 18:28Z** — Webshell uploaded (`mycv.aspx`)
 - **2025-05-20 18:48Z** — LSASS dump (`lsass.dmp`) downloaded via webshell
-- **2025-05-20 19:07Z** — Tunnel established between `10[.]10[.]3[.]115` and `52[.]59[.]195[.]223`
+- **2025-05-20 19:07:43Z** — Tunnel-related connection initiated from `10[.]10[.]3[.]115` to `52[.]59[.]195[.]223`
 - **2025-05-20 19:14Z** — Authenticated SMB access to `FILESERVER01`
 - **2025-05-20 19:15Z** — SMB share enumeration and initial file access observed
 - **2025-05-20 19:15Z+** — Internal documents accessed and exfiltrated
@@ -139,7 +139,7 @@ Detailed evidence handling, integrity notes, and platform constraints are docume
 
 ### Network
 - Attacker IP: `3[.]68[.]76[.]39`
-- C2 IP: `52[.]59[.]195[.]223`
+- Remote host: `52[.]59[.]195[.]223`
 - Malicious URL: `hxxp://52[.]59[.]195[.]223/agent.exe`
 
 ### Web

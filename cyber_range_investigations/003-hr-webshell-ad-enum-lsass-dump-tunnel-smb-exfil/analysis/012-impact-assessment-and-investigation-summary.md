@@ -33,9 +33,11 @@ This was a **confirmed breach**, not an attempted intrusion.
 - Weak domain password successfully cracked
 
 ### 4. Lateral Movement
-- Tunnel established using Ligolo-NG
+- Tunnel-related connection initiated to the remote host
 - Authenticated SMB access achieved using cracked credentials
 - Internal file server accessed without additional exploitation
+
+`52[.]59[.]195[.]223` served `agent.exe`. VirusTotal enrichment identified the payload as Ligolo-NG. At 19:07:43 UTC, the compromised host sent a TCP SYN to the same remote host on port 11601, evidencing initiation of a connection associated with the suspected tunnel activity.
 
 ### 5. Discovery & Exfiltration
 - Sensitive directories enumerated
@@ -58,7 +60,6 @@ This was a **confirmed breach**, not an attempted intrusion.
 
 ### Technical Impact
 - Credential theft enabled full domain-authenticated access
-- Tunnel bypassed perimeter defenses
 - SMB shares lacked least-privilege enforcement
 
 ### Business Impact

@@ -10,7 +10,7 @@
 
 ## 1. Executive Summary
 
-This investigation identified a confirmed multi-stage intrusion originating from a publicly accessible HR job application portal. The attacker exploited an unrestricted file upload vulnerability to deploy a webshell, escalated access through credential harvesting, pivoted into the internal network using a tunneling framework, and successfully exfiltrated sensitive corporate documents via SMB.
+This investigation identified a confirmed multi-stage intrusion originating from a publicly accessible HR job application portal. The attacker exploited an unrestricted file upload vulnerability to deploy a webshell, escalated access through credential harvesting, pivoted into the internal network after initiating tunnel-related connectivity, and successfully exfiltrated sensitive corporate documents via SMB.
 
 The incident represents a **full breach**, not an attempted compromise, with confirmed lateral movement and data exfiltration.
 
@@ -45,7 +45,7 @@ The incident represents a **full breach**, not an attempted compromise, with con
 | 18:15 | Directory enumeration against HR website |
 | 18:28 | Webshell uploaded (`mycv.aspx`) |
 | 18:48 | LSASS dump (`lsass.dmp`) downloaded |
-| 19:07 | Tunnel established to external C2 |
+| 19:07:43 | Tunnel-related connection initiated to remote host |
 | 19:14 | SMB authentication to file server |
 | 19:15 | Share enumeration completed |
 | 19:15+ | Document access and exfiltration |
@@ -63,7 +63,7 @@ The incident represents a **full breach**, not an attempted compromise, with con
 - Credentials cracked offline using standard wordlists
 
 ### Lateral Movement
-- Tunnel established using Ligolo-NG
+- Tunnel-related connection initiated to the remote host; payload identified as Ligolo-NG via VirusTotal enrichment
 - Authenticated SMB access achieved using recovered credentials
 - No brute-force or exploit-based SMB activity observed
 
@@ -80,7 +80,7 @@ The incident represents a **full breach**, not an attempted compromise, with con
 
 ### Network
 - Attacker IP: `3[.]68[.]76[.]39`
-- C2 IP: `52[.]59[.]195[.]223`
+- Remote host: `52[.]59[.]195[.]223`
 - Malicious URL: `hxxp://52[.]59[.]195[.]223/agent.exe`
 
 ### Web
