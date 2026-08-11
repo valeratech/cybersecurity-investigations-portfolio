@@ -70,19 +70,21 @@ The website `hr[.]compliantsecure[.]store`, used for handling job applications, 
 - Attacker source IP: `3[.]68[.]76[.]39`
 - Remote C2 host: `52[.]59[.]195[.]223`
 
-### Tools & Frameworks (Observed / Used)
-- Suricata (ET / GPL alert signatures)
-- Zeek (files.log, SMB metadata, HTTP transactions)
-- Brim / Zui (log pivoting and correlation)
-- Wireshark (stream inspection, protocol analysis, HTTP object extraction)
+### Attacker-Used / Attributed Tooling
 - Nmap (attacker reconnaissance activity)
 - PowerShell (execution via webshell)
 - PowerView.ps1 / PowerSploit (Active Directory enumeration)
 - `rundll32.exe` + `comsvcs.dll` (LSASS MiniDump technique)
+- Ligolo-NG (tunneling and network pivoting framework) — identification based on VirusTotal enrichment of `agent.exe`
+
+### Investigator-Used Tools
+- Suricata (ET / GPL alert signatures)
+- Zeek (files.log, SMB metadata, HTTP transactions)
+- Brim / Zui (log pivoting and correlation)
+- Wireshark (stream inspection, protocol analysis, HTTP object extraction)
 - Pypykatz (credential extraction from LSASS dump)
 - John the Ripper with `rockyou.txt` (offline password cracking)
 - VirusTotal (malware classification and reputation)
-- Ligolo-NG (tunneling and network pivoting framework)
 
 ## 3. Evidence Collected
 

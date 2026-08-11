@@ -6,7 +6,7 @@
 **Source Platform:** CyberDefenders CyberRange  
 
 ## Purpose
-This document analyzes how the attacker retrieved the LSASS memory dump from the compromised host, extracted credential material offline, and obtained plaintext domain credentials. This step bridges credential access with authenticated lateral movement.
+This document analyzes how the attacker retrieved the LSASS memory dump from the compromised host, and records the investigator's offline extraction of credential material from that dump. This step bridges credential access with authenticated lateral movement.
 
 ## Data Sources
 - PCAP (E-001)
@@ -32,12 +32,12 @@ Wireshark inspection confirmed the download via an HTTP response with the follow
 
 This timestamp marks the point at which credential material left the compromised system.
 
-## Offline Credential Extraction
+## Analyst Credential Extraction
 
-Once retrieved, the attacker performed offline analysis of the dump file rather than extracting credentials directly on the host.
+The 18:48 retrieval is the last attacker action evidenced in this section. The credential extraction and password-cracking steps below were performed by the investigator against the exported dump as part of the analysis workflow.
 
 ### Extraction Tool Used
-pypykatz
+pypykatz (investigator)
 
 ### Command Pattern
 `pypykatz lsa minidump lsass_20250520.dmp > pypykatz_output.txt`
@@ -64,7 +64,7 @@ Analysis of the parsed output revealed a domain user account with recoverable cr
 
 This NT hash was suitable for offline password cracking.
 
-## Password Cracking Activity
+## Analyst Password Cracking Activity
 
 ### Tool Used
 John the Ripper
@@ -79,17 +79,15 @@ John the Ripper
 **Plaintext Password**: `<REDACTED>`  
 *(14 characters; dictionary word + leetspeak substitution + trailing symbol - recovered from a standard wordlist attack in under a minute)*
 
-The successful crack confirms weak password hygiene and directly enabled authenticated SMB access observed later in the investigation.
+The recovered password demonstrates weak password hygiene. The same account authenticated over SMB later in the capture.
 
 ## Analytical Assessment
 
 Key observations:
-- Credential extraction was conducted entirely offline
-- No further interaction with the compromised host was required
-- The attacker avoided generating additional security telemetry during cracking
-- Obtained credentials were reused for SMB authentication shortly after
+- Michael's credentials were recovered from the retrieved dump during analysis
+- The same account authenticated over SMB shortly after the retrieval
 
-This demonstrates a clean separation between **credential harvesting** and **credential abuse**, a common tradecraft pattern.
+The surviving notes record retrieval of `lsass.dmp` at 18:48:00 UTC and later show SMB authentication as `michael@ad[.]compliantsecure[.]store` at 19:14:38 UTC. The attacker activity between those events is not recorded in the surviving evidence.
 
 ## Impact on Investigation Flow
 
