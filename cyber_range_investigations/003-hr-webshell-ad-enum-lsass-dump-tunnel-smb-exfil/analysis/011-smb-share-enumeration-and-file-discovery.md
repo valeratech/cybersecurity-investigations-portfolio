@@ -65,8 +65,8 @@ Key observations:
 ## Security Impact Assessment
 
 - The SMB directory listing returned names of confidential policy documentation
-- Attacker demonstrated ability to enumerate and selectively target files
-- Domain credentials enabled unrestricted read access across departments
+- The Michael-authenticated SMB session enumerated directory and file names returned by the server
+- Michael's credentials were accepted for SMB authentication to `FILESERVER01`, and the observed `Find` activity returned directory entries
 
 This confirms **unauthorized authenticated access and enumeration**. Whether any document was read or removed is not established by the surviving evidence.
 

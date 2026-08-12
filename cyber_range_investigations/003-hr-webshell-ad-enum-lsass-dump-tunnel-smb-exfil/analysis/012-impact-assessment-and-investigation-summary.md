@@ -58,21 +58,17 @@ This was a **confirmed breach**, not an attempted intrusion.
 ## Security Impact Assessment
 
 ### Technical Impact
-- Credential theft enabled full domain-authenticated access
-- SMB shares lacked least-privilege enforcement
+- Credential theft enabled authenticated SMB access to `FILESERVER01` as `michael`
 
 ### Business Impact
 - Exposure of internal corporate documentation
 - Potential regulatory exposure (HR/Finance data)
 - Loss of confidentiality and trust
 
-## Defensive Gaps Identified
+## Contributing Factors Supported by the Record
 
-- Inadequate file upload validation on public web application
-- Excessive SMB permissions granted to standard domain users
-- Weak password hygiene enabling offline cracking
-- Lack of east-west network segmentation
-- Insufficient monitoring of internal SMB and tunnel traffic
+- The upload path accepted the ASPX webshell
+- Michael's credential was recovered through the recorded dictionary-cracking workflow in under a minute
 
 ## Lessons Learned
 

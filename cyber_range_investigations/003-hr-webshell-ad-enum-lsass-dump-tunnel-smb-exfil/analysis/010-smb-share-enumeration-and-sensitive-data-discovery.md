@@ -47,20 +47,11 @@ The following directories were identified during SMB enumeration:
 - `IT`
 - `Programs`
 
-These directories indicate broad access permissions and represent a high-value data exposure surface.
+The observed SMB `Find` response returned five directory names in the share listing.
 
-## Sensitive Data Exposure Assessment
-###Risk Indicators
+## Observed Access Scope
 
-- Presence of HR and Finance directories implies access to PII and financial records
-- IT and Programs directories may contain infrastructure documentation, scripts, or credentials
-- No additional authentication challenges observed during enumeration
-
-### Security Implications
-
-- Over-permissive SMB share access
-- Lack of network segmentation between web infrastructure and internal file servers
-- Domain user account granted excessive read access across multiple departments
+- Michael's authenticated SMB session successfully enumerated entries in the observed share
 
 ## Relationship to Subsequent SMB Activity
 

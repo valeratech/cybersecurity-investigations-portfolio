@@ -61,7 +61,7 @@ Following successful authentication:
 
 - SMB Find requests were issued against the Shares directory
 
-- Responses confirmed access permissions aligned with the compromised user account
+- The observed SMB `Find` response in frame 32375 returned `STATUS_SUCCESS` for the authenticated session
 
 This activity confirms successful lateral movement, not just credential testing.
 
@@ -84,8 +84,6 @@ This behavior aligns with credential-based lateral movement, rather than exploit
 - Domain credentials extracted from a single system enabled access to sensitive internal resources
 
 - Weak password hygiene significantly increased the blast radius
-
-- SMB access control relied solely on domain authentication without additional network segmentation
 
 ## Next Investigative Pivot
 

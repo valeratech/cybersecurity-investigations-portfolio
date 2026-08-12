@@ -102,14 +102,10 @@ The incident represents a **confirmed intrusion** with authenticated SMB access 
 - Potential exposure of HR and financial records
 - Loss of confidentiality and increased regulatory risk
 
-## 8. Root Cause Analysis
+## 8. Contributing Factors Supported by the Record
 
-Primary contributing factors:
-- Inadequate file upload validation
-- Weak password hygiene
-- Excessive SMB permissions
-- Lack of internal network segmentation
-- Insufficient monitoring of internal traffic
+- The upload path accepted the ASPX webshell
+- Michael's credential was recovered through the recorded dictionary-cracking workflow in under a minute
 
 ## 9. Recommendations
 
