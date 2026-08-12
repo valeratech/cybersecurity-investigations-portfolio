@@ -83,7 +83,7 @@ This behavior aligns with credential-based lateral movement, rather than exploit
 
 - Domain credentials extracted from a single system enabled access to sensitive internal resources
 
-- Weak password hygiene significantly increased the blast radius
+- The sub-minute dictionary crack is consistent with weak password hygiene
 
 ## Next Investigative Pivot
 

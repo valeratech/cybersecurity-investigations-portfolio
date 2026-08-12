@@ -60,13 +60,10 @@ Zeek SMB mapping logs corroborated packet-level findings:
 - **Timestamp:** `2025-05-20 18:45:29.586745Z`
 - **Initiator:** `10[.]10[.]3[.]115`
 
-This correlation confirms that the SMB activity was not incidental but part of a deliberate discovery process.
-
 ## Analytical Assessment
 
 The observed behavior demonstrates:
 - A logical progression from AD enumeration to host targeting
-- Selection of a file server likely to contain sensitive organizational data
 - Use of SMB discovery techniques to enumerate accessible resources
 
 At `2025-05-20 18:45:29.586745Z`, the compromised web server authenticated to `FILESERVER01` over SMB using `HRWEBSERVER$`. This demonstrates internal network reach from the compromised host; it does not evidence use of the tunnel-related connection initiated at 19:07:43Z.

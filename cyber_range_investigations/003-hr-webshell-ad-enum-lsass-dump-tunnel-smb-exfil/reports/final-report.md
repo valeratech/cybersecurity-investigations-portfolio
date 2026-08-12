@@ -22,7 +22,6 @@ The incident represents a **confirmed intrusion** with authenticated SMB access 
 - Malicious artifact: `mycv.aspx` (ASP.NET webshell)
 
 ### Attacker Objectives
-- Establish persistent access
 - Enumerate Active Directory
 - Harvest credentials
 - Pivot into internal systems
@@ -32,7 +31,6 @@ The incident represents a **confirmed intrusion** with authenticated SMB access 
 
 ### Hosts
 - **HR Web Server:** `HRWEBSERVER` (`10[.]10[.]3[.]115`)
-- **Domain Controller:** `DC01[.]ad[.]compliantsecure[.]store`
 - **File Server:** `FILESERVER01[.]ad[.]compliantsecure[.]store` (`10[.]10[.]11[.]216`)
 
 ### Accounts
@@ -95,12 +93,11 @@ The incident represents a **confirmed intrusion** with authenticated SMB access 
 ### Technical Impact
 - Domain credentials compromised
 - Internal network access achieved
-- SMB data access without additional exploitation
+- Authenticated SMB access to `FILESERVER01` and directory-name enumeration using recovered credentials
 
 ### Business Impact
-- Exposure of internal policy and compliance documents
-- Potential exposure of HR and financial records
-- Loss of confidentiality and increased regulatory risk
+- Internal policy and compliance document names were returned in the SMB directory listing
+- The surviving evidence records directory and file-name disclosure, not file-content access or transfer
 
 ## 8. Contributing Factors Supported by the Record
 
@@ -129,7 +126,7 @@ The incident represents a **confirmed intrusion** with authenticated SMB access 
 
 ## 10. Conclusion
 
-This investigation confirms an intrusion beginning with a web application flaw and reaching authenticated access to internal file shares. The attacker leveraged well-known techniques executed with discipline, highlighting how a single exposed application can lead to enterprise-wide compromise when layered defenses are insufficient.
+This investigation confirms an intrusion beginning with a web application flaw and reaching authenticated access to internal file shares. The intrusion progressed from compromise of the exposed web application to authenticated access to an internal file share using recovered credentials.
 
 This case demonstrates the critical importance of defense-in-depth, credential hygiene, and internal monitoring.
 

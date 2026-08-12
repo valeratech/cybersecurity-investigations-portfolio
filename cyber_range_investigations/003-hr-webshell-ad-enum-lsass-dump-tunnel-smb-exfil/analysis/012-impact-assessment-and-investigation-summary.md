@@ -10,9 +10,9 @@ This document provides a consolidated assessment of the intrusion, including the
 
 ## Executive Summary
 
-The investigation confirmed a multi-stage intrusion beginning with exploitation of a web application vulnerability and culminating in authenticated access to an internal file share and enumeration of its directories and filenames. The attacker demonstrated deliberate tradecraft, progressing from web compromise to credential harvesting, lateral movement, and filename discovery.
+The investigation confirmed a multi-stage intrusion beginning with exploitation of a web application vulnerability and culminating in authenticated access to an internal file share and enumeration of its directories and filenames. The intrusion progressed from web compromise to credential harvesting, lateral movement, and filename discovery.
 
-This was a **confirmed breach**, not an attempted intrusion.
+This was a **confirmed compromise** with successful command execution and authenticated internal SMB access, not merely an attempted intrusion.
 
 ## Confirmed Findings and Attack Chain Overview
 
@@ -51,8 +51,7 @@ This was a **confirmed breach**, not an attempted intrusion.
 - Internal File Server (`FILESERVER01`)
 
 ### Data Exposed
-- Corporate policy documentation
-- Potential access to HR and Finance records
+- Corporate policy document names returned in the SMB directory listing
 - No file read or transfer volume is recorded in the surviving evidence
 
 ## Security Impact Assessment
@@ -61,9 +60,8 @@ This was a **confirmed breach**, not an attempted intrusion.
 - Credential theft enabled authenticated SMB access to `FILESERVER01` as `michael`
 
 ### Business Impact
-- Exposure of internal corporate documentation
-- Potential regulatory exposure (HR/Finance data)
-- Loss of confidentiality and trust
+- Internal corporate document names were returned in the SMB directory listing
+- The surviving evidence records directory and file-name disclosure, not file-content access or transfer
 
 ## Contributing Factors Supported by the Record
 
@@ -72,14 +70,14 @@ This was a **confirmed breach**, not an attempted intrusion.
 
 ## Lessons Learned
 
-- Web application compromise can quickly escalate to full domain breach
+- Web application compromise progressed to authenticated access to one internal file server
 - LSASS dumping remains a highly effective credential theft method
 - Tunnel-based pivoting enables stealthy lateral movement
 - Preventative controls are far more effective than detection alone
 
 ## Investigation Conclusion
 
-This investigation confirms an intrusion reaching authenticated enumeration of an internal file share. The attacker demonstrated methodical execution, leveraging common but effective techniques at each stage of the kill chain. Defensive failures at multiple layers enabled escalation from a single web vulnerability to internal file share access.
+This investigation confirms an intrusion reaching authenticated enumeration of an internal file share. The intrusion progressed from compromise of the exposed web application to authenticated access to an internal file share using recovered credentials.
 
 **Next file:**  
 `reports/final-report.md`

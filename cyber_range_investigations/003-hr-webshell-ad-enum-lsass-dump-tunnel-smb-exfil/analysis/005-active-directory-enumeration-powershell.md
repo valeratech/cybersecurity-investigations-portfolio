@@ -77,10 +77,7 @@ The use of:
 - In-memory PowerShell execution
 - Domain metadata retrieval consistent with LDAP-backed enumeration
 
-Demonstrates deliberate and informed Active Directory reconnaissance. This activity strongly indicates preparation for:
-- Credential targeting
-- Lateral movement
-- Access to file servers and sensitive resources
+The recorded sequence places PowerView domain enumeration before LSASS credential access and the later authenticated SMB activity.
 
 ## Impact on Investigation Flow
 

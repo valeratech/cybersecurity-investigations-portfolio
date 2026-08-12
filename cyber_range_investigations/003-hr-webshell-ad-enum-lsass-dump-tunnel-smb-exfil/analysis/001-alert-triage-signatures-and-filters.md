@@ -105,7 +105,7 @@ The RDP scanning activity is attributed to **Nmap**. The earlier HTTP reconnaiss
 
 ## Analytical Conclusion
 
-Alert triage confirms a deliberate attack lifecycle:
+Alert triage records reconnaissance preceding exploitation activity:
 1. Web reconnaissance against HR application
 2. Enumeration of server environment and directories
 3. Service and port scanning using Nmap
