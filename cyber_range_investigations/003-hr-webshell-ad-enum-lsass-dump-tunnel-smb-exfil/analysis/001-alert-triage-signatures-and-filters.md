@@ -44,7 +44,7 @@ The following alert signatures were observed and considered relevant to the inve
 
 Numerous additional alerts related to reputation feeds (CINS, Spamhaus, DShield) were observed but treated as **contextual noise** unless correlated with confirmed attacker behavior.
 
-Signature attribution note: the surviving notes transcribe a source IP for three alert records only. The remaining signatures above appear in the aggregated census as counts, without a recorded source.
+Signature attribution note: the surviving notes transcribe `3[.]68[.]76[.]39` as the source for four of the signatures above. Three are reconnaissance records; the fourth is the webshell-upload alert associated with the initial-access event. The remaining signatures above appear in the aggregated census as counts, without a recorded source.
 
 ## High-Confidence Web Reconnaissance Indicators
 
@@ -58,7 +58,7 @@ Signature attribution note: the surviving notes transcribe a source IP for three
 - **Behavior:** Attempts to access legacy or sensitive directories
 - **Assessment:** Directory enumeration behavior
 
-The three fully transcribed alert records identify `3[.]68[.]76[.]39` as the source. Two record HTTP probing of the HR web server; the third records RDP service scanning against the same host.
+The three source-attributed reconnaissance records identify `3[.]68[.]76[.]39` as the source. Two record HTTP probing of the HR web server; the third records RDP service scanning against the same host.
 
 ## Attacker IP Identification
 
@@ -68,7 +68,7 @@ The three fully transcribed alert records identify `3[.]68[.]76[.]39` as the sou
 - **Destination Port:** `80`
 - **Protocol:** HTTP
 
-The three source-attributed records comprise:
+The three source-attributed reconnaissance records comprise:
 - Directory probing — `GPL WEB_SERVER /~root access`, `18:15:52.008Z`
 - Environment enumeration — `GPL WEB_SERVER printenv access`, `18:15:59.437Z`
 - RDP service scanning — `ET SCAN RDP Connection Attempt from Nmap`, `18:20:46.193Z`
@@ -98,7 +98,7 @@ The RDP scanning activity is attributed to **Nmap**. The earlier HTTP reconnaiss
 
 ## Key Findings from Alert Triage
 
-- The three fully transcribed alert records identify the same source IP, `3[.]68[.]76[.]39`, targeting the same host
+- The three source-attributed reconnaissance records identify the same source IP, `3[.]68[.]76[.]39`, targeting the same host
 - Reconnaissance precedes exploitation behavior
 - Alerts escalate from directory enumeration to upload-based exploitation
 - The same source IP progresses from web probing to RDP service scanning against that host
