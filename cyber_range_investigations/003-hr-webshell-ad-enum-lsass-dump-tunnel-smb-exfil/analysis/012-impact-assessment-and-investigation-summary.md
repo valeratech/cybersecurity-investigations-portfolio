@@ -68,12 +68,10 @@ This was a **confirmed compromise** with successful command execution and authen
 - The upload path accepted the ASPX webshell
 - Michael's credential was recovered through the recorded dictionary-cracking workflow in under a minute
 
-## Lessons Learned
+## Investigation Takeaways
 
-- Web application compromise progressed to authenticated access to one internal file server
-- LSASS dumping remains a highly effective credential theft method
-- Tunnel-based pivoting enables stealthy lateral movement
-- Preventative controls are far more effective than detection alone
+- **Case finding:** Web application compromise progressed to authenticated access to one internal file server
+- **General commentary:** LSASS dumping remains a highly effective credential theft method
 
 ## Investigation Conclusion
 

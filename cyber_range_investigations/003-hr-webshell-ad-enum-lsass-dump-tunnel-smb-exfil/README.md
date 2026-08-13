@@ -155,7 +155,6 @@ Detailed evidence handling, integrity notes, and platform constraints are docume
 
 ## 7. Case Status
 
-**Status:** Complete  
-**Confidence Level:** High  
+**Status:** Complete
 
 **End of Investigation README**

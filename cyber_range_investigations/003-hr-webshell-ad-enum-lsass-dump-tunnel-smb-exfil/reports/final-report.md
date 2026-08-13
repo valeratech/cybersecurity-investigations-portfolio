@@ -128,8 +128,6 @@ The incident represents a **confirmed intrusion** with authenticated SMB access 
 
 This investigation confirms an intrusion beginning with a web application flaw and reaching authenticated access to internal file shares. The intrusion progressed from compromise of the exposed web application to authenticated access to an internal file share using recovered credentials.
 
-This case demonstrates the critical importance of defense-in-depth, credential hygiene, and internal monitoring.
-
 ## Related Documents
 
 - [Case Overview](../README.md)
