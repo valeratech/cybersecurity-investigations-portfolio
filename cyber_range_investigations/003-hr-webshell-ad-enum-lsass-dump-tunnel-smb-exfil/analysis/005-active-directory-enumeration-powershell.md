@@ -72,11 +72,6 @@ The CyberRange identified LDAP as the protocol used for the directory enumeratio
 
 ## Analytical Assessment
 
-The use of:
-- PowerView.ps1
-- In-memory PowerShell execution
-- Domain metadata retrieval consistent with LDAP-backed enumeration
-
 The recorded sequence places PowerView domain enumeration before LSASS credential access and the later authenticated SMB activity.
 
 ## Impact on Investigation Flow
