@@ -18,9 +18,9 @@ All timestamps referenced below are treated as **UTC**.
 
 ## Credential Access Technique Overview
 
-After identifying internal targets via SMB discovery, the attacker initiated a credential harvesting technique by dumping the Local Security Authority Subsystem Service (LSASS) process memory on the compromised web server.
+The attacker dumped the Local Security Authority Subsystem Service (LSASS) process memory on the compromised web server.
 
-LSASS stores sensitive authentication material, including:
+**Range-provided context:** LSASS stores sensitive authentication material, including:
 - NTLM password hashes
 - Kerberos tickets
 - Cached credentials
@@ -46,16 +46,13 @@ $env:TEMP\lsass.dmp full"
 - **Target Process:** `lsass.exe`
 - **Output File:** `lsass.dmp`
 
-This technique leverages a legitimate Windows DLL to perform a memory dump, reducing reliance on third-party tooling and increasing stealth.
-
 ## Network Evidence of Dump Activity
 
 Wireshark inspection of HTTP POST parameters revealed:
 - The full PowerShell command embedded in the request body
 - Execution occurring via the webshell endpoint
-- No evidence of upload blocking or execution failure
 
-This confirms the dump was initiated successfully on the host.
+The later HTTP response for `lsass.dmp` records `Content-Length: 41377812`, establishing that the dump file was produced.
 
 ## Dump File Handling
 
@@ -63,26 +60,16 @@ Following dump creation:
 - The file `lsass.dmp` was written to the Windows temporary directory
 - The attacker later accessed the webshell's file browser functionality to retrieve the dump file
 
-This behavior indicates intent to perform **offline credential extraction** rather than live credential abuse.
+The observed command creates an LSASS memory dump; the surviving record does not establish the attacker's intended post-dump use.
 
 ## Analytical Assessment
 
-The use of:
-- A built-in Windows binary (`rundll32.exe`)
-- A native DLL (`comsvcs.dll`)
-- In-memory PowerShell execution
-
-Demonstrates a **living-off-the-land** approach to credential access. This technique is commonly used to evade endpoint detection and minimize forensic footprint.
-
-At this point in the attack:
-- The attacker no longer relied solely on webshell access
-- Credential material was harvested for broader network access
+**Analyst interpretation:** the observed command invokes `rundll32.exe` and `comsvcs.dll` through PowerShell, which is consistent with a **living-off-the-land** approach to credential access.
 
 ## Impact on Investigation Flow
 
 Successful LSASS dumping explains:
 - Subsequent authenticated SMB access using domain user credentials
-- The attacker's ability to pivot further into the internal network
 - Later SMB share enumeration activity
 
 ## Next Investigative Pivot
