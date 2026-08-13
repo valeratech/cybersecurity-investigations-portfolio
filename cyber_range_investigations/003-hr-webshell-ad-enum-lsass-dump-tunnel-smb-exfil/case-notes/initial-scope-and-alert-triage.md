@@ -13,10 +13,9 @@ This document captures the initial scope of the investigation and the first roun
 ### Assets in Scope
 - Public-facing HR website: `hr[.]compliantsecure[.]store`
 - Backend web server: `HRWEBSERVER` (`10[.]10[.]3[.]115`)
-- Associated internal infrastructure reachable from the web server
 - Network traffic contained within the provided PCAP
 
-### Assets Explicitly Out of Scope (Initial Phase)
+### Areas Not Covered by This Triage
 - End-user endpoints not communicating with the HR web server
 - Email or non-network-based attack vectors
 - Infrastructure not visible within the PCAP dataset
@@ -27,12 +26,12 @@ The investigation was initiated after reviewing IDS alerts indicating suspicious
 
 - Web directory and environment enumeration
 - Attempts to access sensitive server paths
-- Signs of automated reconnaissance
+- Signs of web reconnaissance
 - Indicators consistent with web exploitation attempts
 
 ## Alert Triage Summary
 
-Initial triage was conducted by aggregating Suricata alerts by `alert.signature`. The following alert categories were observed and deemed relevant to the investigation:
+Initial triage was conducted by aggregating Suricata alerts by `alert.signature`. The following alert signatures were observed and deemed relevant to the investigation:
 
 ### Notable Web-Related Alerts
 - `GPL WEB_SERVER printenv access`
@@ -41,20 +40,22 @@ Initial triage was conducted by aggregating Suricata alerts by `alert.signature`
 - `ET WEB_SERVER WEB-PHP phpinfo access`
 - `ET WEB_SERVER WebShell Generic - ASP File Uploaded`
 
-These alerts are commonly associated with:
+Source attribution at this stage: of the signatures above, two are accompanied in the initial triage record by alert records that identify a source — `GPL WEB_SERVER printenv access` and `GPL WEB_SERVER /~root access`. The remaining three appear here as signature counts only.
+
+Analyst interpretation: these signature types are generally associated with:
 - Web server reconnaissance
 - Attempts to enumerate environment variables and configuration files
 - Discovery or exploitation of misconfigured or vulnerable web applications
 
 ## Attacker Attribution (Preliminary)
 
-Multiple high-confidence alerts shared a common source IP address:
+The two source-attributed web alerts in this triage shared a common source IP address:
 
 - **Suspected attacker IP:** `3[.]68[.]76[.]39`
 - **Target system:** `10[.]10[.]3[.]115` (HRWEBSERVER)
 - **Protocol:** HTTP over TCP/80
 
-This IP was repeatedly observed performing actions consistent with directory enumeration and reconnaissance against the HR web application.
+The two source-attributed alerts record web probing consistent with directory and environment enumeration against the HR web application from this source.
 
 ## Key Alert Evidence (Examples)
 
@@ -70,11 +71,9 @@ This IP was repeatedly observed performing actions consistent with directory enu
 - **Destination IP:** 10[.]10[.]3[.]115  
 - **Category:** Attempted Information Leak  
 
-These alerts strongly suggest intentional probing of the web server rather than benign user activity.
-
 ## Initial Assessment
 
-Based on alert frequency, consistency, and behavior patterns, the activity originating from `3[.]68[.]76[.]39` was assessed as **malicious reconnaissance** rather than false positives or misconfiguration noise.
+Based on the two source-attributed web alerts described above, the activity originating from `3[.]68[.]76[.]39` was assessed as **malicious reconnaissance**.
 
 At this stage, the working hypothesis was:
 > The HR web server is being actively targeted, and the attacker may be attempting to discover or exploit a web-based vulnerability.
