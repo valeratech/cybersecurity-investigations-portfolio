@@ -69,7 +69,7 @@ This activity confirms successful lateral movement, not just credential testing.
 
 Key findings:
 
-- SMB authentication occurred shortly after tunnel establishment
+- SMB authentication occurred shortly after the tunnel-related connection was initiated
 
 - Authentication used cracked credentials rather than system account tokens
 

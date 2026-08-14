@@ -49,7 +49,7 @@ Evidence-handling notes for artifacts excluded from version control: [pcaps](pca
 Investigate initial access via the HR job application portal, identify attacker activity (reconnaissance, exploitation, credential access), trace lateral movement into the internal network, and determine which internal directories and filenames were exposed through SMB enumeration.
 
 ### Scenario Summary
-The website `hr[.]compliantsecure[.]store`, used for handling job applications, was exploited via an unrestricted file upload vulnerability. The attacker uploaded a hidden webshell, used it for host and network reconnaissance, performed Active Directory enumeration, dumped LSASS process memory to extract credentials, established a tunnel for internal pivoting, authenticated to SMB shares on an internal file server, and enumerated sensitive directories and observed filenames in the resulting listing.
+The website `hr[.]compliantsecure[.]store`, used for handling job applications, was exploited via an unrestricted file upload vulnerability. The attacker uploaded a hidden webshell, performed Active Directory enumeration, dumped LSASS process memory, initiated a tunnel-related connection to a remote host, and authenticated to an internal file server over SMB. Subsequent SMB responses listed directories and filenames.
 
 ### Key Focus Areas
 - Network forensics (PCAP-based analysis)
