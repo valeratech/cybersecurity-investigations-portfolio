@@ -10,6 +10,10 @@
 This file documents **all evidence sources made available during the investigation**, including their origin, scope, and any limitations.  
 It serves as a lightweight **chain-of-custody and evidence inventory record** suitable for DFIR reporting and portfolio review.
 
+## Investigation Scope
+
+This investigation was conducted as a structured CyberRange question set using the artifacts available within the range. The investigation concluded when the final question was answered. Evidence or analysis outside the scope of those questions was not collected and is not treated as missing or pending investigative work.
+
 ## Evidence Acquisition Context
 
 - Evidence was **provided by the CyberDefenders CyberRange**
