@@ -158,7 +158,13 @@ If this activity had occurred in a production environment, it would warrant:
 - User-level persistence is sufficient for long-term access
 - Host-based telemetry is critical when network visibility is limited
 
-## 12. Conclusion
+## 12. Limitations
+
+- **Range-supplied context.** Some investigation context originates in CyberRange scenario and question premises rather than independently preserved telemetry. Such context should be interpreted according to that provenance unless the surviving record independently corroborates it.
+- **Claim strength.** Some causal and technical characterizations are not independently demonstrated by the surviving artifacts and should not be read as direct observations.
+- **Bounded record.** Interpretation of this report is bounded by the completed question-set record.
+
+## 13. Conclusion
 
 The investigation conclusively identified a phishing-driven exploitation chain resulting in persistent compromise of a user workstation. Evidence supports deliberate attacker actions consistent with real-world tradecraft, including exploitation of known vulnerabilities, stealthy execution, redundancy in persistence, and covert command-and-control communication.
 
