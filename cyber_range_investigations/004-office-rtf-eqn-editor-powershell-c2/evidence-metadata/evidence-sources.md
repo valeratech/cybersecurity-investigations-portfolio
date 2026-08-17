@@ -146,7 +146,8 @@ Presence of collected artifacts indicates use of an automated triage framework.
 
 - Evidence files were analyzed **read-only**
 - No modification of original artifacts occurred
-- Hash values were not provided as part of the CyberRange scenario
+- Hash values survive in the notes only where Sysmon process-creation records embedded them for Windows system binaries; they are incidental to the questions those records answered and are not treated as case indicators
+- Hashing the malicious document, script, and downloaded executable was outside the question set and formed no part of the investigation
 - All evidence paths and timestamps are recorded as provided
 
 ## Summary
