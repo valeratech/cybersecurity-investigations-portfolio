@@ -42,6 +42,8 @@
 Determine initial access, exploit chain, execution, persistence mechanisms, and C2 details associated with a malicious RTF delivered via a spoofed Microsoft 365 portal.
 
 ### Scenario Summary
+This section presents CyberRange-supplied scenario context. Statements in it should not be read as independently observed telemetry unless corroborated elsewhere in the completed case record.
+
 AlphaFinance Group detected suspicious activity after a finance employee accessed a spoofed Microsoft 365 portal. Shortly after, unusual PowerShell activity, persistence mechanisms (Run key + Startup folder), and outbound encrypted traffic to an external host were observed. This investigation analyzes disk and host telemetry artifacts to confirm attacker tradecraft and identify key indicators.
 
 ### Key Focus Areas

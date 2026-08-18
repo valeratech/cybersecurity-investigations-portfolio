@@ -15,7 +15,7 @@ AlphaFinance Group identified suspicious activity originating from a finance dep
 
 Post-exploitation activity included execution of a PowerShell dropper, process masquerading, multiple discovery commands, redundant persistence mechanisms, and outbound command-and-control (C2) communications over non-standard ports.
 
-The attacker demonstrated intent to maintain long-term access using user-level persistence and encrypted outbound traffic.
+The attacker demonstrated intent to maintain long-term access using user-level persistence and outbound command-and-control communications.
 
 ## 2. Investigation Scope & Objectives
 
@@ -69,14 +69,14 @@ Following exploitation, a PowerShell script (`msupdate.ps1`) was dropped into th
 ## 5. Post-Exploitation Activity
 
 ### Discovery Commands
-The attacker executed multiple built-in Windows commands to gather host and network information:
+The case record covers multiple built-in Windows commands used for host and network discovery:
 
-- `whoami`
-- `ipconfig /all`
-- `ping`
-- `netstat`
+- `whoami` — CyberRange question premise; no process record for it is present in the completed Q/A record
+- `ipconfig /all` — Sysmon EID 1
+- `ping` — Sysmon EID 1
+- `netstat` — Sysmon EID 1
 
-These commands indicate situational awareness and internal reconnaissance following successful exploitation.
+The observed `ipconfig`, `ping`, and `netstat` commands support host and network discovery during subsequent activity.
 
 ### Process Masquerading
 Execution behavior showed evidence of process spoofing using a benign Windows process name, likely intended to evade detection.

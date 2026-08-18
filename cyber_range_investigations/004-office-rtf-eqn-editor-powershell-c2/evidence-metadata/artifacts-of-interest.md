@@ -107,11 +107,11 @@ The Office version below is observed from the SOFTWARE hive. The Word and Equati
 
 ## Command & Discovery Artifacts
 
-### Post-Exploitation Commands Observed
+### Discovery Commands
 
 | Command | Purpose | Evidence |
 |-------|---------|---------|
-| `whoami` | User context discovery | Sysmon EID 1 |
+| `whoami` | User context discovery | CyberRange question premise |
 | `ipconfig /all` | Network configuration discovery | Sysmon EID 1 |
 | `ping` | Connectivity testing | Sysmon EID 1 |
 | `netstat` | Network connection discovery | Sysmon EID 1 |
