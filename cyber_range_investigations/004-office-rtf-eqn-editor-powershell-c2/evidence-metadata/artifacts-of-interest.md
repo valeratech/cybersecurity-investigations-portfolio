@@ -44,14 +44,15 @@ It acts as a single reference point for:
 
 ## Exploited Component
 
-| Attribute | Value |
-|---------|------|
-| Application | Microsoft Word (Office) |
-| Component | Equation Editor (`EQNEDT32.EXE`) |
-| Office Version | `15.0.4420.1017` |
-| CVE | `CVE-2017-11882` |
-| Exploit Type | Remote Code Execution via crafted RTF |
-| Macro Requirement | None |
+The Office version below is observed from the SOFTWARE hive. The Word and Equation Editor sequence is the CyberRange question premise, `CVE-2017-11882` is the answer the range recorded for it, and the exploit type is a reference description of that named CVE. No surviving process telemetry establishes the sequence on this host.
+
+| Attribute | Value | Provenance |
+|---------|------|------|
+| Application | Microsoft Word (Office) | Range premise |
+| Component | Equation Editor (`EQNEDT32.EXE`) | Range premise |
+| Office Version | `15.0.4420.1017` | Observed |
+| CVE | `CVE-2017-11882` | Range-recorded answer |
+| Exploit Type | Remote Code Execution via crafted RTF | Reference description of the CVE |
 
 ## Execution & Staging Artifacts
 

@@ -116,9 +116,9 @@ AlphaFinance Group detected suspicious activity after a finance employee accesse
 - `IT_Helpdesk`
 
 #### Exploited Software
-- Product: Microsoft Office (Word launching legacy Equation Editor)
-- Version: `15.0.4420.1017`
-- Likely exploit: `CVE-2017-11882` (Equation Editor RCE / `EQNEDT32.EXE`)
+- Product: Microsoft Office
+- Version: `15.0.4420.1017` (observed — SOFTWARE hive)
+- Exploit attribution: Word → Equation Editor (`EQNEDT32.EXE`), `CVE-2017-11882` — range-reported; the completed Q/A record contains no `WINWORD.EXE` or `EQNEDT32.EXE` process record establishing that sequence independently
 
 #### Dropper / Execution Chain (Defanged)
 - Script dropped:

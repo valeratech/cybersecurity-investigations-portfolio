@@ -105,8 +105,8 @@ This file supports **reproducibility** and explains how key events were isolated
 
 ## Summary
 
-Sysmon telemetry provided high-confidence evidence of:
-- Exploitation-driven execution
+Key execution and persistence findings covered in this analysis include:
+- PowerShell execution of `msupdate.ps1`
 - Process masquerading
 - Multiple discovery commands
 - Redundant persistence mechanisms

@@ -11,7 +11,7 @@
 
 ## 1. Executive Summary
 
-AlphaFinance Group identified suspicious activity originating from a finance department workstation following access to a spoofed Microsoft 365 portal. The investigation confirmed a phishing-based initial access vector that delivered a malicious Rich Text Format (RTF) document. Opening the document triggered exploitation of a known Microsoft Equation Editor vulnerability, resulting in remote code execution.
+AlphaFinance Group identified suspicious activity originating from a finance department workstation following access to a spoofed Microsoft 365 portal. The investigation confirmed a phishing-based initial access vector that delivered a malicious Rich Text Format (RTF) document. The CyberRange record attributes the exploitation step to a Microsoft Equation Editor vulnerability and records `CVE-2017-11882` as the answer. That attribution is range-reported; the completed Q/A record contains no Word or Equation Editor process record independently establishing the sequence.
 
 Post-exploitation activity included execution of a PowerShell dropper, process masquerading, multiple discovery commands, redundant persistence mechanisms, and outbound command-and-control (C2) communications over non-standard ports.
 
@@ -53,12 +53,12 @@ Zone.Identifier metadata confirmed the document originated from the internet.
 ## 4. Exploitation & Execution
 
 ### Exploited Application
-- Product: Microsoft Office (Word)
-- Component: Equation Editor (`EQNEDT32.EXE`)
-- Version: `15.0.4420.1017`
-- Vulnerability: `CVE-2017-11882`
+- Product: Microsoft Office
+- Component: Equation Editor (`EQNEDT32.EXE`) — range-reported attribution
+- Version: `15.0.4420.1017` — observed
+- Vulnerability: `CVE-2017-11882` — range-reported attribution
 
-The malicious RTF file exploited the Equation Editor vulnerability, allowing code execution without requiring macros or additional user interaction beyond opening the document.
+The CyberRange question set supplies the premise that opening the RTF in Word triggered the Equation Editor and exploited a known vulnerability, and records `CVE-2017-11882` as that vulnerability. The analyst notes describe the recorded CVE as an Equation Editor remote code execution issue associated with a crafted RTF; that is a description of the named CVE rather than case telemetry. No `WINWORD.EXE` or `EQNEDT32.EXE` process record is present in the completed Q/A record to establish the sequence independently.
 
 ### Execution Chain
 Following exploitation, a PowerShell script (`msupdate.ps1`) was dropped into the user's temporary directory and executed in a hidden context via `cmd.exe`. Process masquerading was observed, with execution behavior referencing a legitimate Windows binary.
@@ -166,7 +166,7 @@ If this activity had occurred in a production environment, it would warrant:
 
 ## 13. Conclusion
 
-The investigation conclusively identified a phishing-driven exploitation chain resulting in persistent compromise of a user workstation. Evidence supports deliberate attacker actions consistent with real-world tradecraft, including exploitation of known vulnerabilities, stealthy execution, redundancy in persistence, and covert command-and-control communication.
+The investigation conclusively identified a phishing-driven compromise of a user workstation, persistence mechanisms, and command-and-control activity. The exploitation step is attributed by the CyberRange record to a known vulnerability and is not independently established by preserved Word or Equation Editor process telemetry. Evidence supports deliberate attacker actions consistent with real-world tradecraft, including stealthy execution, redundancy in persistence, and covert command-and-control communication.
 
 This case highlights the continued relevance of disk forensics and host telemetry in detecting and reconstructing sophisticated endpoint intrusions.
 

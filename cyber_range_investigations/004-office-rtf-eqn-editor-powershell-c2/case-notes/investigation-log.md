@@ -129,30 +129,30 @@ Reviewed installed applications and correlated document type with execution beha
 - Google Chrome (installed but not implicated)
 
 **Finding:**  
-The RTF was opened in Microsoft Word, triggering execution of the legacy Equation Editor component.
+The question set states that opening the RTF in Microsoft Word triggered execution of the legacy Equation Editor component. No `WINWORD.EXE` or `EQNEDT32.EXE` process record is present in the completed Q/A record to corroborate that sequence independently.
 
 **Office Version Identified:**
 `15.0.4420.1017`
 
 **Conclusion:**  
-The exploit targets **Microsoft Office 2013 (15.x)**.
+The observed version string was interpreted in the analyst notes as consistent with the **Microsoft Office 2013 (15.x)** family. That the exploit targeted this build is analyst inference, not an independent observation.
 
 ### Step 6 — Identify Exploit Used
 
 **Objective:**  
 Determine which vulnerability enabled code execution.
 
-**Finding:**  
-Timeline analysis and process behavior match a known Equation Editor RCE.
+**Range-supplied premise:**  
+The question set states that a document opened in Word triggered the Equation Editor, exploiting a known vulnerability.
 
-**CVE Identified:**
+**CVE recorded by the range:**
 `CVE-2017-11882`
 
-**Description:**  
-A remote code execution vulnerability in the Microsoft Equation Editor (`EQNEDT32.EXE`) triggered via a crafted RTF file without macros.
+**Reference description of the range-recorded CVE:**  
+A remote code execution vulnerability in the Microsoft Equation Editor (`EQNEDT32.EXE`) triggered via a crafted RTF file. This describes the named CVE; it is not telemetry showing that mechanism on this host.
 
-**Conclusion:**  
-This CVE explains the observed execution chain and aligns with the Office version in use.
+**Analyst assessment:**  
+The analyst treated the recorded CVE as the likely explanatory match for the range-described Word/Equation Editor sequence and the observed Office version. The completed Q/A record contains no `WINWORD.EXE` or `EQNEDT32.EXE` process record establishing that sequence independently.
 
 ### Step 7 — Identify Dropped Script and Execution
 
@@ -222,7 +222,7 @@ Outbound connections to a non-standard port indicate **active C2 communications*
 ## Current Status
 
 - Initial access: **Confirmed**
-- Exploit chain: **Confirmed**
+- Exploit chain: **Exploitation range-reported; subsequent execution observed**
 - Persistence: **Confirmed**
 - C2 infrastructure: **Identified**
 - Evidence confidence: **High**
