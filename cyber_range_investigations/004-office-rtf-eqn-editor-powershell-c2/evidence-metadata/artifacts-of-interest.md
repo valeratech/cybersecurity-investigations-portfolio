@@ -98,12 +98,14 @@ The Office version below is observed from the SOFTWARE hive. The Word and Equati
 
 ## Process & Evasion Artifacts
 
+The CyberRange question set supplies the characterization that process spoofing was used to evade detection, and records `13852` as the spoofed-process PID. The surviving Sysmon EID 1 record independently shows PID `13852` (`notepad.exe`) as the parent of the `cmd.exe` process. That convergence does not establish that the parent was spoofed.
+
 | Attribute | Value |
 |---------|------|
-| Technique | Process spoofing |
-| Spoofed Image | `notepad.exe` |
-| Process ID | `13852` |
-| Evidence Source | Sysmon EID 1 |
+| Range-characterized technique | Process spoofing, with evasion purpose also range-supplied |
+| Range-recorded PID | `13852` |
+| Observed image at that PID | `notepad.exe` |
+| Observed relationship | Parent of the `cmd.exe` process, Sysmon EID 1 |
 
 ## Command & Discovery Artifacts
 

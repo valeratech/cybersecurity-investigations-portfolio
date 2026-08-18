@@ -13,7 +13,7 @@
 
 AlphaFinance Group identified suspicious activity originating from a finance department workstation following access to a spoofed Microsoft 365 portal. The investigation confirmed a phishing-based initial access vector that delivered a malicious Rich Text Format (RTF) document. The CyberRange record attributes the exploitation step to a Microsoft Equation Editor vulnerability and records `CVE-2017-11882` as the answer. That attribution is range-reported; the completed Q/A record contains no Word or Equation Editor process record independently establishing the sequence.
 
-Post-exploitation activity included execution of a PowerShell dropper, process masquerading, multiple discovery commands, redundant persistence mechanisms, and outbound command-and-control (C2) communications over non-standard ports.
+Post-exploitation activity included execution of a PowerShell dropper, range-characterized process spoofing, multiple discovery commands, redundant persistence mechanisms, and outbound command-and-control (C2) communications over non-standard ports.
 
 The attacker demonstrated intent to maintain long-term access using user-level persistence and outbound command-and-control communications.
 
@@ -61,7 +61,7 @@ Zone.Identifier metadata confirmed the document originated from the internet.
 The CyberRange question set supplies the premise that opening the RTF in Word triggered the Equation Editor and exploited a known vulnerability, and records `CVE-2017-11882` as that vulnerability. The analyst notes describe the recorded CVE as an Equation Editor remote code execution issue associated with a crafted RTF; that is a description of the named CVE rather than case telemetry. No `WINWORD.EXE` or `EQNEDT32.EXE` process record is present in the completed Q/A record to establish the sequence independently.
 
 ### Execution Chain
-Following exploitation, a PowerShell script (`msupdate.ps1`) was dropped into the user's temporary directory and executed in a hidden context via `cmd.exe`. Process masquerading was observed, with execution behavior referencing a legitimate Windows binary.
+Following exploitation, a PowerShell script (`msupdate.ps1`) was dropped into the user's temporary directory and executed in a hidden context via `cmd.exe`. The surviving Sysmon record shows `notepad.exe` as the parent of the `cmd.exe` process; the CyberRange characterizes that relationship as process spoofing.
 
 - Script Creation Time: `2025-05-23 11:15:43 UTC`
 - Execution Evidence: Sysmon process creation events
@@ -78,8 +78,8 @@ The case record covers multiple built-in Windows commands used for host and netw
 
 The observed `ipconfig`, `ping`, and `netstat` commands support host and network discovery during subsequent activity.
 
-### Process Masquerading
-Execution behavior showed evidence of process spoofing using a benign Windows process name, likely intended to evade detection.
+### Process Spoofing
+The CyberRange question set states that process spoofing was used to evade detection and records `13852` as the spoofed-process PID. The surviving Sysmon record establishes that PID `13852`, running `notepad.exe`, is the parent of the `cmd.exe` process that launched the PowerShell script. Both the characterization and the evasion purpose are range-supplied; the record establishes the process relationship.
 
 ## 6. Persistence Mechanisms
 

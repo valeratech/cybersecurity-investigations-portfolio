@@ -174,7 +174,7 @@ A PowerShell script was dropped to the user's TEMP directory.
 **Execution Behavior:**
 - Launched via hidden PowerShell
 - Spawned through `cmd.exe`
-- Process spoofing observed (notepad referenced)
+- Range-characterized process spoofing; the surviving record shows `notepad.exe` (PID `13852`) as the parent of the `cmd.exe` process
 
 **Conclusion:**  
 `msupdate.ps1` represents the **primary execution and staging script**.

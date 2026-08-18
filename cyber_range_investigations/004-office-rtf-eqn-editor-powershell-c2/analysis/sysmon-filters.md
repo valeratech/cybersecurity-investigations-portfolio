@@ -45,9 +45,8 @@ This file supports **reproducibility** and explains how key events were isolated
 - Hidden PowerShell execution launched via `cmd.exe`
 - Script executed:
   - `C:\Users\harrisr\AppData\Local\Temp\msupdate.ps1`
-- Process spoofing observed:
-  - `notepad.exe` referenced as a masqueraded process
-  - Associated Process ID: `13852`
+- Observed process relationship: `notepad.exe` (PID `13852`) → `cmd.exe` (PID `15088`)
+- Range-characterized as process spoofing; the Sysmon record establishes the parent/child relationship, not the characterization
 
 ## Event ID 3 — Network Connection
 
@@ -107,7 +106,7 @@ This file supports **reproducibility** and explains how key events were isolated
 
 Key execution and persistence findings covered in this analysis include:
 - PowerShell execution of `msupdate.ps1`
-- Process masquerading
+- Range-characterized process spoofing associated with the observed parent/child process relationship
 - Multiple discovery commands
 - Redundant persistence mechanisms
 - Command-and-control communications over non-standard ports

@@ -126,8 +126,8 @@ AlphaFinance Group detected suspicious activity after a finance employee accesse
 - Script dropped:
   - `C:\Users\harrisr\AppData\Local\Temp\msupdate.ps1`
   - Created: `2025-05-23 11:15:43 UTC` (MFT)
-- Process spoofing observed:
-  - Spoofed process PID: `13852` (notepad process referenced in logs)
+- Range-characterized process spoofing:
+  - Range-recorded spoofed-process PID: `13852`, which also appears in the surviving Sysmon record as the parent PID of the `cmd.exe` process
 
 **Encoded persistence command decoded (DEFANGED / non-executable representation):**
 ```
