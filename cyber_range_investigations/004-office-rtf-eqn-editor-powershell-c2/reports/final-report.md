@@ -83,7 +83,7 @@ The CyberRange question set states that process spoofing was used to evade detec
 
 ## 6. Persistence Mechanisms
 
-The attacker implemented **redundant user-level persistence** mechanisms to ensure continued execution.
+The attacker created **redundant user-level persistence** mechanisms.
 
 ### Registry Run Key
 - Path: `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`
@@ -95,7 +95,7 @@ The attacker implemented **redundant user-level persistence** mechanisms to ensu
 - Path: User Startup folder
 - Creation Time: `2025-05-23 11:17:51 UTC`
 
-Both mechanisms executed hidden PowerShell commands to retrieve and execute a payload from external infrastructure.
+The Run key value preserves an encoded PowerShell command that, if executed, would retrieve a payload from external infrastructure and launch the downloaded file. The Startup folder LNK is evidenced by its file-creation event only; its target and contents are not present in the completed Q/A record. Execution of either persistence mechanism is not established by the completed Q/A record.
 
 ## 7. Command-and-Control (C2)
 
