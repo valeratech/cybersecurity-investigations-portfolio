@@ -225,7 +225,6 @@ Outbound connections to a non-standard port indicate **active C2 communications*
 - Exploit chain: **Exploitation range-reported; subsequent execution observed**
 - Persistence: **Confirmed**
 - C2 infrastructure: **Identified**
-- Evidence confidence: **High**
 
 Next steps will focus on:
 - Consolidated timeline

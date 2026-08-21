@@ -179,5 +179,4 @@ Observed ports:
 
 ## 7. Case Status
 
-**Status:** Complete  
-**Confidence Level:** High  
+**Status:** Complete

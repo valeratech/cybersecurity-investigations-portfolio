@@ -158,4 +158,4 @@ The evidence set provided sufficient coverage to:
 - Validate multiple persistence mechanisms
 - Identify external command-and-control infrastructure
 
-While constrained by the absence of full disk and memory images, the available artifacts were adequate to reconstruct attacker behavior with **high confidence**.
+While constrained by the absence of full disk and memory images, the available artifacts supported the findings summarized above.
