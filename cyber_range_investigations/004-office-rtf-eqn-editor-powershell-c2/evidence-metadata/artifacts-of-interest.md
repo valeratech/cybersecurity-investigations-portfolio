@@ -130,16 +130,32 @@ The CyberRange question set supplies the characterization that process spoofing 
 
 ## Related MITRE ATT&CK Techniques
 
-| Tactic | Technique |
-|------|-----------|
-| Initial Access | T1566 (Phishing) |
-| Execution | T1203 (Exploitation for Client Execution) |
-| Execution | T1059.001 (PowerShell) |
-| Persistence | T1547.001 (Registry Run Keys) |
-| Persistence | T1547.009 (Startup Folder) |
-| Defense Evasion | T1036 (Masquerading) |
-| Discovery | T1016, T1018 |
-| Command and Control | T1571 (Non-Standard Port) |
+Two provenance classes are published. Techniques in the first were mapped by
+the analyst from case findings; those in the second are technique tags embedded
+in the surviving Sysmon records themselves and are reproduced with their
+recorded wording.
+
+### Mapped from case findings
+
+| Tactic | Technique | Basis |
+|------|-----------|------|
+| Initial Access | T1566 (Phishing) | Observed phishing URL and download |
+| Execution | T1203 (Exploitation for Client Execution) | Range-reported exploitation only |
+| Execution | T1059.001 (PowerShell) | Observed hidden PowerShell execution |
+| Persistence | T1547.001 (Registry Run Keys / Startup Folder) | Observed Run key value and Startup folder LNK creation |
+
+### Tags embedded in the surviving Sysmon records
+
+| Technique tag | Record it appears on | Note |
+|------|-----------|------|
+| T1059.003 (Windows Command Shell) | `cmd.exe` process creation | Consistent with the record |
+| T1016 (System Network Configuration Discovery) | `ipconfig /all` | Consistent with the record |
+| T1018 (Remote System Discovery) | `ping 8[.]8[.]8[.]8` | Tag applied to an external-address ping |
+| T1053.002 (At) | `netstat` | Tag does not describe the recorded command |
+| T1547.001 (Registry Run Keys / Startup Folder) | Run key SetValue | Consistent with the record |
+| T1187 (Forced Authentication) | Startup folder LNK creation | Tag does not describe the recorded event |
+| T1218.010 (Regsvr32) | `regsvr32.exe` network connection | The connection is recorded; the proxy-execution behavior the technique describes is not established by the surviving record |
+| T1571 (Non-Standard Port) | PowerShell connection to port `4444` | The destination port is recorded; the protocol/port relationship the technique describes is not established by the surviving record |
 
 ## Indicator Provenance
 
