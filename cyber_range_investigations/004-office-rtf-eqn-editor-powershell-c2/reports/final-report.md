@@ -4,7 +4,7 @@
 **Case Title:** Office RTF (Equation Editor) → PowerShell Persistence → C2  
 **Case ID:** 004-office-rtf-eqn-editor-powershell-c2  
 **Documentation Started:** 2026-01-25  
-**Documentation Last Updated:** 2026-01-25  
+**Documentation Last Updated:** 2026-09-03  
 **Author:** Ryan Valera  
 **Time Standard:** UTC  
 **Source Platform:** CyberDefenders CyberRange  
