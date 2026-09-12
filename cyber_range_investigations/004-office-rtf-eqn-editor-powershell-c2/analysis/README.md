@@ -6,10 +6,11 @@
 
 ## Purpose of This Directory
 
-The `analysis/` directory contains **reproducible analytical artifacts** used to derive findings in Case 004.  
-Files here prioritize **exact detection logic and filters** over narrative explanation.
+The `analysis/` directory documents the **detection logic and filter criteria**
+applied during Case 004. The filter lists are reconstructions of the process
+the notes describe, not preserved filter syntax.
 
-Reproducible commands and queries are in `../scripts/`.
+Command and query syntax preserved in the notes is in `../scripts/`.
 
 Narrative context and conclusions are documented in:
 - `case-notes/`

@@ -6,9 +6,10 @@
 
 ## Purpose of This Directory
 
-The `scripts/` directory contains **reproducible commands and queries** used to
-derive findings in Case 004. Files here prioritize **exact syntax** over
-narrative explanation.
+The `scripts/` directory records the **command and query syntax preserved in
+the surviving analyst notes** for Case 004. The syntax itself is preserved;
+the surrounding headings and explanatory labels are documentation written for
+this repository.
 
 Narrative context and conclusions are documented in `case-notes/` and
 `reports/final-report.md`. Analytical logic and filters are documented in
@@ -19,11 +20,11 @@ Narrative context and conclusions are documented in `case-notes/` and
 ### `edge-sql-queries.sql`
 
 **Purpose:**  
-Reproducible SQLite queries used to validate:
+Records the two Microsoft Edge SQLite statements preserved in the analyst
+notes, used to identify:
 
 - Phishing URL access
 - Malicious RTF download
-- Correlation between URL visits and downloads
 
 **Evidence Sources:**  
 Microsoft Edge Chromium databases under:  
@@ -38,7 +39,7 @@ Records the exact `MFTECmd` command used to extract NTFS `$MFT` data.
 
 - File creation and modification timestamps
 - Zone.Identifier (Mark-of-the-Web) validation
-- Script and payload discovery
+- Script artifact discovery
 - LNK artifact correlation
 
 ## Usage Notes

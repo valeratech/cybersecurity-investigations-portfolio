@@ -13,7 +13,10 @@ This document records the **Sysmon event IDs, filters, and search logic** used t
 - Persistence mechanisms
 - Command-and-control communications
 
-This file supports **reproducibility** and explains how key events were isolated from Sysmon telemetry.
+The filter criteria below describe how events were isolated. The surviving
+notes record which event IDs and search terms were used; the enumerated filter
+lists in this document are reconstructions of that process, not preserved
+filter syntax.
 
 ## Sysmon Event IDs Used
 
@@ -112,4 +115,4 @@ Key execution and persistence findings covered in this analysis include:
 - Two persistence artifacts created
 - Command-and-control communications over non-standard ports
 
-These findings were corroborated with disk and registry artifacts.
+The script creation timestamp is corroborated by the NTFS $MFT. The discovery commands and the network connections are supported by Sysmon telemetry alone.
