@@ -63,7 +63,8 @@ This file supports **reproducibility** and explains how key events were isolated
 ### Key Findings
 - Outbound TCP connection to non-standard port `4444` established by PowerShell
 - Secondary outbound connection to port `8080` observed via `regsvr32.exe`
-- Network activity occurred shortly after payload execution
+- Outbound connections at `10:53:53` and `10:54:02` precede the observed
+  creation of `msupdate.ps1` at `11:15:43`; no surviving artifact links them
 
 ## Event ID 11 — File Creation
 

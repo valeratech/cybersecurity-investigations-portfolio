@@ -36,9 +36,11 @@ This timeline consolidates **browser artifacts, NTFS $MFT data, registry activit
 
 - Initial access and payload delivery occurred within **23 seconds**
 - External network communication was observed **before** overt discovery commands
-- Persistence mechanisms were created **within ~2 minutes** of script creation
-- Multiple discovery commands indicate **post-exploitation situational awareness**
-- Redundant persistence suggests intent for **long-term access**
+- Outbound connections at `10:53:53` and `10:54:02` precede the creation of
+  `msupdate.ps1` at `11:15:43`; the later of the two by 21 minutes 41 seconds
+- Three discovery commands were observed between `10:59:18` and `10:59:48`
+- The two persistence artifacts were created 0.653 seconds apart, at the
+  preserved values `11:17:50.508` and `11:17:51.161`
 
 ## Limitations and Notes
 

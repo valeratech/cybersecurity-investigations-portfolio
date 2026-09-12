@@ -61,7 +61,7 @@ Zone.Identifier metadata confirmed the document originated from the internet.
 The CyberRange question set supplies the premise that opening the RTF in Word triggered the Equation Editor and exploited a known vulnerability, and records `CVE-2017-11882` as that vulnerability. The analyst notes describe the recorded CVE as an Equation Editor remote code execution issue associated with a crafted RTF; that is a description of the named CVE rather than case telemetry. No `WINWORD.EXE` or `EQNEDT32.EXE` process record is present in the completed Q/A record to establish the sequence independently.
 
 ### Execution Chain
-Following exploitation, a PowerShell script (`msupdate.ps1`) was dropped into the user's temporary directory and executed in a hidden context via `cmd.exe`. The surviving Sysmon record shows `notepad.exe` as the parent of the `cmd.exe` process; the CyberRange characterizes that relationship as process spoofing.
+The CyberRange question set supplies the premise that the detected exploit dropped `msupdate.ps1`. The surviving record establishes that the script was created at `11:15:43` and launched in a hidden context via `cmd.exe` at `11:17:44`; it preserves neither the script's contents nor any artifact linking its creation to an exploit process. The Sysmon record shows `notepad.exe` as the parent of the `cmd.exe` process; the CyberRange characterizes that relationship as process spoofing.
 
 - Script Creation Time: `2025-05-23 11:15:43 UTC`
 - Execution Evidence: Sysmon process creation events
