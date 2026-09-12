@@ -142,24 +142,29 @@ provenance distinction.
 
 ## 10. Assessment & Impact
 
-This incident represents a **high-risk compromise** involving:
-- Client-side exploitation
-- Arbitrary code execution
-- Multiple persistence mechanisms
-- Active external C2 communications
+This section records the analyst's risk assessment. It is not an observed
+impact finding; the surviving record establishes artifacts and activity, not
+consequences.
 
-If this activity had occurred in a production environment, it would warrant:
+Assessed as high risk on the surviving record, involving:
+- Range-reported client-side exploitation
+- Observed hidden PowerShell execution
+- Two persistence mechanisms created
+- Outbound connections to external infrastructure
+
+In a production environment this activity would warrant:
 - Immediate host isolation
-- Credential reset for affected user
+- Credential reset for the affected user
 - Enterprise-wide IOC sweeping
 - Review of Office patch levels
 
 ## 11. Lessons Learned
 
-- Legacy Office components remain high-risk when unpatched
-- RTF-based exploits continue to be effective phishing payloads
-- User-level persistence is sufficient for long-term access
-- Host-based telemetry is critical when network visibility is limited
+Lessons drawn from the handling of this case record:
+- Range-supplied premises and analyst inference must be separated from observed telemetry at the point of publication
+- Creation of a persistence artifact is not evidence that it executed
+- Correlating disk metadata with host telemetry established the chronology that a single source would not have
+- Technique tags embedded in telemetry require independent checking before they are republished as findings
 
 ## 12. Limitations
 
@@ -169,7 +174,7 @@ If this activity had occurred in a production environment, it would warrant:
 
 ## 13. Conclusion
 
-The investigation conclusively identified a phishing-driven compromise of a user workstation, persistence mechanisms, and command-and-control activity. The exploitation step is attributed by the CyberRange record to a known vulnerability and is not independently established by preserved Word or Equation Editor process telemetry. Evidence supports deliberate attacker actions consistent with real-world tradecraft, including stealthy execution, redundancy in persistence, and covert command-and-control communication.
+The investigation identified a phishing-driven compromise of a user workstation, two created persistence mechanisms, and outbound command-and-control activity. The exploitation step is attributed by the CyberRange record to a known vulnerability and is not independently established by preserved Word or Equation Editor process telemetry. The observed activity is consistent with deliberate attacker action, including hidden execution, redundancy in persistence, and outbound traffic to a single external host on two recorded ports.
 
 This case highlights the continued relevance of disk forensics and host telemetry in detecting and reconstructing sophisticated endpoint intrusions.
 
