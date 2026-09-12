@@ -107,7 +107,7 @@ System-wide software configuration and installed application data.
 
 **Evidence Value:**
 - Installed Microsoft Office version identification
-- Validation of vulnerable Office build (15.x)
+- Identification of the installed Microsoft Office build (15.x)
 
 ### 4. Sysmon Event Logs
 

@@ -14,7 +14,7 @@ This log is written incrementally as the investigation progresses and intentiona
 
 ## Initial Context
 
-AlphaFinance Group reported suspicious activity following access to what appeared to be a Microsoft 365 financial portal by a finance department employee. Subsequent alerts indicated abnormal PowerShell execution, persistence mechanisms, and outbound connections to an external host.
+The CyberRange scenario reports that AlphaFinance Group observed suspicious activity following access to what appeared to be a Microsoft 365 financial portal by a finance department employee, with subsequent alerts indicating abnormal PowerShell execution, persistence mechanisms, and outbound connections to an external host. That context is scenario-supplied and is not independently established by the surviving record.
 
 The investigation began by validating **initial access**, then pivoting into **delivery, execution, persistence, and command-and-control** artifacts.
 
@@ -95,7 +95,7 @@ Extracted and parsed the NTFS Master File Table ($MFT).
 - Zone.Identifier indicates download from external source
 
 **Conclusion:**  
-Disk artifacts confirm browser evidence and establish **user execution context**.
+Disk artifacts corroborate the browser evidence. Recent and Office Recent shortcut entries record the document's presence; no process record for its execution is preserved.
 
 ### Step 4 — Identify Targeted User Accounts
 
@@ -114,7 +114,7 @@ Parsed the SAM registry hive using Registry Explorer.
 - `IT_Helpdesk`
 
 **Conclusion:**  
-The investigation is scoped to user `harrisr`, who accessed the phishing content and executed the payload.
+The investigation is scoped to user `harrisr`, whose profile holds the phishing access and download artifacts and under whose context the observed processes ran.
 
 ### Step 5 — Identify Exploited Application
 

@@ -15,7 +15,7 @@ AlphaFinance Group identified suspicious activity originating from a finance dep
 
 Subsequent activity included creation and hidden execution of a PowerShell script, range-characterized process spoofing, multiple discovery commands, creation of two persistence mechanisms, and outbound command-and-control (C2) communications.
 
-The attacker demonstrated intent to maintain long-term access using user-level persistence and outbound command-and-control communications.
+Two user-level persistence mechanisms were created. The completed Q/A record does not establish that either executed, and does not independently evidence attacker intent beyond that observation.
 
 ## 2. Investigation Scope & Objectives
 
@@ -108,7 +108,7 @@ Host-based telemetry confirmed outbound connections to an external host associat
 - Protocol: TCP
 - Evidence Source: Sysmon network connection events
 
-Use of non-standard ports suggests an attempt to evade basic network detection controls.
+Sysmon records outbound TCP connections to ports `4444` and `8080`. The completed Q/A record does not establish why those ports were selected.
 
 ## 8. Timeline Summary (UTC)
 
