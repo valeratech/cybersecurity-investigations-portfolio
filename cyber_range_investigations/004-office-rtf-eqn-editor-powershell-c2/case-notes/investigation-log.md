@@ -182,7 +182,7 @@ The record establishes that `msupdate.ps1` was created at `11:15:43` and launche
 ### Step 8 — Identify Persistence Mechanisms
 
 **Objective:**  
-Determine how the attacker maintained access.
+Determine what persistence artifacts were created.
 
 **Findings:**
 
@@ -199,7 +199,7 @@ Determine how the attacker maintained access.
 - Startup persistence: `2025-05-23 11:17:51`
 
 **Conclusion:**  
-The attacker implemented **redundant user-level persistence**.
+Two user-level persistence artifacts were created. Execution of neither is established by the completed Q/A record.
 
 ### Step 9 — Identify Command-and-Control (C2)
 

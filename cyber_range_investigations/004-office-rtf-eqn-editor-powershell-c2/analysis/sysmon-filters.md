@@ -88,7 +88,7 @@ This file supports **reproducibility** and explains how key events were isolated
 - `Software\Microsoft\Windows\CurrentVersion\Run`
 
 ### Key Findings
-- Registry Run key persistence established
+- Registry Run key value created
 - Value name:
 - `Microsoft Update Assistant`
 - Associated executable:
@@ -109,7 +109,7 @@ Key execution and persistence findings covered in this analysis include:
 - PowerShell execution of `msupdate.ps1`
 - Range-characterized process spoofing associated with the observed parent/child process relationship
 - Multiple discovery commands
-- Redundant persistence mechanisms
+- Two persistence artifacts created
 - Command-and-control communications over non-standard ports
 
 These findings were corroborated with disk and registry artifacts.

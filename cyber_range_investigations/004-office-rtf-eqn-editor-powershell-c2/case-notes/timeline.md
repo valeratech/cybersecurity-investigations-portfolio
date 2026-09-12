@@ -29,7 +29,7 @@ This timeline consolidates **browser artifacts, NTFS $MFT data, registry activit
 | 2025-05-23 10:59:48 | System network configuration discovery (`ipconfig /all`) | Sysmon EID 1 | `IPCONFIG.EXE` |
 | 2025-05-23 11:15:43 | Malicious PowerShell script created | NTFS $MFT | `%TEMP%\msupdate.ps1` |
 | 2025-05-23 11:17:44 | Hidden PowerShell execution via cmd.exe | Sysmon EID 1 | `cmd.exe → powershell (hidden)` |
-| 2025-05-23 11:17:50 | Registry Run key persistence established | Sysmon EID 13 | `HKCU\...\Run\Microsoft Update Assistant` |
+| 2025-05-23 11:17:50 | Registry Run key value created | Sysmon EID 13 | `HKCU\...\Run\Microsoft Update Assistant` |
 | 2025-05-23 11:17:51 | Startup folder persistence created | Sysmon EID 11 | `Startup\WindowsUpdate.lnk` |
 
 ## Timeline Observations

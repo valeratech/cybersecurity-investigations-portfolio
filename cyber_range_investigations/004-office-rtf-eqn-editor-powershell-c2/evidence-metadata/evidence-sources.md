@@ -93,9 +93,9 @@ User-specific registry hive for persistence analysis.
 `C:\Users\harrisr\Ntuser.dat: Software\Microsoft\Windows\CurrentVersion\Run`
 
 **Evidence Value:**
-- Run key persistence confirmation
+- Run key value creation
 - Encoded PowerShell command discovery
-- Mapping of attacker-established autoruns
+- Record of autorun entries created on the host
 
 #### c. SOFTWARE Hive
 
