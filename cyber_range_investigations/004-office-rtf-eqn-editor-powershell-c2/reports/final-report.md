@@ -124,18 +124,21 @@ Sysmon records outbound TCP connections to ports `4444` and `8080`. The complete
 
 ## 9. Indicators of Compromise (Defanged)
 
-### URLs
-- `hxxp[://]supportmlcrosoft[.]zapto[.]org[ / ]`
+The canonical IOC record for this case is the IOC Collection in
+`evidence-metadata/`. Entries below are summarized from it and carry the same
+provenance distinction.
 
-### Files
+### Observed in preserved artifacts
+- `hxxp[://]supportmlcrosoft[.]zapto[.]org[ / ]`
 - `Financial_Report.rtf`
 - `msupdate.ps1`
 - `WindowsUpdate.lnk`
-- `msupdate-<random4>.exe`
-
-### Network
 - `63[.]176[.]96[.]97:4444`
 - `63[.]176[.]96[.]97:8080`
+
+### Named in the decoded persistence command; disk presence not established
+- `hxxp[://]63[.]176[.]96[.]97[ / ]payload[.]exe`
+- `msupdate-<random4>.exe`
 
 ## 10. Assessment & Impact
 

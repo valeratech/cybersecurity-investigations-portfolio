@@ -66,14 +66,14 @@ The Office version below is observed from the SOFTWARE hive. The Word and Equati
 | Execution Method | Hidden PowerShell via `cmd.exe` |
 | Evidence Sources | NTFS $MFT, Sysmon EID 1 |
 
-### Dropped Executable (Pattern-Based)
+### Executable Named in the Persistence Command
 
 | Attribute | Value |
 |---------|------|
-| Naming Pattern | `msupdate-<random4>.exe` |
-| Download Method | Encoded PowerShell command |
-| Execution Method | `Start-Process` (defanged representation) |
+| Remote filename | `payload.exe` |
+| Local naming pattern | `msupdate-<random4>.exe` |
 | Evidence Source | Decoded registry persistence command |
+| Disk presence | Not established by the completed Q/A record |
 
 ## Persistence Indicators
 

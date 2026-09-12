@@ -158,19 +158,21 @@ Observed ports:
 - Additional observed: `8080` (associated with regsvr32.exe network event)
 
 ## 5. Indicators of Compromise (IOCs) — DEFANGED
-**URLs**
-- `hxxp[://]supportmlcrosoft[.]zapto[.]org[ / ]`
-- `hxxp[://]63[.]176[.]96[.]97[ / ]payload[.]exe`
 
-**Files**
+The canonical IOC record for this case is the IOC Collection in
+`evidence-metadata/`. Entries below are summarized from it.
+
+**Observed in preserved artifacts**
+- `hxxp[://]supportmlcrosoft[.]zapto[.]org[ / ]`
 - `Financial_Report.rtf`
 - `msupdate.ps1`
 - `WindowsUpdate.lnk`
-- `msupdate-<random4>.exe` (pattern observed in decoded persistence)
-
-**Network**
 - `63[.]176[.]96[.]97:4444`
 - `63[.]176[.]96[.]97:8080`
+
+**Named in the decoded persistence command; disk presence not established**
+- `hxxp[://]63[.]176[.]96[.]97[ / ]payload[.]exe`
+- `msupdate-<random4>.exe`
 
 ## 6. Notes / Limitations
 - Evidence is derived from CyberDefenders CyberRange artifact paths; original full disk images/PCAPs may not be available.
