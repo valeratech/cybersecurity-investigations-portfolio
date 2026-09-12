@@ -175,7 +175,7 @@ The canonical IOC record for this case is the IOC Collection in
 - `msupdate-<random4>.exe`
 
 ## 6. Notes / Limitations
-- Evidence is derived from CyberDefenders CyberRange artifact paths; original full disk images/PCAPs may not be available.
+- Evidence is limited to the CyberRange artifact paths recorded in this case; full disk images and PCAPs were not part of the provided evidence set.
 - All timestamps recorded in UTC unless the CyberRange evidence explicitly states otherwise.
 - Defanging was applied to all IOCs and script/command representations to prevent EDR/AV triggers in a public repo.
 

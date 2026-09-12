@@ -48,8 +48,8 @@ Records the exact `MFTECmd` command used to extract NTFS `$MFT` data.
 - Files in this directory are **non-executable** and safe to store publicly
 - Indicators and command strings are **defanged** where applicable
 
-## Reproducibility Statement
+## Record Statement
 
-Another analyst with access to the same CyberDefenders CyberRange artifacts
-should be able to re-run these queries and commands and reach the conclusions
-documented in the case notes and final report.
+The command and query syntax recorded here is preserved from the surviving
+analyst notes. The originating CyberRange environment is closed, so it cannot
+be re-run against the original evidence.

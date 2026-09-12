@@ -223,10 +223,10 @@ Sysmon records outbound TCP connections to `63[.]176[.]96[.]97` on ports `4444` 
 
 - Initial access: **Confirmed**
 - Exploit chain: **Exploitation range-reported; subsequent execution observed**
-- Persistence: **Confirmed**
+- Persistence: **Artifacts created; execution not established**
 - C2 infrastructure: **Identified**
 
-Next steps will focus on:
-- Consolidated timeline
-- MITRE ATT&CK mapping
-- Final IOC validation and reporting
+The consolidated timeline, ATT&CK mapping and IOC record are complete and are
+held in the case timeline, the IOC collection and the final report. The
+investigation is closed; no additional range evidence is available and no
+further investigative work is pending.

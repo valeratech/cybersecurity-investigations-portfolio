@@ -7,8 +7,7 @@
 
 ## Purpose of This Document
 
-This file documents **all evidence sources made available during the investigation**, including their origin, scope, and any limitations.  
-It serves as a lightweight **chain-of-custody and evidence inventory record** suitable for DFIR reporting and portfolio review.
+This file records **the evidence sources made available during the investigation**, their origin, scope and limitations. This inventory does not document a chain-of-custody process for the pre-staged lab evidence.
 
 ## Investigation Scope
 
@@ -19,7 +18,8 @@ This investigation was conducted as a structured CyberRange question set using t
 - Evidence was **provided by the CyberDefenders CyberRange**
 - No live acquisition was performed by the analyst
 - Artifact paths reflect **pre-staged lab evidence**
-- Full disk images, memory captures, and raw PCAPs may not be available
+- Full disk images, memory captures and raw PCAPs were not part of the provided
+  evidence set
 
 All analysis was conducted **in situ** against the provided artifacts.
 
@@ -43,8 +43,8 @@ User browsing and download activity for the targeted user account.
 - Timestamp correlation with NTFS artifacts
 
 **Limitations:**
-- Limited to Edge artifacts only
-- No full browser cache or memory artifacts available
+- Limited to the Edge artifacts in the provided evidence set
+- Browser cache and memory artifacts were not part of that set
 
 ### 2. NTFS Master File Table ($MFT)
 
@@ -61,11 +61,11 @@ File system metadata used for timeline reconstruction and artifact validation.
 - File creation, modification, and access times
 - Zone.Identifier ADS confirmation
 - LNK file creation and recent file tracking
-- Script and payload staging verification
+- Script artifact creation timestamps
 
 **Limitations:**
 - Represents a snapshot in time
-- Deleted file content not recoverable without full disk image
+- Deleted file content was outside the provided evidence set
 
 ### 3. Registry Hives
 
@@ -144,18 +144,17 @@ Presence of collected artifacts indicates use of an automated triage framework.
 
 ## Evidence Integrity Notes
 
-- Evidence files were analyzed **read-only**
-- No modification of original artifacts occurred
+- Analysis was performed against the pre-staged artifacts as provided
 - Hash values survive in the notes only where Sysmon process-creation records embedded them for Windows system binaries; they are incidental to the questions those records answered and are not treated as case indicators
 - Hashing the malicious document, script, and downloaded executable was outside the question set and formed no part of the investigation
-- All evidence paths and timestamps are recorded as provided
+- The artifact paths and timestamps quoted in this inventory are recorded as they appear in the surviving notes
 
 ## Summary
 
-The evidence set provided sufficient coverage to:
-- Identify initial access
-- Confirm exploit chain and execution
-- Validate multiple persistence mechanisms
-- Identify external command-and-control infrastructure
+The evidence set supported the case record's findings:
+- Identification of the initial access vector
+- Range-reported exploitation with observed subsequent execution
+- Creation of two persistence artifacts, execution of neither established
+- Identification of external command-and-control infrastructure
 
-While constrained by the absence of full disk and memory images, the available artifacts supported the findings summarized above.
+Full disk and memory images were not part of the evidence set.

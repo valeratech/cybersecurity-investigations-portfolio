@@ -38,13 +38,13 @@ Documents Sysmon event IDs, filters, and investigative logic used to isolate:
 - Files in this directory are **non-executable** and **safe to store in a public repository**
 - Indicators and command strings are **defanged** where applicable to prevent AV/EDR triggers
 
-## Reproducibility Statement
+## Record Statement
 
-Another analyst with access to the same CyberDefenders CyberRange artifacts should be able to
-apply the documented Sysmon filters and reach the same conclusions recorded in the case notes
-and final report. Command- and query-level reproduction steps are documented in `../scripts/`.
+The filter criteria recorded here describe how events were isolated during the
+investigation. The originating CyberRange environment is closed, so they cannot
+be re-applied against the original evidence.
 
 ## Status
 
-Analysis artifacts for Case 004 are complete for the current scope.
-Additional analysis files will be added here if new evidence is introduced.
+Analysis artifacts for Case 004 are complete. The investigation is closed and
+no additional range evidence is available.

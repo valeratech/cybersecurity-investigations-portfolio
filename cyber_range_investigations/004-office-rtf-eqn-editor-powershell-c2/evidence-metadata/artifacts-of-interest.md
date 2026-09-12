@@ -175,4 +175,5 @@ graded confidence labels.
 
 ## Status
 
-Artifacts of interest are fully documented for the current scope of Case 004.  
+Artifacts of interest are fully documented. The investigation is closed and no
+additional range evidence is available.
