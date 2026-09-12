@@ -11,7 +11,7 @@
 
 ## Purpose of This Document
 
-This document consolidates **high-confidence artifacts of interest** and **indicators of compromise (IOCs)** identified during Case 004.  
+This document consolidates the **artifacts of interest** and **indicators of compromise (IOCs)** recorded during Case 004, each carrying the provenance of the record that establishes it.  
 It acts as a single reference point for:
 - Detection engineering
 - Incident reporting
@@ -141,19 +141,21 @@ The CyberRange question set supplies the characterization that process spoofing 
 | Discovery | T1016, T1018 |
 | Command and Control | T1571 (Non-Standard Port) |
 
-## IOC Confidence Assessment
+## Indicator Provenance
 
-- **High confidence:**  
-  - Phishing URL  
-  - RTF document  
-  - `msupdate.ps1`  
-  - Registry Run key  
-  - Startup LNK  
-  - C2 IP and port 4444
+This case classifies entries by evidentiary provenance rather than assigning
+graded confidence labels.
 
-- **Moderate confidence:**  
-  - Secondary port 8080 activity  
-  - Regsvr32 network activity context
+- **Directly observed in preserved telemetry or disk artifacts:** phishing URL,
+  `Financial_Report.rtf`, `msupdate.ps1`, the `Microsoft Update Assistant` Run
+  key value, `WindowsUpdate.lnk`, the external host, and both observed ports
+  `4444` and `8080`
+- **Recorded by the CyberRange as an answer or premise:** `CVE-2017-11882`,
+  the Word/Equation Editor sequence, the process-spoofing characterization,
+  and `whoami`
+- **Named in a preserved artifact rather than observed directly:**
+  `payload.exe` and the `msupdate-<random4>.exe` naming pattern, both read from
+  the decoded Run-key command
 
 ## Status
 
