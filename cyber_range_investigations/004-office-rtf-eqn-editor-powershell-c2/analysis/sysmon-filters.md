@@ -9,7 +9,7 @@
 
 This document records the **Sysmon event IDs, filters, and search logic** used to identify:
 - Malicious execution
-- Post-exploitation discovery activity
+- Discovery command activity
 - Persistence mechanisms
 - Command-and-control communications
 

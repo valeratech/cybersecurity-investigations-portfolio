@@ -13,7 +13,7 @@
 
 AlphaFinance Group identified suspicious activity originating from a finance department workstation following access to a spoofed Microsoft 365 portal. The investigation confirmed a phishing-based initial access vector that delivered a malicious Rich Text Format (RTF) document. The CyberRange record attributes the exploitation step to a Microsoft Equation Editor vulnerability and records `CVE-2017-11882` as the answer. That attribution is range-reported; the completed Q/A record contains no Word or Equation Editor process record independently establishing the sequence.
 
-Post-exploitation activity included execution of a PowerShell dropper, range-characterized process spoofing, multiple discovery commands, redundant persistence mechanisms, and outbound command-and-control (C2) communications over non-standard ports.
+Subsequent activity included creation and hidden execution of a PowerShell script, range-characterized process spoofing, multiple discovery commands, creation of two persistence mechanisms, and outbound command-and-control (C2) communications.
 
 The attacker demonstrated intent to maintain long-term access using user-level persistence and outbound command-and-control communications.
 
@@ -22,7 +22,7 @@ The attacker demonstrated intent to maintain long-term access using user-level p
 ### Objectives
 - Identify the initial access vector
 - Determine the delivery and exploit mechanism
-- Trace execution and post-exploitation activity
+- Trace execution and subsequent activity
 - Identify persistence mechanisms
 - Identify C2 infrastructure and communication details
 
@@ -66,7 +66,7 @@ The CyberRange question set supplies the premise that the detected exploit dropp
 - Script Creation Time: `2025-05-23 11:15:43 UTC`
 - Execution Evidence: Sysmon process creation events
 
-## 5. Post-Exploitation Activity
+## 5. Subsequent Activity
 
 ### Discovery Commands
 The case record covers multiple built-in Windows commands used for host and network discovery:

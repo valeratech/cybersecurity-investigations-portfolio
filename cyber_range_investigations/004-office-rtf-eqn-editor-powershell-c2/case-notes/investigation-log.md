@@ -154,16 +154,16 @@ A remote code execution vulnerability in the Microsoft Equation Editor (`EQNEDT3
 **Analyst assessment:**  
 The analyst treated the recorded CVE as the likely explanatory match for the range-described Word/Equation Editor sequence and the observed Office version. The completed Q/A record contains no `WINWORD.EXE` or `EQNEDT32.EXE` process record establishing that sequence independently.
 
-### Step 7 — Identify Dropped Script and Execution
+### Step 7 — Identify Script Creation and Execution
 
 **Objective:**  
-Determine what executed post-exploitation.
+Determine what script was created and what execution the record shows.
 
 **Action Taken:**  
 Filtered NTFS timeline and Sysmon logs for script creation and execution.
 
 **Finding:**  
-A PowerShell script was dropped to the user's TEMP directory.
+A PowerShell script was created in the user's TEMP directory. The CyberRange question set supplies the premise that the detected exploit dropped it.
 
 **Script Name:**
 `msupdate.ps1`
@@ -177,7 +177,7 @@ A PowerShell script was dropped to the user's TEMP directory.
 - Range-characterized process spoofing; the surviving record shows `notepad.exe` (PID `13852`) as the parent of the `cmd.exe` process
 
 **Conclusion:**  
-`msupdate.ps1` represents the **primary execution and staging script**.
+The record establishes that `msupdate.ps1` was created at `11:15:43` and launched in a hidden context at `11:17:44`. Its contents are not preserved in the completed Q/A record.
 
 ### Step 8 — Identify Persistence Mechanisms
 

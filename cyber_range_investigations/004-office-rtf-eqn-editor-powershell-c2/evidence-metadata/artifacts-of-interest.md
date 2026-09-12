@@ -54,9 +54,9 @@ The Office version below is observed from the SOFTWARE hive. The Word and Equati
 | CVE | `CVE-2017-11882` | Range-recorded answer |
 | Exploit Type | Remote Code Execution via crafted RTF | Reference description of the CVE |
 
-## Execution & Staging Artifacts
+## Execution Artifacts
 
-### PowerShell Script (Primary Dropper)
+### PowerShell Script
 
 | Attribute | Value |
 |---------|------|
