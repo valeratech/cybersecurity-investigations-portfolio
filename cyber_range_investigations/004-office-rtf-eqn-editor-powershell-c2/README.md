@@ -50,7 +50,7 @@ AlphaFinance Group detected suspicious activity after a finance employee accesse
 - Disk forensics (NTFS $MFT, Zone.Identifier ADS, LNK artifacts)
 - Host-based execution tracing (Sysmon process + network telemetry)
 - Registry persistence validation (NTUSER.DAT Run key)
-- C2 identification (external host + non-standard port communications)
+- C2 identification (external host and the destination ports recorded in Sysmon EID 3)
 
 ## 2. Environment & Tools Used
 
@@ -102,7 +102,7 @@ AlphaFinance Group detected suspicious activity after a finance employee accesse
 - `2025-05-23 10:53:22` — `Financial_Report.rtf` downloaded to `C:\Users\harrisr\Downloads\`
 - `2025-05-23 10:53:22` — Zone.Identifier indicates internet origin and referrer URL
 - `2025-05-23 10:53:53` — Outbound network connection from `regsvr32.exe` to `63[.]176[.]96[.]97:8080` (Sysmon EID 3)
-- `2025-05-23 10:54:02` — Outbound "PowerShell" network connection to external host on non-standard port (Sysmon EID 3)
+- `2025-05-23 10:54:02` — Outbound PowerShell network connection to external host on TCP port `4444` (Sysmon EID 3)
 - `2025-05-23 10:59:18` — Discovery commands observed: `netstat` (Sysmon EID 1)
 - `2025-05-23 10:59:33` — Discovery commands observed: `ping 8[.]8[.]8[.]8` (Sysmon EID 1)
 - `2025-05-23 10:59:48` — Discovery commands observed: `ipconfig /all` (Sysmon EID 1)

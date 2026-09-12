@@ -23,7 +23,7 @@ This timeline consolidates **browser artifacts, NTFS $MFT data, registry activit
 | 2025-05-23 10:53:22 | Zone.Identifier ADS created (internet origin) | NTFS ADS | `Financial_Report.rtf:Zone.Identifier` |
 | 2025-05-23 10:53:35 | Recent file shortcut created | NTFS $MFT | `...\Windows\Recent\Financial_Report.lnk` |
 | 2025-05-23 10:53:53 | Secondary outbound connection observed (defanged) | Sysmon EID 3 | `regsvr32.exe → 63[.]176[.]96[.]97:8080` |
-| 2025-05-23 10:54:02 | Outbound connection to external host on non-standard port | Sysmon EID 3 | `PowerShell → 63[.]176[.]96[.]97:4444` |
+| 2025-05-23 10:54:02 | Outbound connection to external host on TCP port `4444` | Sysmon EID 3 | `PowerShell → 63[.]176[.]96[.]97:4444` |
 | 2025-05-23 10:59:18 | Network discovery command executed (`netstat`) | Sysmon EID 1 | `NETSTAT.EXE` |
 | 2025-05-23 10:59:33 | Connectivity test executed (`ping`) | Sysmon EID 1 | `PING.EXE 8[.]8[.]8[.]8` |
 | 2025-05-23 10:59:48 | System network configuration discovery (`ipconfig /all`) | Sysmon EID 1 | `IPCONFIG.EXE` |

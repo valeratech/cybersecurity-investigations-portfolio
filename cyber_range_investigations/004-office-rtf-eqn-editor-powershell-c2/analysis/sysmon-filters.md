@@ -64,7 +64,7 @@ filter syntax.
   - `regsvr32.exe`
 
 ### Key Findings
-- Outbound TCP connection to non-standard port `4444` established by PowerShell
+- Outbound TCP connection to port `4444` recorded from PowerShell
 - Secondary outbound connection to port `8080` observed via `regsvr32.exe`
 - Outbound connections at `10:53:53` and `10:54:02` precede the observed
   creation of `msupdate.ps1` at `11:15:43`; no surviving artifact links them
@@ -113,6 +113,6 @@ Key execution and persistence findings covered in this analysis include:
 - Range-characterized process spoofing associated with the observed parent/child process relationship
 - Multiple discovery commands
 - Two persistence artifacts created
-- Command-and-control communications over non-standard ports
+- Outbound connections to the external host on ports `4444` and `8080`
 
 The script creation timestamp is corroborated by the NTFS $MFT. The discovery commands and the network connections are supported by Sysmon telemetry alone.

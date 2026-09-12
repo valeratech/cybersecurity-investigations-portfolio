@@ -217,7 +217,7 @@ Reviewed Sysmon network events (Event ID 3).
 - `8080` (secondary)
 
 **Conclusion:**  
-Outbound connections to a non-standard port indicate **active C2 communications**.
+Sysmon records outbound TCP connections to `63[.]176[.]96[.]97` on ports `4444` and `8080`. The CyberRange records `4444` as the C2 port.
 
 ## Current Status
 
