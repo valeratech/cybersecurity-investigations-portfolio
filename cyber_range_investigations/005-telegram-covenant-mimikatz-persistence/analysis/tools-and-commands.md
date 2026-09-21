@@ -15,7 +15,7 @@ The following tools were used to analyze the triage artifacts.
   - Load SYSTEM and SOFTWARE hives
   - Extract OS build, hostname, timezone, shutdown time
   - Review network configuration
-  - Validate service-based persistence
+  - Review service configuration
 
 ### NTFS Analysis
 - NTFS Log Tracker  
@@ -31,12 +31,16 @@ The following tools were used to analyze the triage artifacts.
 - UserAssist Forensic Tool  
   Purpose:
   - Parse `NTUSER.DAT`
-  - Extract Telegram usage (Focus Time = 383811 ms)
+  - Extract program execution records: run count, last execution, focus time
+  - `Telegram.exe` focus time 383811 ms; `Minecraft.exe` run count 3, focus time 187452 ms
+  - Recorded execution times are 12-hour displays with no timezone indicator
 
 - ShellBags Explorer  
   Purpose:
-  - Identify access to remote network shares
-  - Confirm interaction with `\\10[.]10[.]5[.]86\shared\`
+  - Identify remote network locations recorded in NTUSER.DAT
+  - Record host context involving 10[.]10[.]5[.]86
+  - ShellBags records the network location; the full file path is established by the LNK
+    evidence below
 
 ### Event Log Analysis
 - Event Log Explorer  
@@ -52,7 +56,7 @@ The following tools were used to analyze the triage artifacts.
 
 Purpose:
 - Parse Recent / Quick Launch LNK files
-- Confirm access to `lansweeper.ps1`
+- Record the `lansweeper.ps1` file path from LNK output
 - Validate working directory references
 
 ### Threat Intelligence
@@ -60,7 +64,7 @@ Purpose:
 
 Purpose:
 - Hash lookup for suspicious `Minecraft.exe`
-- Confirm Covenant C2 identification
+- Record the Covenant identification returned by community data (analyst-derived enrichment)
 - Review YARA rule match metadata
 
 ### Supporting Utilities
@@ -116,10 +120,10 @@ Purpose:
 
 ### Rename Correlation (Masquerade Validation)
 
-1. Identify `svchost.exe` execution in Downloads folder.
+1. Identify the `svchost.exe` file record in the Downloads folder.
 2. Extract FileReferenceNumber from NTFS logs.
 3. Search same FileReferenceNumber for earlier `File_Renamed_Old` or `File_Created` events.
-4. Confirm original filename: `mimikatz.exe`.
+4. Establish that both names refer to the same file record; earlier name `mimikatz.exe`.
 
 ### Scheduled Task Validation
 
@@ -127,35 +131,46 @@ Artifact:
 `...\Windows\System32\Tasks\spawn`
 
 Extract:
-- `<StartBoundary>` timestamp
-- `<Exec>` command and arguments
+- `<Date>` (registration) and `<StartBoundary>` values
+- `<Exec>` `Command` and `Arguments`, recorded as separate fields
 - `<Author>` context
 
-Confirmed:
-StartBoundary: 2022-11-11 20:10:00 UTC
+Recorded:
+- `<Date>`: 2022-11-11 16:25:49, no `Z` or numeric offset stated
+- `<StartBoundary>`: 2022-11-11 20:10:00, no `Z` or numeric offset stated
+- `Command`: value ending in `\Downloads\Telegram`
+- `Arguments`: `Desktop\Minecraft.exe`
 
 ### Service-Based Persistence
 
 Registry Path:
 HKLM\SYSTEM\ControlSet001\Services\cleanup-schedule
 
-Validated:
-- Service existence
-- Creation timeframe correlation
-- Association with suspicious executable
+Recorded:
+- Service key present
+- `ImagePath`: `C:\Users\Administrator\Downloads\Telegram Desktop\Minecraft.exe`
+- `Start`: 2, `ObjectName`: LocalSystem
+
+No surviving artifact shows the service executing.
 
 ### User Creation Validation
 
 Security Event ID:
 4720
 
-Validated:
+Recorded:
 - New account: cpitter
-- Timestamp: 2022-11-11 21:23:51 UTC
+- Timestamp: 2022-11-11 21:23:51 UTC; the Event Log Explorer view displays a UTC indicator
+
+No surviving artifact shows subsequent use of the account.
 
 ## 4. Reproducibility Notes
 
-- All timestamps normalized to UTC.
+- Timestamps are recorded on the basis each source attests. No offset is inferred and no
+  value is converted using the host timezone setting. Three sources attest UTC: the
+  supplied Sysmon view, the Event Log Explorer view, and the NTFS `EventTime (UTC 0)`
+  column. Task XML values, NTFS export rows and UserAssist displays state no offset. The
+  [Timeline](timeline-utc.md) carries the full breakdown.
 - Indicators defanged where appropriate.
 - Only metadata documented in this repository.
 - No live malware samples stored in repo.

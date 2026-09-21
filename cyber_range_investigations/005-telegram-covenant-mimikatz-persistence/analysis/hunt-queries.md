@@ -7,22 +7,46 @@
 
 ## Assumptions / Notes
 
-**Scope:** Queries aligned to observed artifacts (new user, scheduled task, service persistence, suspicious execution from Downloads, credential access attempts).  
+**Status of these queries.** Everything below is a *proposed* investigative query
+written against the artifacts recorded in this case. None of these queries was executed
+against the original environment, which is permanently closed. They are not evidence and
+no result is claimed for any of them.
+
+**Scope:** Queries aligned to observed artifacts (new user, scheduled task, service
+configuration, execution from a user-writable path, credential access attempt).
 
 - Field names vary by environment. These queries include common variants.
 - Prefer Sysmon where available for richer process visibility.
-- Where possible, constrain to the incident window around 2022-11-11 (UTC).
+- **Time constraint.** Only some artifacts in this case carry an established UTC offset.
+  A blanket 2022-11-11 UTC window is therefore not a defensible incident window: it would
+  silently assume an offset for the NTFS export values, the task XML values, the 4663
+  event and the UserAssist values, none of which state one. Constrain to the UTC-attested
+  values where a window is needed, and widen by at least a day either side when pivoting
+  on artifacts whose offset is unestablished. See the
+  [Timeline](timeline-utc.md) time-basis sections.
 
-Defanged indicators used in this case:
+### Indicators used in these queries
+
+Observed in artifacts, defanged for publication:
+
 - Host: MAGENTA (domain: polo[.]shirts[.]corp)
 - Host IP: 10[.]10[.]5[.]113
 - Remote share host: 10[.]10[.]5[.]86
 - New user: cpitter
-- Service: cleanup-schedule
-- Scheduled task: \spawn
-- Files: Minecraft.exe (Covenant), mimikatz.exe masqueraded as svchost.exe
+- Service configuration: cleanup-schedule
+- Scheduled task definition: \spawn
+- Files: Minecraft.exe; mimikatz.exe, later renamed svchost.exe
 - Targeted file: Credentials.txt
-- Remote file: lansweeper.ps1
+- Remote file path: lansweeper.ps1
+- Sysmon-recorded destination: 3[.]125[.]209[.]94 TCP port 80 (`DestinationPortName`: `http`) (supplied screenshot)
+
+Analyst-derived, not observed on the host:
+
+- `Minecraft.exe` identified as **Covenant**. That identification comes from submitting
+  the file hash to a threat-intelligence platform and recording the returned community
+  data and YARA match. It is enrichment of a hash, not host telemetry, and the queries
+  below that reference Covenant are hypotheses built on it rather than searches for a
+  confirmed presence.
 
 ## Splunk (SPL)
 
@@ -99,6 +123,10 @@ index=* ("lansweeper.ps1" OR "\\\\10[.]10[.]5[.]86\\shared\\lansweeper.ps1")
 | table _time host source sourcetype user Message
 
 ### I) Covenant / .NET stager hints (process + network)
+
+These queries are built on the analyst-derived Covenant identification described in
+Assumptions / Notes, not on observed C2 telemetry. The surviving record contains one
+network-connect event for the payload and does not establish what traversed the session.
 #### Look for suspicious child processes spawned by download payloads
 index=sysmon sourcetype="XmlWinEventLog:Microsoft-Windows-Sysmon/Operational" EventCode=1
 | search (ParentImage="*\\Downloads\\*" OR ParentCommandLine="*\\Downloads\\*") AND (CommandLine="*powershell*" OR CommandLine="*rundll32*" OR CommandLine="*regsvr32*" OR CommandLine="*mshta*")
@@ -157,5 +185,6 @@ event.code: "3" and event.provider: "Microsoft-Windows-Sysmon" and
 ## Query Usage Tips
 
 - Start broad (EIDs 4720/7045/4698/4663/5140), then pivot into Sysmon EID 1/3/11 if available.
-- Filter by host `MAGENTA` and constrain time to the incident date window first.
+- Filter by host `MAGENTA`. Do not constrain to a single UTC day: see the time constraint
+  note above, since several artifacts in this case carry no established offset.
 - Add allowlists for known admin tooling and expected service/task deployments once baseline is understood.
