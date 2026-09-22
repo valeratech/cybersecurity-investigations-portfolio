@@ -5,34 +5,37 @@
 **Time Standard:** UTC  
 **Source Platform:** CyberDefenders CyberRange  
 
-## Attack Sequence
+## Recorded Process Lineage (observed)
+
 ```
-Attacker
+svchost.exe (PID 884)
 │
-│ (WMI Execution)
 ▼
 WmiPrvSE.exe (PID 1944)
 │
 ▼
 powershell.exe (PID 5104)
 │
-│ Creates
+│ recorded PPID of PID 1576 (psinfo)
 ▼
-C:\Windows\System32\svchost.bat
+lsass.exe (PID 1576, C:\Windows\lsass.exe)
 │
-│ Establishes TCP Session
+│ command line: -accepteula -ma 656 lsass.dmp
 ▼
-10[.]0[.]128[.]2:4337 (C2 Server)
-│
-│ Executes
-▼
-"C:\Windows\lsass.exe" -accepteula -ma 656 lsass.dmp
-│
-▼
-LSASS Memory Dump (PID 656)
+dump invoked against lsass.exe (PID 656); outcome not recorded
 ```
+
+## Separately Recorded Artifacts (no observed link to the lineage)
+
+```
+netscan:    10[.]0[.]128[.]0:63944 -> 10[.]0[.]128[.]2:4337  ESTABLISHED  owner PID -1
+
+mftparser:  Windows\System32\svchost.bat  $STANDARD_INFORMATION 2023-02-03 13:25:04 UTC+0000
+```
+
 ## Flow Summary
 
-Execution → C2 Established → Credential Dump → Active Session at Capture
-
-The attacker achieved interactive control and harvested credentials prior to memory acquisition.
+Observed: WmiPrvSE → PowerShell → masqueraded `lsass.exe` with a dump invocation against
+LSASS. Range-confirmed: `svchost.bat` was attacker-created and used the connection to
+`10[.]0[.]128[.]2:4337`. The surviving record does not link the connection or the batch
+file to the process lineage.

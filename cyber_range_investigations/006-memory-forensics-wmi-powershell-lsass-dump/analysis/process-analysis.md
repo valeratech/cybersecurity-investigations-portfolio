@@ -7,115 +7,148 @@
 
 ## 1. Objective
 
-Identify malicious execution flow, detect masquerading behavior, and confirm credential access activity using cross-view process analysis.
+Record the process lineage, cross-view listing results and command lines that Volatility
+reports for the processes named in the exercise, and separate them from the exercise's own
+propositions.
 
 ## 2. Profile Context
 
 - Profile: `Win10x64_17763`
 - KdCopyDataBlock (V): `0xf8034da8a4d8`
-- Memory Timestamp: `2023-02-03 13:29:33 UTC`
+- Memory image timestamp: `2023-02-03 13:29:33 UTC` (imageinfo)
 
-## 3. Suspicious Execution Chain
+## 3. Process Lineage (pstree)
 
-Identified via `pstree`:
+The full pstree output is retained in the notes without its invocation line. The
+filtered runs are recorded as (image path normalised to `memory.dmp`):
+
 ```
-WmiPrvSE.exe (PID 1944)
+python vol.py -f memory.dmp --profile=Win10x64_17763 -g 0xf8034da8a4d8 pstree | Select-String -Pattern 5104
+python vol.py -f memory.dmp --profile=Win10x64_17763 -g 0xf8034da8a4d8 pstree | Select-String -Pattern 'wmi' -SimpleMatch
+```
+
+Observed lineage:
+
+```
+WmiPrvSE.exe (PID 1944, parent PID 884)
 └── powershell.exe (PID 5104)
-└── conhost.exe (PID 896)
+    └── conhost.exe (PID 896)
 ```
 
 ### Observations
 
-- WMI spawning PowerShell is consistent with remote execution.
-- PowerShell start time: `2023-02-03 13:23:40 UTC`
-- Occurs post-login session initialization.
-- High-confidence attacker execution pivot: **PID 1944**
+- `powershell.exe` (PID 5104) was created at `2023-02-03 13:23:40 UTC`, about thirteen
+  minutes after `WmiPrvSE.exe` (PID 1944, `2023-02-03 13:10:37 UTC`).
+- A second `WmiPrvSE.exe` (PID 3816) runs under the same parent. Multiple WMI provider
+  host instances are common.
+- The command line of PID 5104 was not recorded.
+- Range-confirmed: the exercise accepted PID 1944 as the process responsible for the
+  malicious activity.
+- Analyst inference: a PowerShell process parented by `WmiPrvSE.exe` is consistent with
+  process creation through WMI. The WMI method, consumer or caller is not recorded.
 
 ## 4. Cross-View Analysis (psxview)
 
-Command used:
+Command as recorded:
 
-`python vol.py -f memory.dmp --profile=Win10x64_17763 psxview`
+```
+python vol.py -f memory.dmp --profile=Win10x64_17763 -g 0xf8034da8a4d8 psxview
+```
 
-### Duplicate LSASS Processes Identified
-| PID | Path | pslist | Notes |
-| :--- | :--- | :---: | :--- |
-| 656 | C:\Windows\System32\lsass.exe | True | Legitimate |
-| 1576 | C:\Windows\lsass.exe | False | **Suspicious** |
+### lsass.exe entries
 
-### Indicators of Masquerading
-- Incorrect binary path (`C:\Windows\` instead of `System32`)
-- Inconsistent visibility across listing mechanisms
-- Short-lived process behavior
+| PID | Image path (cmdline) | pslist | psscan | thrdproc | Exit time |
+| :--- | :--- | :---: | :---: | :---: | :--- |
+| 656 | `C:\Windows\system32\lsass.exe` | True | False | True | none |
+| 1576 | `C:\Windows\lsass.exe` | False | False | True | none |
 
-## 5. Command Line Analysis
-Extracted via:
+### Observations
 
-`python vol.py -f memory.dmp --profile=Win10x64_17763 cmdline --offset=0x0000000030581080`
+- PID 1576 carries the name of a system process but runs from `C:\Windows\` rather than
+  `C:\Windows\system32\`.
+- PID 1576 is absent from `pslist`, `psscan` and the full `pstree` output, and present in
+  `thrdproc`. The cause of that visibility pattern was not tested; the record does not
+  establish hiding, unlinking or process lifetime.
 
-Command:
+### Other psxview rows
 
-`"C:\Windows\lsass.exe" -accepteula -ma 656 lsass.dmp`
+The full psxview output also lists `RamCapture64.e` (PID 4884) and `wsmprovhost.ex`
+(PID 4440), each with `pslist` False. They are disclosed as recorded; no investigative
+significance is assigned to them in this case.
 
-### Interpretation
-Matches Sysinternals ProcDump syntax:
+## 5. Command Line Analysis (cmdline)
 
-- `accepteula` → Suppresses license prompt
-- `-ma` → Full memory dump
-- `656` → Target PID (real LSASS)
-- `lsass.dmp` → Dump output file
+Commands as recorded:
 
-**Conclusion**:
+```
+python vol.py -f memory.dmp --profile=Win10x64_17763 -g 0xf8034da8a4d8 cmdline --offset=0x0000000030581080
+python vol.py -f memory.dmp --profile=Win10x64_17763 -g 0xf8034da8a4d8 cmdline --offset=0x000000010a47e0c0
+```
 
-Credential dumping executed against LSASS.
+Observed command lines:
 
-## 6. Parent Process Validation
-Validated via `psinfo`:
+- PID 1576: `"C:\Windows\lsass.exe" -accepteula -ma 656 lsass.dmp`
+- PID 656: `C:\Windows\system32\lsass.exe`
 
-`python vol.py -f memory.dmp --profile=Win10x64_17763 psinfo -o 0x0000000030581080`
+Range-confirmed: the exercise states that this is a Sysinternals tool renamed to a common
+process name.
 
-Parent PID:
+Analyst inference: the arguments match Sysinternals ProcDump syntax:
 
-- `5104` (powershell.exe)
+- `-accepteula` → suppresses the licence prompt
+- `-ma` → full memory dump
+- `656` → target PID (the legitimate LSASS)
+- `lsass.dmp` → output file name, relative to an unrecorded working directory
 
-Confirmed chain:
+The binary behind PID 1576 was not examined; no hash, signature or version was recorded.
+
+## 6. Parent Process (psinfo)
+
+Command as recorded (the `-g` value differs from every other run in the notes):
+
+```
+python vol.py -f memory.dmp --profile=Win10x64_17763 -g 0xf8034da8aa4d8 psinfo -o 0x0000000030581080
+```
+
+Observed fields for PID 1576:
+
+- `Parent Process: NA PPID: 5104` — the parent PID is recorded; the plugin did not resolve
+  the parent image.
+- `Creation Time: 2023-02-03 13:29:30 UTC+0000`
+- Process path (VAD and PEB): `\Windows\lsass.exe` / `C:\Windows\lsass.exe`
+
+pstree identifies PID 5104 as `powershell.exe` at capture. Together these give the
+recorded lineage:
+
 ```
 WmiPrvSE.exe (1944)
     → powershell.exe (5104)
-        → lsass.exe (1576 - masqueraded ProcDump)
+        → lsass.exe (1576), by recorded PPID
 ```
 
-## 7. Additional Anomaly
-Observed unnamed process:
-- PID: `393216`
-- Timestamp: `1970-01-01 00:00:00 UTC`
+Range-confirmed: the exercise accepted PID 5104 as the process that spawned PID 1576. The
+range's suggested `handles` check was not run.
 
-Possible explanations:
+## 7. Unnamed Process Entry
 
-- Unlinked EPROCESS structure
-- DKOM artifact
-- Memory parsing artifact
+pstree records an entry with PID 393216, no image name, zero threads and a time value of
+`1970-01-01 00:00:00 UTC+0000`. Its cause is not recoverable from the surviving notes.
 
-Requires deeper kernel validation in real-world IR.
+## 8. MITRE ATT&CK Alignment
 
-## 8. MITRE ATT&CK Mapping
-| Technique | ID | Evidence |
+ATT&CK Enterprise v19.2; full dispositions in the [MITRE ATT&CK Mapping](mitre-attack-mapping.md).
+
+| Technique | ID | Basis |
 | :--- | :--- | :--- |
-| Windows Management Instrumentation | T1047 | WmiPrvSE spawning PowerShell |
-| Command and Scripting Interpreter | T1059 | PowerShell execution |
-| Credential Dumping – LSASS | T1003.001 | ProcDump-style LSASS dump |
-| Masquerading | T1036 | Renamed lsass.exe binary |
+| OS Credential Dumping: LSASS Memory | T1003.001 | Dump invocation against PID 656 observed; outcome not established |
+| Masquerading | T1036 | `lsass.exe` name with non-System32 path observed |
+| Command and Scripting Interpreter: PowerShell | T1059.001 | `powershell.exe` (PID 5104) observed; its commands not recorded |
+| Windows Management Instrumentation | T1047 | Consistent with WmiPrvSE parentage; WMI method not recorded |
 
-## 9. Assessment
-- WMI used for execution
-- PowerShell used as staging layer
-- Renamed ProcDump executed
-- LSASS memory dumped
-- Credential access confirmed
+## 9. Process-Level Conclusion
 
-## 10. Process-Level Conclusion
-  
-**Compromise Status:** Confirmed  
-**Primary Technique:** LSASS memory dumping (ProcDump-like)  
-**Execution Chain:** WmiPrvSE.exe → powershell.exe → masqueraded lsass.exe  
-
+- **Observed:** WmiPrvSE (1944) → PowerShell (5104) → masqueraded `lsass.exe` (1576), the
+  last link by recorded PPID.
+- **Observed:** a dump invocation against the legitimate LSASS (PID 656).
+- **Not established:** the dump's completion, its output location, the binary's identity,
+  and any credential compromise.

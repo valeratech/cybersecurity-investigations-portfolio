@@ -9,139 +9,112 @@
 
 Analyze the provided Windows memory image to:
 
-- Identify malicious execution flow  
-- Detect hidden or masqueraded processes  
-- Determine whether credential dumping occurred  
-- Extract any command-and-control indicators  
-- Build a preliminary timeline  
+- identify suspicious process lineage
+- check for masqueraded processes and cross-view listing inconsistencies
+- determine whether credential dumping was attempted
+- extract network indicators named by the exercise
+- build a preliminary timeline
 
 ## 2. Profile Validation
 
-Volatility `imageinfo` identified multiple suggested profiles.
+imageinfo suggested several profiles, listing `Win10x64_17763` first. kdbgscan reported
+a KDBG header suggestion of `Win10x64_17763`, build string
+`17763.1.amd64fre.rs5_release.180`, and `KdCopyDataBlock (V): 0xf8034da8a4d8`, which was
+used with `-g` in later runs.
 
-Selected:
+## 3. Process Tree Pivot
 
-- `Win10x64_17763`
-
-Confirmed via:
-
-- `kdbgscan`
-- KdCopyDataBlock (Virtual): `0xf8034da8a4d8`
-
-This confirms Windows 10 x64 Build 17763.
-
-## 3. Process Tree Pivot (Primary Suspicion)
-
-Using `pstree`, identified suspicious execution chain:
+pstree records this lineage:
 ```
 WmiPrvSE.exe (PID 1944)
 └── powershell.exe (PID 5104)
-└── conhost.exe (PID 896)
+    └── conhost.exe (PID 896)
 ```
 
-### Observations
-
-- WMI spawning PowerShell is a common LOLBAS execution technique.
-- PowerShell start time: `2023-02-03 13:23:40 UTC`
-- Occurs after system fully initialized → suggests interactive attacker activity.
-- Treat PID 1944 as high-priority pivot process.
+- `powershell.exe` was created at `2023-02-03 13:23:40 UTC`.
+- Working hypothesis (analyst inference): PowerShell under the WMI provider host fits
+  WMI-initiated execution, so PID 1944 was treated as the pivot. The WMI method is not
+  recorded.
+- The exercise accepted PID 1944 as the process responsible for the malicious activity
+  (range-confirmed).
 
 ## 4. Cross-View Process Validation (psxview)
 
-Identified duplicate `lsass.exe` processes:
+Two `lsass.exe` entries:
 
-| PID | Path | Notes |
-|------|------|------|
-| 656 | `C:\Windows\system32\lsass.exe` | Legitimate |
-| 1576 | `C:\Windows\lsass.exe` | Suspicious |
+| PID | Path (cmdline) | pslist | Notes |
+|------|------|------|------|
+| 656 | `C:\Windows\system32\lsass.exe` | True | Legitimate path |
+| 1576 | `C:\Windows\lsass.exe` | False | Non-System32 path |
 
-### Suspicious Process (PID 1576)
+PID 1576 is absent from `pslist` and `psscan` and present in `thrdproc`. Candidate
+explanations noted at this stage (process exit, unlinking, parsing effects) were not
+tested.
 
-- Inconsistent visibility in `psxview`
-- `pslist = False`
-- Indicates possible:
-  - Short-lived execution
-  - DKOM hiding
-  - Recently terminated credential dumping
-
-Command line:
+Command line of PID 1576:
 
 `"C:\Windows\lsass.exe" -accepteula -ma 656 lsass.dmp`
 
-### Interpretation
+Analyst inference: this matches Sysinternals ProcDump syntax (`-ma` full dump of PID 656
+to `lsass.dmp`). The exercise states the process is a renamed Sysinternals tool
+(range-confirmed). The record shows the dump was invoked; it does not show that it
+completed.
 
-This matches Sysinternals ProcDump syntax:
+## 5. File Artifact
 
-- `-ma` → full memory dump
-- Target PID: 656 (real LSASS)
-- Output: `lsass.dmp`
+The exercise names `C:\Windows\System32\svchost.bat` as attacker-created and asks for the
+IP and port it used (range-confirmed). The range-supplied `strings_out.txt` contains
+PowerShell TCP-client code for `10[.]0[.]128[.]2:4337`; the notes record no link between
+that string and the file.
 
-**Conclusion**: Credential dumping occurred.
+## 6. Network Indicator (Defanged)
 
-## 5. File Artifact Discovery
+netscan, filtered for `10[.]0[.]128[.]2`:
 
-Identified malicious batch file:
-
-`C:\Windows\System32\svchost.bat`
-
-- Extracted via strings analysis.
-- Embedded PowerShell TCP client behavior found.
-
-## 6. Command-and-Control Indicator (Defanged)
-
-Extracted from strings:
-
-`10[.]0[.]128[.]2:4337`
-
-Confirmed via `netscan`:
 - Local: `10[.]0[.]128[.]0:63944`
 - Remote: `10[.]0[.]128[.]2:4337`
 - State: `ESTABLISHED`
+- Owner PID: `-1` (no owning process recorded)
 
+The exercise accepted 63944 as the source port of the malicious session (range-confirmed).
 
-Source port used by compromised system:
+## 7. Preliminary Timeline
 
-- `63944`
+| Time (UTC) | Event | Warrant |
+|------------|--------|--------|
+| 2023-02-03 13:10:37 | WmiPrvSE.exe (PID 1944) created | pstree, `UTC+0000` |
+| 2023-02-03 13:23:40 | powershell.exe (PID 5104) created | pstree, `UTC+0000` |
+| 2023-02-03 13:25:04 | svchost.bat MFT `$STANDARD_INFORMATION` values | mftparser, `UTC+0000` |
+| 2023-02-03 13:29:30 | lsass.exe (PID 1576) created | psinfo, `UTC+0000` |
+| 2023-02-03 13:29:33 | Memory image timestamp | imageinfo, `UTC+0000` |
 
-Indicates active reverse-style TCP command channel.
+## 8. Working Hypothesis at This Stage
 
-## 7. Timeline Reconstruction (Preliminary)
+Recorded as analyst inference at the initial-findings stage, with its evidentiary status:
 
-| Time (UTC) | Event |
-|------------|--------|
-| 13:10:37 | WmiPrvSE.exe (PID 1944) created |
-| 13:23:40 | PowerShell spawned |
-| 13:25:04 | svchost.bat created |
-| 13:29:30 | Masqueraded lsass.exe (PID 1576) executed |
-| 13:29:33 | Memory capture timestamp |
+1. WMI-based execution produced PowerShell — consistent with the observed parentage; the
+   WMI method is not recorded.
+2. PowerShell created `svchost.bat` — not recorded; no file creator is observed.
+3. The batch file opened the TCP connection to `10[.]0[.]128[.]2:4337` — not recorded; the
+   connection has no owning process and the file's content is not recovered.
+4. A renamed ProcDump dumped LSASS — the invocation is observed; completion is not.
 
-## 8. Hypothesis
+## 9. Checks Not Performed
 
-Based on evidence:
+These checks were not run during the exercise. The environment is permanently closed, so
+their results are not recoverable from the surviving notes:
 
-1. Attacker achieved WMI-based execution.
-2. WMI spawned PowerShell.
-3. PowerShell likely created `svchost.bat`.
-4. Batch file established TCP C2 to `10[.]0[.]128[.]2:4337`.
-5. Attacker executed renamed ProcDump to dump LSASS.
-6. Credential theft occurred prior to memory capture.
-
-## 9. Next Investigation Steps
-
-- Validate presence of `lsass.dmp` via `filescan` / `dumpfiles`
-- Examine PowerShell command-line history (if recoverable)
-- Extract suspicious process memory (PID 1576) for static analysis
-- Map activity to MITRE ATT&CK formally
-- Develop detection engineering recommendations
+- `filescan` / `dumpfiles` for `lsass.dmp`
+- recovery of PowerShell command lines or history for PID 5104
+- process dumping or `dlllist` for PID 1576
+- `handles` for PID 5104
 
 ## 10. Analyst Notes
 
-- Duplicate WmiPrvSE instances observed (3816 and 1944).
-- One unnamed/epoch-timestamp process observed (PID 393216) — may indicate:
-  - Corruption
-  - Unlinked EPROCESS
-  - Parsing artifact
+- Two `WmiPrvSE.exe` instances are present (PIDs 3816 and 1944).
+- pstree records an unnamed entry (PID 393216) with a `1970-01-01 00:00:00 UTC+0000`
+  time value and zero threads; its cause is not recoverable from the surviving notes.
 
-Requires cross-validation with additional plugins.
-
-**Assessment:** Confirmed compromise with credential dumping and C2 activity.
+**Assessment at this stage:** the dump invocation, the process lineage, the connection
+state and the MFT entry are observed; the links between them are the exercise's
+propositions.

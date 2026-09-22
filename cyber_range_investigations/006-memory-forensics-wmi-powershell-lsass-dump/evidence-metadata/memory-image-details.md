@@ -5,89 +5,81 @@
 **Time Standard:** UTC  
 **Source Platform:** CyberDefenders CyberRange  
 
-## 1. Evidence Overview
+## 1. Evidence Register
 
-| Field | Value |
-|-------|--------|
-| Evidence Type | Windows Memory Image |
-| File Name | memory.dmp |
-| Format | Raw Memory Dump |
-| Operating System | Windows 10 x64 |
-| Volatility Profile | Win10x64_17763 |
-| Image Timestamp (Volatility) | 2023-02-03 13:29:33 UTC |
+| Item | Description | Provenance | Retained in this repository |
+|------|-------------|------------|-----------------------------|
+| `memory.dmp` | Windows memory image | Range-supplied | No |
+| `strings_out.txt` | Pre-generated strings output | Range-supplied; parsed, not regenerated | No |
+| `mftparser.json` | MFT parser output | Generated during the analysis | No |
+| Analyst notes | Volatility commands and output, question responses | Analyst record | No |
 
-## 2. Acquisition Notes
+## 2. Memory Image Details
 
-- Memory image provided by CyberDefenders lab environment.
-- Acquisition method not disclosed (lab-provided artifact).
-- No live acquisition performed by analyst.
-- Integrity assumed per lab distribution.
+| Field | Value | Source |
+|-------|-------|--------|
+| Operating system | Windows 10 x64, build 17763 | kdbgscan (OptionalHeader Major 10, Minor 0; build string below) |
+| Volatility profile | Win10x64_17763 | imageinfo first suggestion; kdbgscan KDBG header suggestion |
+| Image timestamp | 2023-02-03 13:29:33 UTC | imageinfo `Image date and time`, rendered `UTC+0000` |
+| Image local time | 2023-02-03 05:29:33 -0800 | imageinfo `Image local date and time` |
+| KdCopyDataBlock (V) | `0xf8034da8a4d8` | kdbgscan |
+| Kernel base | `0xfffff8034d800000` | kdbgscan |
+| Build string | `17763.1.amd64fre.rs5_release.180` | kdbgscan |
 
-> Note: In real-world IR, acquisition method (WinPMEM, DumpIt, Magnet RAM Capture, etc.) and chain-of-custody documentation would be required.
-
-## 3. Kernel & Profile Validation
-
-Validated using:
+Commands as recorded (image path normalised to `memory.dmp`):
 
 ```
 python vol.py -f memory.dmp imageinfo
 python vol.py -f memory.dmp --profile=Win10x64_17763 kdbgscan
 ```
 
-Confirmed Profile:
+## 3. Acquisition and Integrity
 
-- `Win10x64_17763`
+- The memory image was supplied by the CyberDefenders exercise. The acquisition method is
+  not recorded in the surviving notes.
+- No hash of the image was recorded. Integrity rests on the range distribution.
+- No live acquisition was performed by the analyst.
 
-*KDBG Information*
-- KdCopyDataBlock (Virtual): `0xf8034da8a4d8`
-- Kernel Base: `0xfffff8034d800000`
-- Build String: `17763.1.amd64fre.rs5_release.180`
+## 4. Artifacts Referenced in the Image
 
-## 4. File System Artifacts Identified in Memory
-| Artifact | Path | Notes |
+| Artifact | Path | What is recorded |
 | :--- | :--- | :--- |
-| Batch File | C:\Windows\System32\svchost.bat | Malicious C2 script |
-| Dump Output | C:\Windows\lsass.dmp | LSASS credential dump |
-| Masqueraded Binary | C:\Windows\lsass.exe | Renamed ProcDump-like tool |
+| Batch file | C:\Windows\System32\svchost.bat | MFT entry (record 1772); malicious role range-confirmed |
+| Masqueraded image | C:\Windows\lsass.exe | Image path of PID 1576 |
+| Dump output name | lsass.dmp | Named in PID 1576's command line; no file observed |
 
-## 5. Suspicious Processes Identified
-| PID | Process | Notes |
+## 5. Processes Referenced
+
+| PID | Process | What is recorded |
 | :--- | :--- | :--- |
-| 1944 | WmiPrvSE.exe | Spawned PowerShell |
-| 5104 | powershell.exe | Interactive execution |
-| 1576 | lsass.exe | **Masqueraded ProcDump** |
-| 656 | lsass.exe | Legitimate LSASS |
+| 1944 | WmiPrvSE.exe | Parent of PID 5104 (pstree) |
+| 5104 | powershell.exe | Child of PID 1944; recorded PPID of PID 1576 |
+| 1576 | lsass.exe | Non-System32 path; dump invocation against PID 656 |
+| 656 | lsass.exe | Legitimate LSASS, `C:\Windows\system32\lsass.exe` |
 
-## 6. Network Artifacts (Defanged)
-| Type | Value |
+## 6. Network State at Capture (Defanged)
+
+| Field | Value |
 | :--- | :--- |
-| **Remote C2** | 10[.]0[.]128[.]2:4337 |
-| **Local Source Port** | 63944 |
-| **Protocol** | TCP |
-| **Connection State** | ESTABLISHED |
+| Remote endpoint | 10[.]0[.]128[.]2:4337 |
+| Local endpoint (capture-specific) | 10[.]0[.]128[.]0:63944 |
+| Protocol | TCPv4 |
+| State | ESTABLISHED |
+| Owner PID | -1 (no owning process recorded) |
 
-## 7. File Creation Timeline (MFT Parser)
-Extracted via:
+## 7. Usage Notes
 
-`python vol.py -f memory.dmp --profile=Win10x64_17763 mftparser --output-file=mftparser.json`
-| File | Creation Time (UTC) |
-| :--- | :--- |
-| Windows\System32\svchost.bat | 2023-02-03 13:25:04 |
-## 8. Hashes
-> Not available (lab artifact).
-> 
-> In a real-world case, SHA256 and MD5 hashes would be documented here.
+- Every timestamp in this case comes from Volatility output rendered with `UTC+0000`.
+- Commands are shown as recorded, with the image path normalised; the analyst's
+  workstation paths are omitted.
+- Evidence binaries are not stored in this public repository; indicators are defanged.
 
-## 9. Evidence Handling Notes
-- No evidence files stored in this public repository.
-- Only metadata, commands used, and analytical findings are documented.
-- All IOCs are defanged for portfolio safety.
+## 8. Handling Limitations
 
-## 10. Integrity Assessment
-- No signs of memory image corruption affecting core analysis.
-- Minor anomalous process entry (PID 393216, epoch timestamp) observed.
-- Requires deeper kernel structure validation if this were production IR.
-- 
-## 11. Evidence Summary
-- **Evidence Status**: Validated and analyzed.
-- **Compromise Confirmed**: Yes (Credential dumping + C2 communication).
+- The exercise environment is permanently closed; no plugin output beyond the retained
+  notes is recoverable.
+- `pslist`, `filescan` and `dumpfiles` output was not recorded.
+- pstree records an unnamed entry (PID 393216) with a `1970-01-01 00:00:00 UTC+0000` time
+  value; its cause is not recoverable from the surviving notes.
+- The notes carry two conflicting renderings of `svchost.exe` (PID 884); neither is
+  treated as authoritative.
