@@ -5,31 +5,40 @@
 **Time Standard:** UTC  
 **Source Platform:** CyberDefenders CyberRange  
 
-## 1. Detection Gaps
+## 1. Unassessed Controls
 
-- WMI execution was not monitored.
-- PowerShell activity lacked alerting.
-- LSASS memory access was not restricted.
-- Outbound connections on non-standard ports were allowed.
+The exercise supplied a memory image only. It did not expose the environment's
+monitoring, alerting, credential-protection or egress settings, so none of them is
+assessed here. Whether WMI activity was monitored, whether PowerShell activity raised
+alerts, whether LSASS access was restricted, and whether connections to uncommon ports
+were permitted by policy are all unknown.
 
-## 2. Early Detection Opportunities
+## 2. Recommended Detection Coverage
 
-- Alert on WmiPrvSE.exe spawning PowerShell.
-- Detect non-System32 execution of lsass.exe.
-- Monitor full-memory access to LSASS.
-- Correlate PowerShell execution with outbound TCP sessions.
+- Alert on `WmiPrvSE.exe` spawning PowerShell.
+- Detect `lsass.exe` executing from any path other than System32.
+- Monitor process access to LSASS with broad access rights.
+- Correlate PowerShell process trees with network sessions.
 
-## 3. Defensive Improvements
+## 3. Recommended Safeguards
 
 - Enable Sysmon (ProcessCreate, ProcessAccess, NetworkConnect).
-- Enforce Credential Guard or LSASS protection.
+- Enable Credential Guard or LSA protection.
 - Enable PowerShell Script Block Logging.
-- Restrict WMI remote execution where unnecessary.
+- Restrict remote WMI execution where it is not needed.
 
-## 4. Key Takeaway
+## 4. Analytical Lessons
 
-This case demonstrates a classic post-exploitation chain:
+- A command line records what was requested, not what completed. The dump invocation in
+  this case is observed; its outcome is not.
+- A connection without an owning process cannot be attributed to a process tree, however
+  plausible the link.
+- Range questions can join observations that the evidence records separately; the
+  distinction is kept in the published case.
 
-WMI execution → PowerShell staging → Reverse TCP shell → LSASS credential dump.
+## 5. Key Takeaway
 
-Behavioral correlation across process, file, and network telemetry is essential for reliable detection.
+The recorded chain is WmiPrvSE → PowerShell → masqueraded `lsass.exe` with a dump
+invocation against LSASS, alongside a separately recorded TCP connection and MFT entry.
+Behavioral correlation across process, file and network telemetry is what would join
+them in a real investigation.

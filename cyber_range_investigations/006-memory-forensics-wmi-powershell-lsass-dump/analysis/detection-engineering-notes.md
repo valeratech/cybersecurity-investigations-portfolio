@@ -7,28 +7,30 @@
 
 ## 1. Objective
 
-Develop defensive detection strategies based on observed attacker behavior:
+Derive detection ideas from the patterns recorded in this case. These are recommendations.
+The exercise supplied a memory image only; the environment's logging, alerting and
+protection settings were not examined and are not described here.
 
-- WMI → PowerShell execution
-- Reverse TCP shell over non-standard port
-- LSASS credential dumping via renamed ProcDump
-- Process masquerading
+Patterns recorded in the image:
 
-## 2. High-Fidelity Detection Opportunities
+- `WmiPrvSE.exe` as the parent of `powershell.exe`
+- a process named `lsass.exe` running from `C:\Windows\` with ProcDump-style arguments
+  targeting the legitimate LSASS PID
+- an ESTABLISHED TCP connection to port 4337, with no owning process recorded
 
-### 2.1 WMI Spawning PowerShell
+## 2. Detection Opportunities
 
-**Behavior Observed:**
+### 2.1 WmiPrvSE Spawning PowerShell
 
-`WmiPrvSE.exe → powershell.exe`
+**Recorded pattern:** `WmiPrvSE.exe` (PID 1944) → `powershell.exe` (PID 5104)
 
-**Detection Logic:**
+**Detection logic:**
 
 - ParentImage = `WmiPrvSE.exe`
-- ChildImage = `powershell.exe`
-- CommandLine contains suspicious switches or encoded content
+- Image = `powershell.exe`
+- Prioritise command lines with encoded or download content
 
-**Sigma Concept:**
+**Sigma concept:**
 ```
 title: WMI Spawning PowerShell
 logsource:
@@ -42,92 +44,73 @@ detection:
 level: high
 ```
 
-### 2.2 LSASS Dump via ProcDump Masquerading
-Behavior Observed:
+### 2.2 lsass.exe Outside System32 with Dump Arguments
 
-`"C:\Windows\lsass.exe" -accepteula -ma 656 lsass.dmp`
+**Recorded pattern:** `"C:\Windows\lsass.exe" -accepteula -ma 656 lsass.dmp`
 
-Detection Logic:
+**Detection logic:**
 
-- Image path not equal to `System32\lsass.exe`
-- CommandLine contains `-ma`
-- Target process = `lsass.exe`
-- Creation of `lsass.dmp`
+- Image name `lsass.exe` with a path other than `C:\Windows\System32\lsass.exe`
+- Command line containing `-ma` or `-accepteula` together with an LSASS PID or name
+- Creation of files named `*.dmp` matching `lsass*`
 
-High-Signal Indicators:
+### 2.3 LSASS Process-Access Monitoring (recommended)
 
-- Process accessing LSASS with full handle rights
-- Duplicate `lsass.exe` processes
-- `lsass.exe` executing from non-System32 path
+This case recorded no handle or process-access data. Recommended coverage:
 
-### 2.3 LSASS Handle Access Monitoring
+- Sysmon Event ID 10 (ProcessAccess) with TargetImage `lsass.exe`
+- Alert on broad access masks such as `0x1fffff` from unexpected source images
 
-**Detection Criteria**:
+### 2.4 Connections to Uncommon Ports
 
-- `Event ID 10` (Sysmon ProcessAccess)
-- TargetImage = `lsass.exe`
-- `GrantedAccess` includes `0x1fffff` or full memory access
+**Recorded pattern:** ESTABLISHED TCP to `10[.]0[.]128[.]2:4337`; owner PID not recorded.
 
-### 2.4 Reverse Shell Over Non-Standard Port
+**Detection logic:**
 
-**Behavior Observed**:
+- Internal or outbound TCP sessions to uncommon high ports
+- Correlate network sessions with process-creation events to recover the owning process,
+  which memory analysis did not provide here
 
-Outbound connection to:
-
-`10[.]0[.]128[.]2:4337`
-
-Detection Logic:
-
-- Outbound TCP to non-standard high port
-- powershell.exe initiating external connection
-- ESTABLISHED session from ephemeral source port
-
-SIEM Query Concept (Splunk-style):
+**Hunting concept (Splunk-style):**
 
 ```
-index=endpoint
-(Image="*powershell.exe")
+index=endpoint Image="*powershell.exe"
 | join ProcessId
     [ search index=network dest_port=4337 ]
 ```
 
 ## 3. Behavioral Correlation Strategy
 
-**Correlate**:
-1. WMI execution event
-2. PowerShell process creation
-3. Outbound TCP connection
-4. LSASS memory access
-5. Dump file creation
+Correlate, where the telemetry exists:
 
-Single events may be noisy.
-Combined chain = high-confidence compromise.
+1. WMI provider host process creation
+2. PowerShell creation under WmiPrvSE
+3. Network sessions opened by the same process tree
+4. Access to the LSASS process
+5. Dump-file creation
 
-## 4. Preventive Controls
+Single events may be noisy; the combination is the stronger signal.
+
+## 4. Preventive Controls (recommended)
+
 | Control | Purpose |
 | :--- | :--- |
-| **Credential Guard** | Protect LSASS memory |
-| **Attack Surface Reduction Rules** | Block credential dumping |
-| **Constrained Language Mode** | Restrict PowerShell abuse |
-| **EDR LSASS Monitoring** | Detect memory dumping |
-| **WMI Execution Monitoring** | Detect remote execution |
+| **Credential Guard / LSA protection** | Reduce exposure of LSASS memory |
+| **Attack Surface Reduction rules** | Block credential stealing from LSASS |
+| **Constrained Language Mode** | Restrict PowerShell capabilities |
+| **EDR LSASS monitoring** | Detect memory-dump attempts |
+| **WMI activity monitoring** | Detect WMI-initiated process creation |
 
 ## 5. Recommended Logging
-**Enable**:
-- Sysmon (ProcessCreate, ProcessAccess, NetworkConnect)
+
+- Sysmon: ProcessCreate, ProcessAccess, NetworkConnect
 - PowerShell Script Block Logging
-- Security 4688 (Process Creation)
-- Security 4624/4672 (Privilege Escalation)
-- WMI Activity Logging
+- Security 4688 (process creation, with command line)
+- Security 4624 and 4672 (logon and special-privilege assignment)
+- WMI-Activity operational log
 
 ## 6. Detection Engineering Conclusion
-- This compromise could have been detected early via:
-- WMI spawning PowerShell
-- PowerShell initiating outbound TCP connection
-- Non-System32 lsass.exe execution
-- LSASS full-memory access
 
-### Severity Assessment
-
-- Credential dumping combined with active C2 communication represents a high-severity compromise requiring immediate response.
-- Correlated behavioral telemetry across process and network logs would have enabled reliable detection.
+The patterns recorded in this case are detectable with process-creation, process-access
+and network telemetry. Whether the environment collected or alerted on such telemetry is
+not recorded, so no statement is made about what it did or did not detect.
