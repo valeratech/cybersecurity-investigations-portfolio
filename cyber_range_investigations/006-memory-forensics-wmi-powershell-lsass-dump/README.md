@@ -1,10 +1,10 @@
-# 006 – Memory Forensics: WMI → PowerShell → LSASS Dump
+# 006 – Memory Forensics: WmiPrvSE → PowerShell → Masqueraded LSASS Dump Invocation
 
 **Document Type:** Case Overview  
-**Case Title:** WMI-Spawned PowerShell with LSASS Credential Dump  
+**Case Title:** WmiPrvSE-Spawned PowerShell and a Masqueraded LSASS Dump Invocation  
 **Case ID:** 006-memory-forensics-wmi-powershell-lsass-dump  
 **Documentation Started:** 2026-02-24  
-**Documentation Last Updated:** 2026-02-26  
+**Documentation Last Updated:** 2026-09-21  
 **Author:** Ryan Valera  
 **Time Standard:** UTC  
 **Source Platform:** CyberDefenders CyberRange  
@@ -41,151 +41,190 @@
 ## 1. Overview
 
 ### Objective
-Analyze a Windows memory dump to determine the extent of compromise, identify attacker execution flow, validate credential access activity, extract network indicators, and reconstruct an initial timeline of events.
 
-### Scenario Summary
-You work for a managed service provider and were tasked with analyzing a memory dump from a breached customer environment. The goal is to identify hidden processes, suspicious parent/child relationships, evidence of credential dumping, and any active network connections indicative of command-and-control.
+Analyze a Windows memory image with Volatility, record what the image shows about process
+lineage, a masqueraded `lsass.exe` process and network state at capture, and keep those
+observations separate from the exercise's own propositions.
 
-This investigation was performed in a CyberDefenders CyberRange "Memory Forensics" scenario using Volatility plugins and supporting utilities.
+### Scenario Summary — range-supplied
+
+The exercise describes a managed service provider analyst examining a memory dump from a
+customer network that "was recently breached", with the goal of finding hidden processes,
+open network connections and malicious files. That breach, and the malicious role of the
+processes and files named in the questions, are range-confirmed propositions. This
+investigation was performed in a CyberDefenders CyberRange "Memory Forensics" exercise.
 
 ### Key Focus Areas
-- Memory Forensics
-- Incident Reconstruction
-- Credential Access (LSASS Dumping)
-- Network Artifact Identification (C2)
-- MITRE ATT&CK TTP Mapping
+
+- Memory forensics with Volatility 2.6.1
+- Process lineage and cross-view process listing
+- Command-line recovery for a masqueraded process
+- Network connection state at capture
+- Separation of observed artifacts from range-supplied propositions
+
+### Evidence Attribution
+
+Claims in this case use four categories: **Observed** (Volatility output retained in the
+analyst's notes), **Range-confirmed** (question text, hints or accepted answers),
+**External enrichment** (none used), and **Analyst inference** (marked where used).
+
+### Time Basis
+
+Every Volatility timestamp in the surviving notes is rendered by the tool with a
+`UTC+0000` suffix. The per-value register is in the
+[Final Report](reports/final-report.md) and the
+[Timeline](analysis/timeline-reconstruction.md).
 
 ## 2. Environment & Tools Used
 
 ### Environment Description
-- Suspected OS: Windows 10 x64
-- Confirmed Volatility Profile: `Win10x64_17763`
-- Memory Image Timestamp (from Volatility): `2023-02-03 13:29:33 UTC`
-- Note: All timestamps are treated as UTC unless explicitly stated otherwise by the CyberRange.
 
-### Tools & Frameworks
+- Operating system: Windows 10 x64, build string `17763.1.amd64fre.rs5_release.180` (kdbgscan)
+- Volatility profile: `Win10x64_17763` (first suggestion from imageinfo; KDBG header suggestion from kdbgscan)
+- Memory image timestamp: `2023-02-03 13:29:33 UTC` (imageinfo)
 
-**Memory Forensics**
-- Volatility Framework 2.6.1 (Python `vol.py`)
-  - `imageinfo`
-  - `kdbgscan`
-  - `pstree`
-  - `psxview`
-  - `cmdline`
-  - `psinfo`
-  - `netscan`
-  - `mftparser`
-  - (scenario-referenced) `pslist`, `filescan`, `dumpfiles`
+### Tools Used
 
-**Command-Line / Utilities**
-- Python (Volatility execution)
-- PowerShell (preferred over CMD; filtering via `Select-String`)
-- `strings` utility (strings extraction / parsing)
+- Volatility Framework 2.6.1 (`vol.py`): `imageinfo`, `kdbgscan`, `pstree`, `psxview`,
+  `cmdline`, `psinfo`, `netscan`, `mftparser`
+- PowerShell `Select-String`, for filtering plugin output
+- The range-supplied `strings_out.txt` was parsed for the Q8 answer; the parse command is
+  not recorded
 
-**Forensic GUI / Carving**
-- R-Studio (file carving / recovery validation)
+### Referenced but not performed
 
-**Adversary Tooling**
-- Sysinternals ProcDump (inferred from `-accepteula -ma` usage), masqueraded as `lsass.exe`
+- `pslist`, `filescan` and `dumpfiles` are named in the scenario; no output from them is
+  recorded.
+- The `strings` utility appears only as a generic example; `strings_out.txt` was supplied
+  by the range.
+- R-Studio appears only as the range's suggested carving route; no recovery was performed.
 
 ## 3. Evidence Collected
 
-### Evidence Artifacts
-- `memory.dmp` (Windows memory image)
-- `strings_out.txt` (pre-generated strings output provided by lab)
-- `mftparser.json` (MFT parsing output)
-- File artifact referenced/identified:
-  - `C:\Windows\System32\svchost.bat`
-  - `C:\Windows\lsass.dmp` (LSASS dump output file referenced by command line)
+| Artifact | Provenance |
+| :--- | :--- |
+| `memory.dmp` (Windows memory image) | Range-supplied; analysed with Volatility |
+| `strings_out.txt` | Range-supplied, pre-generated strings output; parsed, not regenerated |
+| `mftparser.json` | Generated by `mftparser` during the analysis |
 
-> Note: Evidence binaries (memory dumps, recovered malware/dumps) are not included in this public portfolio repository. Only metadata and investigative notes are stored.
+> Note: Evidence binaries are not included in this public portfolio repository. Only
+> metadata and investigative notes are stored.
 
 ## 4. Analysis & Findings
 
 ### 4.1 Profile Identification
-The correct profile was identified using:
-- `python vol.py -f "C:\...\memory.dmp" imageinfo`
 
-Selected profile:
-- `Win10x64_17763`
+Observed: imageinfo lists `Win10x64_17763` first among its suggested profiles, and
+kdbgscan reports `KdCopyDataBlock (V): 0xf8034da8a4d8` with a KDBG header profile
+suggestion of `Win10x64_17763`.
 
-Kernel debugger scan confirmed profile and key structure:
-- `KdCopyDataBlock (V): 0xf8034da8a4d8`
+### 4.2 Process Lineage
 
-### 4.2 Initial Indicators (Process Tree Pivot)
-Suspicious execution chain identified via pstree:
-- `WmiPrvSE.exe (PID 1944) → powershell.exe (PID 5104) → conhost.exe (PID 896)`
+Observed (pstree): `WmiPrvSE.exe` (PID 1944, parent `svchost.exe` PID 884) is the parent
+of `powershell.exe` (PID 5104, created `2023-02-03 13:23:40 UTC`), which is the parent of
+`conhost.exe` (PID 896). A second `WmiPrvSE.exe` (PID 3816) runs under the same parent.
 
-This is consistent with WMI-driven execution and LOLBAS-style activity.
+Range-confirmed: the exercise accepted PID 1944 as "the process responsible for the
+malicious activity". The PowerShell command line was not recorded, and the WMI method or
+caller behind PID 5104 is not recorded.
 
-Likely compromise time marker (PowerShell start time):
-- `2023-02-03 13:23:40 UTC`
+### 4.3 Masqueraded lsass.exe and the Dump Invocation
 
-### 4.3 Credential Access (LSASS Dump)
-Cross-view process validation (psxview) revealed two lsass.exe instances:
-Legitimate: 
-- `lsass.exe (PID 656) → C:\Windows\system32\lsass.exe`
-Suspicious/masqueraded:
-- `lsass.exe (PID 1576)` with ProcDump-like arguments
+Observed:
 
-Suspicious command line:
-- `"C:\Windows\lsass.exe" -accepteula -ma 656 lsass.dmp`
+- psxview lists two `lsass.exe` entries. PID 656 is present in `pslist`; PID 1576 is not
+  (`pslist` False, `psscan` False, `thrdproc` True).
+- cmdline for PID 656: `C:\Windows\system32\lsass.exe`.
+- cmdline for PID 1576: `"C:\Windows\lsass.exe" -accepteula -ma 656 lsass.dmp`.
+- psinfo for PID 1576: `Parent Process: NA PPID: 5104`, creation time
+  `2023-02-03 13:29:30 UTC`, image path `C:\Windows\lsass.exe`.
 
-Interpretation:
-- A Sysinternals ProcDump-like credential dumping action targeted the legitimate LSASS process (PID 656) and produced `lsass.dmp`.
+Range-confirmed: the exercise states that a Sysinternals tool was renamed to a common
+process name, and accepted PID 5104 as the process that spawned it.
 
-### 4.4 Command-and-Control (C2) Artifact
-A malicious batch file was identified:
-- `C:\Windows\System32\svchost.bat`
+Analyst inference: the arguments match Sysinternals ProcDump syntax for a full memory dump
+of PID 656 (the legitimate LSASS) to a file named `lsass.dmp`.
 
-Defanged C2 endpoint extracted from strings analysis:
-- `10[.]0[.]128[.]2:4337`
+The record establishes the invocation only. Whether the dump completed, where `lsass.dmp`
+was written, and whether any credential material was obtained are not established.
 
-Active connection observed via netscan (defanged):
-- Local: `10[.]0[.]128[.]0:63944`
-- Remote: `10[.]0[.]128[.]2:4337`
-- State: `ESTABLISHED`
+### 4.4 Network Connection at Capture
 
-Source port used by the compromised host:
-- `63944`
+Observed (netscan): a TCPv4 entry from `10[.]0[.]128[.]0:63944` to
+`10[.]0[.]128[.]2:4337` in state `ESTABLISHED`. The owner PID field is `-1`; no owning
+process is recorded, and the recorded row carries no creation time.
 
-### 4.5 File System Artifact Timestamp (MFT)
-MFT parsing (mftparser) indicates file creation:
+Range-confirmed: the exercise identifies `10[.]0[.]128[.]2:4337` as the IP and port used
+for communication and 63944 as the source port of "the malicious session".
 
-- `Windows\System32\svchost.bat`
-- Creation time: `2023-02-03 13:25:04 UTC`
+### 4.5 svchost.bat — Range Proposition and MFT Record
 
-## 5. Initial Timeline (UTC)
-| Time (UTC) | Event |
-| :--- | :--- |
-| 2023-02-03 13:10:37 | `WmiPrvSE.exe` (PID 1944) created |
-| 2023-02-03 13:23:40 | `powershell.exe` (PID 5104) created |
-| 2023-02-03 13:25:04 | `svchost.bat` created (`Windows\System32\svchost.bat`) |
-| 2023-02-03 13:29:30 | Masqueraded `lsass.exe` (PID 1576) launched to dump LSASS |
-| 2023-02-03 13:29:33 | Memory image timestamp (Volatility reported) |
+Range-confirmed: the exercise states that the attacker created
+`C:\Windows\System32\svchost.bat` and asks for the IP and port it used.
+
+Observed in the range-supplied `strings_out.txt`: PowerShell code that opens a TCP client
+to `10[.]0[.]128[.]2` port 4337 and evaluates received data with `iex`. The notes record
+no association between this string and `svchost.bat`; that association is range-confirmed.
+
+Observed (mftparser): an MFT entry for `Windows\System32\svchost.bat` whose
+`$STANDARD_INFORMATION` creation, modification, MFT-change and access values are all
+`2023-02-03 13:25:04 UTC`. The file's content, its creator and any execution are not
+recorded.
+
+### 4.6 Observed Lineage Summary
+
+The memory image records three separate observations: a WmiPrvSE → PowerShell →
+masqueraded `lsass.exe` lineage with a dump invocation against LSASS, an ESTABLISHED
+connection with no recorded owner, and an MFT entry for `svchost.bat`. The exercise links
+them; the surviving record does not.
+
+## 5. Timeline (UTC)
+
+| Time (UTC) | Event | Source |
+| :--- | :--- | :--- |
+| 2023-02-03 13:10:37 | `WmiPrvSE.exe` (PID 1944) created | pstree |
+| 2023-02-03 13:23:40 | `powershell.exe` (PID 5104) created, child of PID 1944 | pstree |
+| 2023-02-03 13:25:04 | MFT `$STANDARD_INFORMATION` creation value, `svchost.bat` | mftparser |
+| 2023-02-03 13:29:30 | `lsass.exe` (PID 1576) created, PPID 5104 | psinfo |
+| 2023-02-03 13:29:33 | Memory image timestamp | imageinfo |
+
+The TCP connection has no recorded time; it is ESTABLISHED at capture.
 
 ## 6. Indicators (Defanged)
-| Type | Indicator |
-| :--- | :--- |
-| **C2 IP:Port** | `10[.]0[.]128[.]2:4337` |
-| **Local Source Port** | `63944` |
-| **File Artifact** | `C:\Windows\System32\svchost.bat` |
-| **Dump Output** | `C:\Windows\lsass.dmp` |
-| **Suspect Process** | `WmiPrvSE.exe (PID 1944)` |
-| **Execution Process** | `powershell.exe (PID 5104)` |
-| **Masqueraded Dumper** | `lsass.exe (PID 1576)` |
 
-## 7. MITRE ATT&CK (Initial Mapping)
-- T1059 — Command and Scripting Interpreter (PowerShell)
-- T1047 — Windows Management Instrumentation (WMI execution chain)
-- T1003.001 — OS Credential Dumping: LSASS Memory
-- T1071 — Application Layer Protocol (C2 via TCP client behavior)
+| Classification | Indicator | Basis |
+| :--- | :--- | :--- |
+| Malicious Indicator | `10[.]0[.]128[.]2:4337` | Remote endpoint observed in netscan; malicious role range-confirmed |
+| Malicious Indicator | `C:\Windows\lsass.exe` | Observed image path of PID 1576 |
+| Malicious Indicator | `C:\Windows\System32\svchost.bat` | Filename range-confirmed; MFT entry observed |
+| Contextual Observable — Not an IOC | `10[.]0[.]128[.]0:63944` | Capture-specific local endpoint and ephemeral port |
 
-## 8. Notes / Caveats
-- This is a memory-focused CyberRange investigation; disk artifacts are referenced where supported by MFT parsing and recovered file properties.
-- Evidence files are not included; metadata, analysis steps, and findings are documented for portfolio purposes.
+Full classification: [IOCs](analysis/iocs.md).
+
+## 7. MITRE ATT&CK Alignment
+
+Mapped against ATT&CK Enterprise v19.2. Dispositions and the techniques not mapped are in
+the [MITRE ATT&CK Mapping](analysis/mitre-attack-mapping.md).
+
+- T1003.001 — OS Credential Dumping: LSASS Memory (invocation observed; outcome not established)
+- T1036 — Masquerading (observed name and path; renaming range-confirmed)
+- T1059.001 — Command and Scripting Interpreter: PowerShell (process observed; its commands not recorded)
+- T1047 — Windows Management Instrumentation (consistent with the observed WmiPrvSE parentage; the WMI method is not recorded)
+
+## 8. Evidence Boundary
+
+- The process, command-line, connection and MFT observations above are each directly
+  recorded in Volatility output. Their causal connection is a range-supplied proposition,
+  not an observed chain.
+- Completion of the LSASS dump, the location of `lsass.dmp`, the identity of the binary
+  behind PID 1576, the owner of the TCP connection, and the content and execution of
+  `svchost.bat` are not recoverable from the surviving notes.
+- Persistence, lateral movement, data exfiltration and interactive operation were not
+  examined in this exercise.
+- Unresolved items are carried in the Limitations sections of the
+  [Timeline](analysis/timeline-reconstruction.md) and
+  [Final Report](reports/final-report.md).
 
 ## 9. Case Status
 
 **Status:** Complete  
-**Confidence Level:** High  
