@@ -2,22 +2,15 @@
 
 **Document Type:** Directory Index  
 **Case ID:** 007-memory-evtx-extraction-rdp-wmic-lsass-dump  
-**Status:** In Progress  
+**Status:** Complete  
 **Source Platform:** CyberDefenders CyberRange  
 
-## Current Status
+## Current Contents
 
-No final report exists for this investigation yet. The investigation and its
-portfolio documentation remain in progress.
+- [Final Report](final-report.md) — the source-grounded report for this investigation,
+  carrying each finding with its provenance label and evidentiary limit.
 
-Work completed so far is documented in:
+## Purpose
 
-- `analysis/` — initial findings and timeline
-- `case-notes/` — intake and scope
-- `evidence-metadata/` — evidence register
-
-## Planned
-
-When the investigation is concluded, `final-report.md` will be added to this
-directory, replacing this placeholder and matching the convention used by the
-other cases.
+This directory holds the reporting output for Case 007. Analysis inputs are held in
+`analysis/`, intake in `case-notes/`, and evidence metadata in `evidence-metadata/`.

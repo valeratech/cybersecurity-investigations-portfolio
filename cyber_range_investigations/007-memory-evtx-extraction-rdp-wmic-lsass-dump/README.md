@@ -1,24 +1,27 @@
 # Investigation Report
 
 **Document Type:** Case Overview  
-**Case Title:** Memory EVTX Extraction + RDP Intrusion + WMIC Lateral Movement + LSASS Dump  
+**Case Title:** Memory EVTX Extraction, RDP Intrusion, WMIC Lateral Movement, Recovered LSASS Dump Command  
 **Case ID:** 007-memory-evtx-extraction-rdp-wmic-lsass-dump  
 **Documentation Started:** 2026-02-26  
-**Documentation Last Updated:** 2026-02-26  
+**Documentation Last Updated:** 2026-09-22  
 **Author:** Ryan Valera  
 **Time Standard:** UTC  
 **Source Platform:** CyberDefenders CyberRange  
 
 ## Scope
 
-This investigation focuses exclusively on analysis of the provided Windows memory image (`Server.raw`).  
-No disk image or external log sources were provided.
+This investigation covers analysis of the provided Windows memory image (`Server.raw`).
+The supplied artifact set was that image alone. No disk image, packet capture or external
+log source was supplied for analysis.
 
-## Assumptions
+Claims below carry a provenance label:
 
-- The memory image was acquired in a forensically sound manner.
-- System clock was accurate at the time of acquisition.
-- All timestamps are normalized to UTC.
+- **Observed** — recorded in an event record, command string or tool output captured in the analyst notes.
+- **Range-supplied** — stated by the scenario briefing or by the wording of a question.
+- **Range-accepted** — the answer recorded as accepted for a numbered question.
+- **Analyst inference** — derived by the analyst from observed data.
+- **Not established** — the surviving record does not support the statement.
 
 ## Case Contents
 
@@ -37,26 +40,29 @@ No disk image or external log sources were provided.
 
 ### Reports
 
-- [Pending Report](reports/README.md)
+- [Final Report](reports/final-report.md)
+- [Reports Index](reports/README.md)
 
 ## 1. Overview
 
 ### Objective
 
-- Identify initial access vector
+- Identify the recorded image capture time
 - Extract Windows Event Logs (EVTX) from memory
 - Reconstruct `.vacb` log fragments
 - Identify attacker tooling and renamed binaries
-- Confirm credential dumping activity
-- Identify persistence mechanisms
-- Trace lateral movement activity
-- Associate malicious actions with user SID
+- Identify a credential-dumping command
+- Identify a service-based persistence configuration
+- Identify lateral movement activity
+- Associate the reported activity with a user SID
 
 ### Scenario Summary
 
-A Windows memory image was provided from a suspected compromised system within a CyberDefenders CyberRange environment.  
+Range-supplied: a client reported a suspected compromise across several on-premises
+machines, and a memory image from one affected system was provided for analysis.
 
-Primary investigative focus was extraction of EVTX artifacts from memory using Volatility and reconstruction of attacker activity through timeline correlation.
+Primary investigative focus was extraction of EVTX artifacts from memory using Volatility
+and correlation of the resulting event records.
 
 ### Key Focus Areas
 
@@ -64,9 +70,8 @@ Primary investigative focus was extraction of EVTX artifacts from memory using V
 - Event Log Reconstruction  
 - RDP Activity Analysis  
 - Credential Dumping  
-- Persistence Mechanisms  
+- Persistence Configuration  
 - Lateral Movement  
-- Incident Reconstruction  
 
 ## 2. Environment & Tools Used
 
@@ -76,7 +81,7 @@ Primary investigative focus was extraction of EVTX artifacts from memory using V
 - OS Profile: `Win10x64_17763`
 - Hostname: `WIN-2O66FDBAHOG`
 - Memory Image: `Server.raw`
-- Image Capture Time (UTC): `2025-05-27 09:30:20`
+- Recorded image timestamp (UTC): `2025-05-27 09:30:20`
 
 ### Tools & Frameworks
 
@@ -94,7 +99,7 @@ Primary investigative focus was extraction of EVTX artifacts from memory using V
 - PowerShell
 - `strings64.exe`
 
-**Identified LOLBins**
+**Binaries named in recovered artifacts**
 - `WMIC.exe`
 - `cmd.exe`
 - `powershell.exe`
@@ -104,128 +109,205 @@ Primary investigative focus was extraction of EVTX artifacts from memory using V
 ### Evidence Artifacts
 
 - Memory image: `Server.raw`
-- Extracted EVTX artifacts (from memory)
-- Reconstructed EVTX files (from `.vacb`)
-- Parsed CSV logs
-- Extracted memory strings file
+- EVTX artifacts extracted from memory with `dumpfiles`
+- `.vacb` fragments renamed to `.evtx` for parsing
+- CSV output parsed with EvtxECmd and reviewed in Timeline Explorer
+- Memory strings output from `strings64.exe`
 
 ## 4. Analysis & Findings
 
-### 4.1 Initial Indicators
+### 4.1 Recorded Image Timestamp
 
-- RDP connection from: `192[.]168[.]19[.]159`
-- Suspicious service created: `FireFox Update`
-- Suspicious tool staging directory:
-  - `C:\Users\Public\Downloads\N1\N1\`
-  - `C:\Users\Default\AppData\Local\Temp\N1\`
+Observed: Volatility `imageinfo` reports `Image date and time : 2025-05-27 09:30:20 UTC+0000`
+and a local value of `2025-05-27 02:30:20 -0700`.
 
-### 4.2 Timeline Reconstruction (UTC)
+Range-accepted: `2025-05-27 09:30`.
 
-**2025-05-26**
-- Discovery tooling downloaded
-- Seatbelt renamed to `SB.exe`
+The value is the timestamp the image records for itself. It is not an independently
+documented acquisition or chain-of-custody event, and it does not establish that all
+attacker activity ended at that moment.
 
-**2025-05-27**
-- RDP connection established
-- Service `FireFox Update` created
-- Encoded PowerShell execution observed
-- LSASS dump executed:
-  ```
-  C:\Users\Default\AppData\Local\Temp\N1\DD.exe -accepteula -ma lsass.exe C:\Users\Default\AppData\Local\Temp\mm.tmp
-  ```
-- WMIC lateral movement command:
-  ```
-  wmic /node:192[.]168[.]19[.]163 /user:noah /password:"<REDACTED>"
-  ```
+### 4.2 RDP Ingress
 
-### 4.3 Host-Based Analysis
+Observed: an RDP-CoreTS event (`Event ID 131`, `2025-05-27 09:21:40`) records
+`RDP server accepted a new TCP connection` with client `192[.]168[.]19[.]159:64984`
+and `Connection Type: TCP`.
 
-- Renamed discovery tool:
-  - `SB.exe` → Seatbelt.exe
-- Credential dumping tool:
-  - `DD.exe`
-- Persistence:
-  - Service Name: `FireFox Update`
-  - Executes hidden PowerShell encoded command
-  - Launches: `C:\ProgramData\chocolatey\tt.exe`
+Range-accepted: the internal source address is `192[.]168[.]19[.]159`.
 
-Associated SID:
-- `S-1-5-21-2346552008-2584940806-3566241850-500`
+The event records an accepted TCP connection. Successful interactive authentication is
+range-supplied by the wording of the questions and is not established by this event.
 
-### 4.4 Network Analysis
+### 4.3 RDP Port Values — Conflicting Sources Preserved
 
-- RDP ingress: `192[.]168[.]19[.]159`
-- Lateral movement target: `192[.]168[.]19[.]163`
-- WMIC used for remote enumeration and command execution
+Two source values exist and are not reconciled here:
 
-### 4.5 Memory Analysis
+| Value | Source |
+|---|---|
+| `64989, 3389` | Range-accepted answer recorded for the port question |
+| `64984` client port, `3389` service port | Observed in the RDP-CoreTS event payload |
 
-- EVTX artifacts successfully carved from memory
-- `.vacb` fragments reconstructed
-- Encoded PowerShell command recovered
-- LSASS dumping command recovered via strings analysis
+Whether the two describe the same connection, or the same perspective on it, is not
+established.
 
-### 4.6 Malware Behavior
+### 4.4 Tool Staging
 
-Observed behaviors:
+Observed: Sysmon Event ID 11 records file creation at `2025-05-27 09:21:58` under
+`C:\Users\Public\Downloads\N1\N1\` — `DD.exe`, `SB.exe`, `tt.exe` and `n1.ps1` — by
+`C:\Windows\Explorer.EXE` running as `WIN-2O66FDBAHOG\Administrator`.
 
-- Tool download and staging
-- Binary renaming for evasion
-- Service-based persistence
-- Obfuscated PowerShell execution
-- Credential dumping
-- Lateral movement via LOLBin
+Observed: further creation of `DD.exe`, `SB.exe`, `tt.exe` and `n1.ps1` at `09:22:22`
+under `C:\Users\Default\AppData\Local\Temp\N1\`.
+
+Not established: whether the second set was copied, moved or separately written. Only
+creation events survive.
+
+### 4.5 Renamed Discovery Tool
+
+Range-accepted: `SB.exe` corresponds to `Seatbelt.exe`.
+
+Observed: a file named `SB.exe` created at the paths and times in 4.4.
+
+Not established: the rename operation itself, the binary's identity from telemetry, and
+any motive for the naming. No hash, signature or execution record for `SB.exe` survives.
+
+### 4.6 Service Persistence Configuration
+
+Observed: a service creation record carrying `ServiceName: FireFox Update`,
+`ImagePath: C:\Windows\System32\cmd.exe /c "powershell -WindowStyle Hidden -EncodedCommand <base64>"`,
+`ServiceType: user mode service`, `StartType: auto start`, `AccountName: LocalSystem`.
+The decoded command is `Start-Process -FilePath 'C:\ProgramData\chocolatey\tt.exe'`.
+
+Not established: the time the service was created, whether the service started, and
+whether the configured PowerShell command ran. The record carries configuration, not
+execution.
+
+The analyst prose in the notes renders the name as `Firefox Update`; the payload value is
+`FireFox Update` and is used here.
+
+### 4.7 Credential-Dumping Command
+
+Range-accepted and observed in the memory strings output:
+
+```
+C:\Users\Default\AppData\Local\Temp\N1\DD.exe -accepteula -ma lsass.exe C:\Users\Default\AppData\Local\Temp\mm.tmp
+```
+
+The switches direct a full memory dump of `lsass.exe` to `mm.tmp`.
+
+Not established: that the command executed, that a dump file was produced, or that any
+credential material was obtained. `mm.tmp` is the output path named inside the command
+string, not an independently observed file.
+
+### 4.8 Lateral Movement
+
+Range-accepted and observed in the memory strings output:
+
+```
+wmic /node:192.168.19.163 /user:noah /password:"<REDACTED>"
+```
+
+Observed: an event payload naming `C:\Windows\System32\wbem\WMIC.exe` with
+`IpAddress 192[.]168[.]19[.]163`, alongside a second record naming
+`C:\Windows\System32\svchost.exe` for the same target.
+
+Not established: which WMI operation was requested. The recovered string carries
+connection switches only, with no verb, alias or class, so neither remote enumeration nor
+remote execution is demonstrated by it.
+
+### 4.9 Account Context
+
+Observed: the event payload records `SubjectUserSid`
+`S-1-5-21-2346552008-2584940806-3566241850-500` with `SubjectUserName: Administrator`
+and `SubjectDomainName: WIN-2O66FDBAHOG`. The same payload records
+`TargetUserName: noah` and `TargetServerName: DESKTOP-U98A16J`.
+
+Range-accepted: the SID above is the answer recorded for the account-attribution question.
+
+Not established: that this subject SID accounts for every action described in this case.
+The correlation exists for the WMIC-related records, not across the whole timeline.
+
+### 4.10 Activity on 2025-05-26 — Unattributed
+
+Observed on `2025-05-26`: browser downloads of `DumpIt.exe` and
+`winpmem_mini_x64_rc2.exe` by `WIN-2O66FDBAHOG\Administrator`, creation of
+`C:\Windows\SysWOW64\drivers\DumpIt.sys`, creation of
+`WIN-2O66FDBAHOG-20250526-123246.raw`, and creation of
+`C:\Users\Administrator\Tools\DumpIt.exe`.
+
+These are memory-acquisition utilities. The surviving record neither attributes them to
+the intruder nor establishes them as authorised administrative activity. They are
+reported as unattributed host activity.
 
 ## 5. Indicators of Compromise (Defanged)
 
 ### IP Addresses
-- `192[.]168[.]19[.]159`
-- `192[.]168[.]19[.]163`
+- `192[.]168[.]19[.]159` — source of the accepted RDP connection
+- `192[.]168[.]19[.]163` — target named in the WMIC command and event payloads
 
-### Service Name
-- `FireFox Update`
+### Service Configuration
+- `FireFox Update` — service name in the service-creation record
 
-### Suspicious Files
+### Files Observed Created
 - `C:\Users\Public\Downloads\N1\N1\DD.exe`
 - `C:\Users\Public\Downloads\N1\N1\SB.exe`
 - `C:\Users\Public\Downloads\N1\N1\tt.exe`
-- `C:\Users\Default\AppData\Local\Temp\mm.tmp`
+- `C:\Users\Public\Downloads\N1\N1\n1.ps1`
 
-## 6. MITRE ATT&CK Mapping (Preliminary)
+### Paths Named Inside Recovered Command Strings
+- `C:\Users\Default\AppData\Local\Temp\mm.tmp` — output path in the `DD.exe` command
+- `C:\ProgramData\chocolatey\tt.exe` — target of the decoded service command
 
-- T1021.001 – Remote Services: RDP
-- T1059.001 – PowerShell
-- T1003.001 – LSASS Memory Dump
-- T1047 – Windows Management Instrumentation
-- T1543.003 – Windows Service Persistence
+## 6. MITRE ATT&CK Alignment
+
+Analyst inference. These mappings are the analyst's alignment of observed artifacts to the
+framework. No technique identifier appears anywhere in the surviving record.
+
+| Technique | Basis in this case | Evidentiary limit |
+|---|---|---|
+| T1021.001 — Remote Services: RDP | Accepted RDP TCP connection recorded | Connection only; no authenticated session established |
+| T1543.003 — Create or Modify System Process: Windows Service | Service creation record with auto-start configuration | Configuration only; no service start recorded |
+| T1059.001 — Command and Scripting Interpreter: PowerShell | Encoded PowerShell command configured as the service image path | Configured command; execution not demonstrated |
+| T1003.001 — OS Credential Dumping: LSASS Memory | `DD.exe` command string targeting `lsass.exe` recovered from memory | Command string only; execution and output not established |
+| T1047 — Windows Management Instrumentation | `WMIC.exe` process and remote target recorded; command string recovered | Operation requested is not established |
 
 ## 7. Limitations
 
-- Only memory image provided (no disk image).
-- Possible incomplete EVTX reconstruction due to `.vacb` fragment limitations.
-- All timestamps are treated as UTC unless explicitly stated by CyberDefenders.
+- The supplied artifact set was the memory image alone. No disk image, packet capture or
+  external log source was supplied, and this states the scope of what was analysed rather
+  than what exists elsewhere.
+- EVTX artifacts were reconstructed from `.vacb` fragments, so event coverage is partial
+  by construction. The extent of the gap is not measurable from the surviving record.
+- No hash of `Server.raw` is recorded in the investigation record. The value is not
+  available and is not a pending item.
+- Execution is not demonstrated for the service payload, the `DD.exe` command or the
+  WMIC command. Each survives as configuration or as a recovered string.
+- The notes contain, under an "Example Format" label, a `DD.exe` command line writing the
+  `2025-05-26` `.raw` file. Whether that line was observed or illustrative is not
+  established, and no claim rests on it.
 
-## 8. Conclusion (Interim)
+## 8. Evidence Boundary
 
-Evidence confirms:
+- The question set defined what was examined. Topics outside it — including the fate of
+  `mm.tmp`, the content of `n1.ps1`, activity on `DESKTOP-U98A16J`, and any impact on
+  other hosts — were not examined and are not open items.
+- Causal connection between the staged files, the service configuration and the recovered
+  commands is a range-supplied proposition rather than an observed chain.
+- Where the record carries two values for one question, both are preserved in 4.3 rather
+  than reconciled.
 
-- RDP-based access from an internal host
-- Tool staging and renaming activity
-- Service-based persistence
-- Credential dumping targeting LSASS
-- Lateral movement using WMIC
-- Malicious activity tied to SID `S-1-5-21-2346552008-2584940806-3566241850-500`
+## 9. Conclusion
 
-Investigation ongoing.
+The record establishes an accepted RDP connection from an internal address, creation of
+four staged files under two directories, a service configured to launch an encoded
+PowerShell command, a recovered LSASS-dumping command string, a recovered WMIC command
+naming a second internal host, and an event payload tying WMIC activity to an
+Administrator subject SID.
 
-## 9. Next Steps
-
-- Build full second-by-second timeline
-- Correlate logon events with process execution
-- Identify additional impacted systems
-- Validate scope of credential compromise
+It does not establish execution of the staged tooling, the service payload, the dumping
+command or any WMI operation, and it does not establish the outcome of the lateral
+movement attempt.
 
 ## 10. Case Status
 
-**Status:** In Progress  
-**Confidence Level:** Medium  
+**Status:** Complete  
