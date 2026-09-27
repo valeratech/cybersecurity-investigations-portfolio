@@ -7,100 +7,64 @@
 
 ## Objective
 
-Analyze endpoint telemetry to identify suspicious process execution, persistence mechanisms, and host-level indicators associated with the `osk.exe` binary.
+This document sets out what the record shows about the suspicious binary on the endpoint: its event volume, path, host context and hash.
 
 ## Data Sources
 
-- Sysmon Event Logs (XmlWinEventLog)  
-- Windows Event Logs  
+- Windows event logs in XML (Sysmon telemetry), searched in Splunk (Q3 to Q5, Q8).
+- The `Image` field summary captured in the Q4 screenshot.
 
 ## Analysis
 
-### 1. Process Identification
+### 1. Event Volume (Q3)
 
 #### Observation
-Search performed:
 
-`index="botsv1" sourcetype=xmlwineventlog "osk.exe"`
+**Range-accepted.** The search for `osk.exe` returned 49,608 events.
 
-Result:
-- Total events: ~49,608  
+#### Analyst Interpretation
 
-#### Interpretation
-The volume of activity is significantly higher than expected for a legitimate accessibility tool, indicating abnormal or automated execution.
+**Analyst inference.** The notes read this as a volume unusual for an accessibility tool.
 
-### 2. Execution Path Validation
+### 2. Execution Path (Q2, Q4)
 
 #### Observation
-Suspicious binary path:
 
-`C:\Users\bob.smith.WAYNECORPINC\AppData\Roaming\{35ACA89F-933F-6A5D-2776-A3589FB99832}\osk.exe`
+**Range-accepted.** Suspicious path: `C:\Users\bob.smith.WAYNECORPINC\AppData\Roaming\{35ACA89F-933F-6A5D-2776-A3589FB99832}\osk.exe`.
+**Range-accepted.** Expected location of the legitimate binary: `C:\Windows\System32`.
+**Observed.** The `Image` field summary reports 12 values across 100% of events and shows the top 10. The suspicious path accounts for 49,594 events (99.972%).
+**Observed.** The other values shown are `C:\Users\bob.smith.WAYNECORPINC\AppData\Roaming\121214.tmp` (3 events), `C:\Windows\System32\bcdedit.exe` (2), and one event each for `C:\Program Files (x86)\Internet Explorer\iexplore.exe`, `C:\Windows\SysWOW64\explorer.exe`, `C:\Windows\System32\PING.EXE`, `C:\Windows\System32\cmd.exe`, `C:\Windows\System32\notepad.exe`, `C:\Windows\System32\taskkill.exe` and `C:\Windows\System32\vssadmin.exe`.
 
-Legitimate path:
+#### Limits
 
-`C:\Windows\System32\osk.exe`
+The record does not show which field matched `osk.exe` in the events behind these other values, and it records no command lines, so no action is attributed to them.
 
-#### Interpretation
-The binary is executing from a user-controlled directory with a GUID-like folder structure, which is a common technique used for:
+#### Analyst Interpretation
 
-- Masquerading  
-- Defense evasion  
-- Persistence  
+**Analyst inference.** The notes read the user-profile `AppData\Roaming` location and the GUID-like folder name as signs of a masquerading executable and of obfuscation.
 
-### 3. Host Attribution
-
-#### Observation
-Associated system context:
-
-- Computer: `we8105desk[.]waynecorpinc[.]local`  
-- Internal IP: `192[.]168[.]250[.]100`  
-- User: `bob.smith`  
-
-#### Interpretation
-The malicious activity is tied to a specific endpoint and user, enabling targeted containment and remediation.
-
-### 4. Persistence Mechanism
+### 3. Host Context (Q5)
 
 #### Observation
-The investigation was initiated based on a suspicious registry entry referencing the `osk.exe` binary.
 
-Accessibility binaries such as `osk.exe` can be executed at the Windows logon screen.
+**Range-accepted.** Computer `we8105desk[.]waynecorpinc[.]local`, internal address `192[.]168[.]250[.]100`, user `bob.smith`, from the `Computer`, `SourceIp` and `User` fields.
 
-#### Interpretation
-This behavior suggests:
-
-- Registry-based persistence  
-- Potential SYSTEM-level execution via accessibility feature hijacking  
-
-This technique allows attackers to:
-
-- Execute code without user authentication  
-- Maintain persistence across reboots  
-
-### 5. Binary Execution Confirmation
+### 4. Image-Load Events and Hash (Q8)
 
 #### Observation
-Sysmon Event ID 7 (Image Loaded) confirms the binary was loaded into memory.
 
-Query used:
+**Range-accepted.** SHA-256 `37397F8D8E4B3731749094D7B7CD2CF56CACB12DD69E0131F07DD78DFF6F262B`, extracted from the `Hashes` field of Image Loaded (Event ID 7) events.
 
-`index="botsv1" sourcetype=xmlwineventlog EventCode=7 ImageLoaded="*osk.exe*"`
+#### Limits
 
-Extracted hash:
+The search `ImageLoaded="*osk.exe*"` matches both the legitimate and the suspicious path, as the notes state. The hash is the answer the range accepted for the suspicious binary.
 
-`37397F8D8E4B3731749094D7B7CD2CF56CACB12DD69E0131F07DD78DFF6F262B`
+### 5. Persistence
 
-#### Interpretation
-The binary is not only present on disk but actively executed, confirming malicious activity.
+**Range-supplied.** The lab title describes Cerber ransomware persistence via an OSK hijack, and Q1 asks why an attacker might target the registry settings of `osk.exe` to establish persistence.
+**External enrichment.** OSINT in the notes explains that the On-Screen Keyboard can be launched at the Windows logon screen with elevated privileges.
+The record contains no registry query or result and no observation of a persistence mechanism. Persistence here is range-supplied framing, not an observed finding.
 
-## Observations
+## Assessment
 
-- The `osk.exe` binary is executing from a non-standard path  
-- Activity volume is abnormally high  
-- Execution context is tied to a specific user and host  
-- Binary is confirmed loaded into memory  
-- Registry-based persistence is strongly indicated  
-
-## Interim Conclusion
-
-Host-based analysis confirms that the system is compromised via a masquerading `osk.exe` binary. The attacker leveraged a legitimate Windows accessibility feature to establish persistence and execute malicious code, consistent with known OSK hijacking techniques used in ransomware and post-exploitation scenarios.
+**Analyst inference.** A binary named `osk.exe` ran from a user-profile folder outside `C:\Windows\System32` in 49,594 events on `we8105desk[.]waynecorpinc[.]local`, and its hash is the value VirusTotal associates with Cerber (Q9). The notes read this as a masquerading executable.

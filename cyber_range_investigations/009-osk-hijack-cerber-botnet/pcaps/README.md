@@ -6,21 +6,4 @@
 
 ## Purpose
 
-This directory is reserved for packet capture (PCAP) files or references to network traffic data used during the investigation.
-
-## Current Status
-
-No PCAP files were provided or required for this investigation.
-
-## Notes
-
-- Network analysis was conducted using:
-  - Sysmon network telemetry  
-  - Fortigate UTM logs  
-  - Suricata IDS logs  
-
-- If PCAPs were available, they would be used for:
-  - Deep packet inspection  
-  - Protocol analysis  
-  - Payload extraction  
-  - Reconstruction of network sessions  
+This directory contains no packet capture files. The analysis recorded for this case uses Windows event logs, Fortigate UTM logs and Suricata logs searched in Splunk, together with VirusTotal and OSINT sources.

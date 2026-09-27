@@ -7,91 +7,62 @@
 
 ## Objective
 
-Analyze network activity associated with the suspicious `osk.exe` process to identify communication patterns, potential command-and-control (C2) behavior, and overall network impact.
+This document sets out the network activity the record associates with the suspicious binary, and the enrichment Fortigate UTM and Suricata applied to it.
 
 ## Data Sources
 
-- Sysmon Event Logs (XmlWinEventLog)  
-- Fortigate UTM Logs  
-- Suricata IDS Logs  
+- Windows event logs in XML (Sysmon telemetry): the `DestinationPort` and `DestinationIp` fields (Q6, Q7, Q13).
+- Fortigate UTM logs (Q10, Q11).
+- Suricata logs (Q13).
 
-## Analysis
+## Destination Ports (Q6)
 
-### 1. Primary Communication Channel
+### Observation
 
-#### Observation
-The majority of outbound connections from the suspicious `osk.exe` process were made over:
+**Observed.** The `DestinationPort` field summary shows 2 values across 97.156% of events: 6892 in 48,196 events (99.998%) and 80 in 1 event (0.002%), with minimum 80 and maximum 6892.
+**Range-accepted.** 6892, 80.
 
-- Destination Port: `6892`  
-- Event Volume: ~48,196 events (~99.998%)
+### Analyst Interpretation
 
-#### Interpretation
-Port `6892` is not a standard application port and its overwhelming usage strongly indicates:
+**Analyst inference.** The notes read port 6892 as the primary channel and suggest custom-service or command-and-control communication on it; they read the single port-80 event as possible fallback, beacon or test traffic.
 
-- Custom protocol communication  
-- Command-and-control (C2) activity  
-- Botnet-related traffic  
+## Distinct Destinations on Port 6892 (Q7)
 
-### 2. Secondary HTTP Communication
+### Observation
 
-#### Observation
-A single outbound connection was observed:
+**Range-accepted.** 16,384 distinct destination addresses of connection attempts on port 6892, from `stats dc(DestinationIp)`.
 
-- Destination IP: `54[.]148[.]194[.]58`  
-- Destination Port: `80`  
+### Analyst Interpretation
 
-#### Interpretation
-This connection deviates from the primary communication pattern and represents a targeted action rather than bulk activity.
+**Analyst inference.** The notes read the count as consistent with automated scanning, mass network probing, or worm-like or botnet activity.
 
-### 3. External Reconnaissance Activity
+### Limits
 
-#### Observation
-Suricata IDS logs identified the following alert:
+The question text calls these addresses external infrastructure; the record does not list them or show where they are.
 
-`ET POLICY Possible External IP Lookup ipinfo.io`
+## Port-80 Connection and Suricata Alert (Q13)
 
-#### Interpretation
-This alert indicates the host attempted to determine its public-facing IP address, which is commonly associated with:
+### Observation
 
-- Malware beaconing  
-- Environment reconnaissance  
-- Preparation for C2 communication  
+**Observed.** The single port-80 event's destination is `54[.]148[.]194[.]58`.
+**Range-accepted.** The Suricata alert signature for events to that destination is recorded as `ET POLICY Possible External IP Lookup ipinfo.io`; the analyst's notes give it as `ET INFO External IP Lookup`. The two recorded values differ, and both are preserved wherever the signature is cited.
 
-### 4. Scope of External Communication
+### Analyst Interpretation
 
-#### Observation
-Total unique destination IP addresses contacted over port `6892`:
+**Analyst inference.** The notes interpret the alert as an attempt to discover the system's public IP address, which they associate with malware reconnaissance.
+The signature is a rule match; no DNS query or HTTP request content is recorded.
 
-`16,384`
+## Fortigate UTM Classification (Q10, Q11)
 
-#### Interpretation
-This level of outbound diversity strongly suggests:
+### Observation
 
-- Automated scanning behavior  
-- Botnet propagation or peer discovery  
-- Large-scale distributed communication  
+**Range-accepted.** For traffic to destination port 6892, Fortigate UTM assigns `appcat` Botnet (Q10) and `app` Cerber.Botnet (Q11).
+**Observed.** The notes reproduce one Fortigate event, displayed as `8/24/164:49:41.000 PM` with no timezone designation: source `192[.]168[.]250[.]100` port 50720, destination `85[.]93[.]63[.]252` port 6892, protocol 17 (`udp/6892`), action pass, application list Honeypot-Access, `crscore` 50, `crlevel` critical. Its message field is truncated in the record.
 
-### 5. Network Security Classification
+### Limits
 
-#### Observation
-Fortigate UTM logs classify the traffic as:
+Category and application names are enrichment labels. They do not establish communication with botnet infrastructure, and the one reproduced event shows the traffic passed.
 
-- Category: `Botnet`  
-- Application: `Cerber.Botnet`  
+## Assessment
 
-#### Interpretation
-Network-level enrichment confirms:
-
-- The system is communicating with known malicious infrastructure  
-- The traffic is associated with the Cerber malware family  
-
-## Observations
-
-- The compromised host exhibits high-volume outbound communication  
-- Traffic is primarily directed over a non-standard port (`6892`)  
-- A single HTTP request indicates reconnaissance behavior  
-- IDS and firewall telemetry align with known malware activity  
-
-## Interim Conclusion
-
-The network behavior associated with the `osk.exe` process is consistent with botnet communication linked to the Cerber malware family. The combination of high-volume outbound connections, non-standard port usage, reconnaissance activity, and threat intelligence correlation confirms malicious network activity and indicates active participation in a botnet infrastructure.
+**Analyst inference.** The recorded network activity is dominated by connection attempts to port 6892 across 16,384 distinct destinations, which Fortigate labels Cerber.Botnet. The notes read this as consistent with botnet-like or scanning behaviour.

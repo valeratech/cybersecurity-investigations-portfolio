@@ -1,103 +1,119 @@
-# Investigation Report – OSK Hijack Persistence and Cerber Botnet Activity
+# Final Report – OSK Hijack Persistence and Cerber Botnet Activity
 
 **Document Type:** Final Report  
 **Case Title:** OSK Hijack Persistence and Cerber Botnet Activity  
 **Case ID:** 009-osk-hijack-cerber-botnet  
 **Documentation Started:** 2026-04-16  
-**Documentation Last Updated:** 2026-04-16  
+**Documentation Last Updated:** 2026-09-26  
 **Author:** Ryan Valera  
 **Time Standard:** UTC  
 **Source Platform:** Security Blue Team CyberRange  
 
 ## 1. Executive Summary
 
-This investigation identified a compromised Windows endpoint leveraging a hijacked `osk.exe` (On-Screen Keyboard) binary to establish persistence. The malicious binary was executed from a user-controlled directory, deviating from the legitimate system path. 
+The range titles this lab "Cerber Ransomware Persistence via OSK Hijack", and its scenario reports an unexpected file in the registry of an employee's system.
 
-Endpoint and network telemetry analysis revealed high-volume outbound communication over a non-standard port, indicative of botnet behavior. Threat intelligence correlation confirmed the malware as part of the Cerber ransomware family, specifically associated with botnet activity.
+Across thirteen questions, the record identifies a binary named `osk.exe` running on `we8105desk[.]waynecorpinc[.]local` from `C:\Users\bob.smith.WAYNECORPINC\AppData\Roaming\{35ACA89F-933F-6A5D-2776-A3589FB99832}\osk.exe`, outside the expected `C:\Windows\System32`.
+VirusTotal associates its SHA-256 with the Cerber family, which OSINT describes as ransomware.
+Its events show connection attempts to destination port 6892 across 16,384 distinct destination addresses, traffic that Fortigate UTM classifies as Botnet and Cerber.Botnet, and a single port-80 connection for which a Suricata alert fired.
 
-The compromised system demonstrates characteristics of persistence, command-and-control communication, reconnaissance behavior, and potential ransomware execution.
+The record does not establish persistence, a registry mechanism, how the binary arrived, encryption or other impact, or any order among these events.
 
-## 2. Scope and Objectives
-
-### Objective
-- Identify the nature of the suspicious `osk.exe` activity  
-- Determine whether the binary is legitimate or malicious  
-- Analyze host and network behavior  
-- Attribute the malware using threat intelligence  
-- Assess impact and provide remediation guidance  
+## 2. Scope and Evidence Reviewed
 
 ### Scope
-- Endpoint telemetry (Sysmon logs)  
-- Network security logs (Fortigate UTM, Suricata IDS)  
-- Threat intelligence enrichment (VirusTotal)  
 
-## 3. Key Findings
+The investigation was a structured CyberRange question set of thirteen questions. Its Investigation Scope statement is recorded in the [Evidence Inventory](../evidence-metadata/evidence-inventory.md).
 
-- Masquerading binary executed from:
-  - `C:\Users\bob.smith.WAYNECORPINC\AppData\Roaming\{35ACA89F-933F-6A5D-2776-A3589FB99832}\osk.exe`
-- Legitimate path:
-  - `C:\Windows\System32\osk.exe`
-- Compromised host:
-  - `we8105desk[.]waynecorpinc[.]local`
-  - `192[.]168[.]250[.]100`
-- Abnormal process activity:
-  - ~49,608 events
-- Network behavior:
-  - Primary port: `6892`
-  - Secondary port: `80`
-  - Unique external IPs: `16,384`
-- Malware identification:
-  - SHA256: `37397F8D8E4B3731749094D7B7CD2CF56CACB12DD69E0131F07DD78DFF6F262B`
-  - Family: Cerber
-- Network classification:
-  - Category: Botnet
-  - Threat: `Cerber.Botnet`
-- Reconnaissance activity:
-  - External IP lookup via `ipinfo[.]io`
+### Evidence Reviewed
 
-## 4. Attack Chain Summary
+- Analyst notes for the thirteen questions, with the recorded answers, SPL queries and field statistics (EV-001).
+- Two screenshots of Splunk field summaries: `Image` (Q4) and `DestinationPort` (Q6) (EV-002).
+- Data sources referenced: Windows event logs in XML (Sysmon telemetry), Fortigate UTM logs, Suricata logs, VirusTotal and OSINT.
 
-1. **Persistence Established**
-   - OSK binary hijack using a masquerading executable  
+## 3. Time Basis
 
-2. **Execution**
-   - Malicious `osk.exe` executed from AppData directory  
+- **Display time and device time, no timezone designation:** the Fortigate event in the Q10 notes, displayed as `8/24/164:49:41.000 PM` and written in the log text as `Aug 24 10:49:41` and `date=2016-08-24 time=10:49:40`.
+- **Relative display age, not an event time:** `9 months ago` on two VirusTotal community entries in the Q9 notes.
+- **No recorded time:** all other values, including the counts in Q3, Q4, Q6 and Q7.
 
-3. **Command-and-Control Communication**
-   - High-volume outbound traffic over port `6892`  
-
-4. **Reconnaissance**
-   - External IP lookup via HTTP (port `80`)  
-
-5. **Malware Attribution**
-   - Hash-based identification confirms Cerber ransomware  
-
-## 5. Impact Assessment
-
-- Unauthorized persistence with potential SYSTEM-level execution  
-- Active communication with botnet infrastructure  
-- Potential ransomware execution and file encryption  
-- High-risk exposure due to large-scale outbound communication  
-- Possible lateral movement or further compromise within network  
-
-## 6. Indicators of Compromise
+No value carries a UTC designation, and none is converted. Values from different sources are not ordered against each other.
 
 See:
-- [`../iocs/network-iocs.md`](../iocs/network-iocs.md)
+- [Timeline](../analysis/timeline-utc.md)
+
+## 4. Findings
+
+### 4.1 Masquerading Binary
+
+**Range-accepted.** `C:\Users\bob.smith.WAYNECORPINC\AppData\Roaming\{35ACA89F-933F-6A5D-2776-A3589FB99832}\osk.exe` (Q4), outside `C:\Windows\System32` (Q2).
+
+**Observed.** The suspicious path appears in 49,594 events in the `Image` field summary.
+
+**Analyst inference.** The notes read the name-location mismatch as a masquerading executable.
+
+### 4.2 Host Context and Event Volume
+
+**Range-accepted.** Host `we8105desk[.]waynecorpinc[.]local`, internal address `192[.]168[.]250[.]100`, user `bob.smith` (Q5); 49,608 events containing `osk.exe` (Q3).
+
+### 4.3 Network Activity
+
+**Observed.** Destination port 6892 in 48,196 events (99.998%) and port 80 in 1 event (0.002%), among events carrying `DestinationPort` (97.156%) (Q6).
+
+**Range-accepted.** 16,384 distinct destination addresses of connection attempts on port 6892 (Q7).
+
+**Analyst inference.** The notes read this as consistent with custom-service or command-and-control communication, automated scanning, or botnet-like behaviour.
+
+### 4.4 Hash and Malware Family
+
+**Range-accepted.** SHA-256 `37397F8D8E4B3731749094D7B7CD2CF56CACB12DD69E0131F07DD78DFF6F262B` (Q8); family Cerber (Q9); primary function Ransomware (Q12).
+
+**External enrichment.** VirusTotal detections supply the family; OSINT describes Cerber as ransomware that encrypts files and demands payment.
+No such effect is recorded in this case.
+
+### 4.5 Firewall Classification
+
+**Range-accepted.** Fortigate UTM assigns `appcat` Botnet (Q10) and `app` Cerber.Botnet (Q11) to traffic to destination port 6892.
+
+**Observed.** The one reproduced Fortigate event shows protocol 17 (`udp/6892`), action pass and application list Honeypot-Access.
+These labels do not establish communication with botnet infrastructure.
+
+### 4.6 Port-80 Connection and Suricata Alert
+
+**Observed.** Destination `54[.]148[.]194[.]58` for the single port-80 event (Q13 notes).
+
+**Range-accepted.** Suricata signature `ET POLICY Possible External IP Lookup ipinfo.io`; the analyst's notes give `ET INFO External IP Lookup`. The two values differ and are not reconciled.
+
+**Analyst inference.** The notes read the alert as an external IP lookup associated with reconnaissance.
+
+## 5. Indicators of Compromise
+
+See:
+- [Network IOCs](../iocs/network-iocs.md)
+
+## 6. Conclusion
+
+**Analyst inference.** The record supports a masquerading binary named `osk.exe` running from a user-profile folder on `we8105desk[.]waynecorpinc[.]local`, identified through its hash with the Cerber family, and associated by Fortigate enrichment with Cerber.Botnet traffic on port 6892.
+The lab's persistence framing is not observed in the record.
 
 ## 7. Recommendations
 
-- Block outbound traffic on non-essential ports, including `6892`  
-- Monitor and alert on execution of system binaries from non-standard paths  
-- Enforce application control and binary path validation  
-- Restrict or monitor accessibility tool execution at login screen  
-- Implement endpoint detection rules for OSK hijacking behavior  
-- Monitor for abnormal outbound connection volumes  
-- Leverage threat intelligence feeds for Cerber indicators  
+- Alert on Windows system binary names executing from user-profile directories.
+- Monitor accessibility-tool execution, including at the logon screen.
+- Review outbound traffic to non-standard ports such as 6892, and high distinct-destination counts.
+- Use the SHA-256 and the full file path from the IOC collection for detection and threat hunting.
 
-## 8. Conclusion
+## 8. Limitations
 
-The investigation confirms a high-confidence compromise involving Cerber malware leveraging OSK hijacking for persistence. The infected system is actively participating in botnet-related activity and exhibits behavior consistent with ransomware operations. Immediate containment and remediation actions are required to mitigate further risk.
+- No time in the record carries a timezone designation, and none is converted. Values from different sources are not ordered against each other.
+- The Q10 event is the only recorded case-event timestamp; the Q9 relative ages are external enrichment display ages.
+- Persistence is range-supplied framing; no registry query, result or persistence mechanism is recorded.
+- Detection and classification labels from Fortigate UTM, Suricata and VirusTotal are enrichment, and do not establish the behaviours they name.
+- The Q13 signature has two recorded values, `ET POLICY Possible External IP Lookup ipinfo.io` and `ET INFO External IP Lookup`, preserved with their sources.
+- The Q8 search matches both the legitimate and the suspicious path; the hash is the range-accepted answer.
+- The `Image` field summary shows further values whose matching field and command lines are not recorded; no action is attributed to them.
+- Collection dates for the searches and screenshots are not recorded.
+- Matters outside the question set were not examined and are not open items.
 
 ## Related Documents
 

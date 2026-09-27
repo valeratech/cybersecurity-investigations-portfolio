@@ -1,107 +1,84 @@
-# Findings Summary
+# Findings Summary – OSK Hijack Persistence and Cerber Botnet Activity
 
 **Document Type:** Findings Summary  
 **Case ID:** 009-osk-hijack-cerber-botnet  
 **Time Standard:** UTC  
 **Source Platform:** Security Blue Team CyberRange  
 
+## Provenance Labels
+
+Each finding states what the analyst's notes and screenshots carry:
+
+- **Observed** — shown in the analyst's recorded results, field statistics or screenshots.
+- **Range-supplied** — stated by the lab title or scenario, or by the wording of a question.
+- **Range-accepted** — the answer recorded for a numbered question.
+- **External enrichment** — a detection-rule match, a firewall classification, or a VirusTotal or OSINT attribution.
+- **Analyst inference** — reasoned by the analyst from the above, and marked as such.
+- **Not established** — the record does not support the statement.
+
+No confidence rating is assigned, at case level or per finding.
+
 ## Executive Summary
 
-Analysis of endpoint and network telemetry confirms the presence of a malicious persistence mechanism leveraging a hijacked `osk.exe` binary. The activity is associated with large-scale outbound communication and has been definitively attributed to the Cerber ransomware family with botnet functionality.
+The range titles this lab "Cerber Ransomware Persistence via OSK Hijack". Across thirteen questions, the record shows:
 
-## Confirmed Findings
+- a binary named `osk.exe` running from a user-profile `AppData\Roaming` folder rather than `C:\Windows\System32`;
+- 49,608 events containing `osk.exe`, and the host, internal address and user they carry;
+- destination ports 6892 and 80, and 16,384 distinct destination addresses of connection attempts on port 6892;
+- a SHA-256 that VirusTotal associates with the Cerber family, which OSINT describes as ransomware;
+- Fortigate UTM classifications Botnet and Cerber.Botnet for the port-6892 traffic;
+- a single port-80 connection to an address for which a Suricata alert fired, with two differing recorded signature values.
 
-### Finding 1 – Masquerading Binary Execution
+The record does not order these events or link them in a chain. It does not establish persistence, a registry mechanism, how the binary arrived, or any encryption or other impact.
 
-#### Observation
-The `osk.exe` executable was observed running from a non-standard directory:
+## Finding 1 – Masquerading Binary (Q2, Q4)
 
-`C:\Users\bob.smith.WAYNECORPINC\AppData\Roaming\{35ACA89F-933F-6A5D-2776-A3589FB99832}\osk.exe`
+**Range-accepted.** The suspicious executable ran from `C:\Users\bob.smith.WAYNECORPINC\AppData\Roaming\{35ACA89F-933F-6A5D-2776-A3589FB99832}\osk.exe` (Q4). The legitimate On-Screen Keyboard is expected in `C:\Windows\System32` (Q2).
 
-The legitimate path for this binary is:
+**Observed.** The `Image` field summary shows the suspicious path in 49,594 events (99.972%).
 
-`C:\Windows\System32\osk.exe`
+**Analyst inference.** The notes read the name-location mismatch and the GUID-like folder as a masquerading executable.
 
-#### Conclusion
-The binary is a masquerading executable placed in a user-accessible directory to evade detection. This strongly indicates malicious staging and persistence behavior.
+## Finding 2 – Host Context (Q5)
 
-### Finding 2 – Host Attribution
+**Range-accepted.** Computer `we8105desk[.]waynecorpinc[.]local`, internal address `192[.]168[.]250[.]100`, user `bob.smith`.
 
-#### Observation
-Execution context identified:
+## Finding 3 – Event Volume (Q3)
 
-- Computer: `we8105desk[.]waynecorpinc[.]local`  
-- Internal IP: `192[.]168[.]250[.]100`  
-- User: `bob.smith`  
+**Range-accepted.** 49,608 events contain `osk.exe` in the Windows event log search.
 
-#### Conclusion
-The compromised activity is localized to a specific endpoint and user account, enabling precise incident scoping and containment actions.
+**Analyst inference.** The notes read this volume as unusual for an accessibility tool.
 
-### Finding 3 – Abnormal Process Activity Volume
+## Finding 4 – Destination Ports and Distinct Destinations (Q6, Q7)
 
-#### Observation
-Total `osk.exe` related events:
+**Observed.** Port 6892 in 48,196 events (99.998%) and port 80 in 1 event (0.002%), among events carrying `DestinationPort` (97.156%).
 
-`49,608`
+**Range-accepted.** 16,384 distinct destination addresses of connection attempts on port 6892.
 
-#### Conclusion
-The unusually high volume of events is inconsistent with normal user behavior and suggests automated or malicious execution.
+**Analyst inference.** The notes read the pattern as consistent with automated scanning or botnet-like behaviour.
 
-### Finding 4 – Suspicious Network Communication
+## Finding 5 – Hash and Malware Family (Q8, Q9, Q12)
 
-#### Observation
-Outbound communication characteristics:
+**Range-accepted.** SHA-256 `37397F8D8E4B3731749094D7B7CD2CF56CACB12DD69E0131F07DD78DFF6F262B` (Q8); family Cerber (Q9); primary function Ransomware (Q12).
 
-- Primary port: `6892` (~99.998% of traffic)  
-- Secondary port: `80` (single event)  
-- Unique destination IPs: `16,384`  
+**External enrichment.** The family comes from VirusTotal detections, and its description as ransomware from OSINT.
 
-#### Conclusion
-The communication pattern indicates automated large-scale outbound connections consistent with botnet behavior or scanning activity.
+## Finding 6 – Firewall Classification (Q10, Q11)
 
-### Finding 5 – Malware Identification via Hash
+**Range-accepted.** Fortigate UTM assigns `appcat` Botnet (Q10) and `app` Cerber.Botnet (Q11) to traffic to destination port 6892.
 
-#### Observation
-Extracted SHA256 hash:
+**External enrichment.** These are Fortigate classification labels; the one event reproduced in the notes shows action pass.
+They do not establish communication with botnet infrastructure.
 
-`37397F8D8E4B3731749094D7B7CD2CF56CACB12DD69E0131F07DD78DFF6F262B`
+## Finding 7 – Port-80 Connection and Suricata Alert (Q13)
 
-#### Conclusion
-Threat intelligence analysis confirms the binary is associated with the Cerber malware family.
+**Observed.** The single port-80 event's destination is `54[.]148[.]194[.]58`.
 
-### Finding 6 – Botnet Classification from Network Security Logs
+**Range-accepted.** The Suricata signature is recorded as `ET POLICY Possible External IP Lookup ipinfo.io`; the analyst's notes give `ET INFO External IP Lookup`. The values differ and are not reconciled.
 
-#### Observation
-Fortigate UTM logs classify the traffic as:
+**Analyst inference.** The notes read the alert as an attempt to discover the system's public IP address, associated with reconnaissance.
 
-- Category: `Botnet`  
-- Application: `Cerber.Botnet`  
+## Assessment
 
-#### Conclusion
-Network-level enrichment confirms that the infected host is communicating with botnet infrastructure associated with Cerber.
-
-### Finding 7 – External Reconnaissance Behavior
-
-#### Observation
-A single HTTP connection was made to:
-
-`54[.]148[.]194[.]58`
-
-Suricata alert triggered:
-
-`ET POLICY Possible External IP Lookup ipinfo.io`
-
-#### Conclusion
-The system attempted to determine its external IP address, a behavior commonly associated with malware reconnaissance and initial beaconing.
-
-## Final Assessment
-
-The investigation confirms:
-
-- Persistence via OSK accessibility binary hijack  
-- Execution of a masquerading malicious binary  
-- High-volume outbound communication indicative of botnet activity  
-- Malware attribution to Cerber ransomware  
-- Evidence of external reconnaissance behavior  
-
-The compromised system is actively participating in malicious network activity and represents a high-confidence security incident requiring containment and remediation.
+**Analyst inference.** The record supports a masquerading binary named `osk.exe` on `we8105desk[.]waynecorpinc[.]local`, whose hash VirusTotal associates with Cerber and whose port-6892 traffic Fortigate labels Cerber.Botnet.
+Persistence is range-supplied framing, from the lab title and Q1, not an observed finding. The record does not establish a registry mechanism, how the binary arrived, encryption or other impact, or any order among these events.

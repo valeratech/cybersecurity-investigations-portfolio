@@ -6,22 +6,4 @@
 
 ## Purpose
 
-This directory is reserved for screenshots and visual artifacts captured during the investigation.
-
-## Current Status
-
-No screenshots were required for this investigation.
-
-## Notes
-
-- Screenshots may include:
-  - Splunk query results  
-  - Log event views  
-  - Timeline visualizations  
-  - IDS/UTM alert details  
-  - Threat intelligence dashboards  
-
-- Screenshots should support:
-  - Key findings  
-  - Evidence validation  
-  - Report clarity  
+This directory contains no image files. Screenshots referenced by this case are not published here.

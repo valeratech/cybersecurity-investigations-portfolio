@@ -7,111 +7,132 @@
 
 ## Purpose
 
-This document enumerates the tools, platforms, queries, and methodologies used during the investigation. It serves as a reference for how analysis was conducted and does not contain findings or conclusions.
+This document lists the platforms, data sources and queries used in the recorded question set, and the methods applied. It reproduces queries exactly as recorded and makes no case findings.
 
-## Tools & Platforms
+## Platforms and Tools
 
-### SIEM / Log Analysis
+### Splunk
 
-- Splunk
-  - Dataset: `index="botsv1"`
-  - Used for:
-    - Endpoint telemetry analysis (Sysmon / Windows logs)
-    - Network log correlation (Fortigate UTM, Suricata)
-    - Statistical aggregation and pivoting
+- Searches run in the Search and Reporting app against the `botsv1` dataset (`index="botsv1"`), as the lab instructions require.
 
-### Endpoint Telemetry
+### VirusTotal
 
-- Sysmon (via XmlWinEventLog)
-  - Event ID 1 (Process Creation)
-  - Event ID 7 (Image Loaded)
-  - Used for:
-    - Process execution tracking
-    - File path validation
-    - Hash extraction
-    - Network connection attribution
+- SHA-256 submission and review of the Detection and Community pages (Q9).
 
-### Network Security Monitoring
+### OSINT
 
-- Fortigate UTM Logs
-  - Used for:
-    - Malware categorization (`appcat`)
-    - Threat identification (`app`)
-    - Network enrichment
+- Microsoft documentation for the purpose of `osk.exe` (Q1), and OSINT searches for its expected path (Q2) and for Cerber's primary function (Q12).
 
-- Suricata IDS
-  - Used for:
-    - Alert-based detection
-    - Signature analysis (`alert.signature`)
-    - Reconnaissance identification
+## Data Sources
 
-### Threat Intelligence
+- Windows event logs in XML (Sysmon telemetry), sourcetype `XmlWinEventLog` (Q3 to Q8, Q13).
+- Fortigate UTM logs, sourcetype `fortigate_utm` (Q10, Q11).
+- Suricata logs, sourcetype `suricata` (Q13).
 
-- VirusTotal
-  - Used for:
-    - Hash reputation lookup
-    - Malware family attribution
-    - Vendor detection aggregation
+## Query Language
 
-### OSINT Sources
+Splunk Search Processing Language (SPL).
 
-- Microsoft Documentation
-  - Used to validate legitimate behavior of `osk.exe`
-  - Confirmed expected file path and functionality
+## Recorded Queries
 
-## Methods & Techniques
+Each query is reproduced as recorded. The record gives several searches in two spellings of the sourcetype value, `xmlwineventlog` in the query tables and `XmlWinEventLog` in the step breakdowns; each query below is reproduced in one recorded form.
 
-### 1. Baseline Validation (OSINT)
+### Q3 — Event Count for `osk.exe`
 
-- Identified legitimate purpose of `osk.exe`
-- Confirmed expected system path:
-  - `C:\Windows\System32\osk.exe`
-- Established baseline for anomaly detection
+```text
+index="botsv1" sourcetype=xmlwineventlog "osk.exe" | stats count
+```
 
-### 2. SIEM Querying and Pivoting
+### Q4 — Image Path of `osk.exe`
 
-- Initial query:
-  - `index="botsv1" sourcetype=xmlwineventlog "osk.exe"`
-- Aggregation:
-  - `| stats count`
-- Pivoting fields:
-  - `Image`
-  - `User`
-  - `Computer`
-  - `SourceIp`
-  - `DestinationIp`
-  - `DestinationPort`
+```text
+index="botsv1" sourcetype=xmlwineventlog "osk.exe"
+```
 
-### 3. Anomaly Detection
+The `Image` field of the returned events was reviewed.
 
-- Identified non-standard execution path:
-  - AppData directory with GUID structure
-- Detected abnormal event volume (~49,608 events)
+### Q5 — Host, Address and User
 
-### 4. Network Behavior Analysis
+```text
+index="botsv1" sourcetype=XmlWinEventLog "osk.exe"
+```
 
-- Isolated high-frequency communication port:
-  - `DestinationPort=6892`
-- Measured communication scope:
-  - `| stats dc(DestinationIp)`
-- Identified reconnaissance behavior via HTTP (port 80)
+The `Computer`, `SourceIp` and `User` fields were reviewed.
 
-### 5. Cross-Log Correlation
+### Q6 — Destination Ports
 
-- Pivoted from Sysmon → Fortigate UTM:
-  - `index="botsv1" sourcetype=fortigate_utm dest_port=6892`
-- Pivoted from Sysmon → Suricata:
-  - `index="botsv1" sourcetype=suricata dest_ip=54[.]148[.]194[.]58 event_type=alert`
+```text
+index="botsv1" sourcetype=xmlwineventlog "osk.exe"
+```
 
-### 6. Hash Extraction and Identification
+The `DestinationPort` field summary was reviewed and captured in the Q6 screenshot.
 
-- Query:
-  - `index="botsv1" sourcetype=xmlwineventlog EventCode=7 ImageLoaded="*osk.exe*"`
-- Extracted SHA256 hash from `Hashes` field
-- Submitted hash to VirusTotal for attribution
+### Q7 — Distinct Destination Addresses on Port 6892
 
-## Key Takeaways
+```text
+index="botsv1" sourcetype=xmlwineventlog "osk.exe" DestinationPort=6892 DestinationIp=*| stats dc(DestinationIp)
+```
 
-- Effective investigations rely on pivoting between log sources  
-- Field normalization is critical when correlating data across platforms  
-- Combining endpoint telemetry with network and threat intelligence enables full attack lifecycle visibility  
+### Q8 — SHA-256 from Image Loaded Events
+
+```text
+index="botsv1" sourcetype=xmlwineventlog EventCode=7 ImageLoaded="*osk.exe*"
+```
+
+The `Hashes` field of the returned events was reviewed.
+
+### Q10 and Q11 — Fortigate UTM on Port 6892
+
+```text
+index="botsv1" sourcetype=fortigate_utm dest_port=6892
+```
+
+The `appcat`, `app` and `msg` fields were reviewed.
+
+### Q13 — Port-80 Connection and Suricata Alert
+
+Step 1, the port-80 event in the Windows event logs:
+
+```text
+index="botsv1" sourcetype=XmlWinEventLog "osk.exe" DestinationPort=80
+```
+
+Step 2, Suricata events for that destination:
+
+```text
+index="botsv1" sourcetype=suricata dest_ip=54.148.194.58 dest_port=80
+```
+
+Optional filter, alert events only:
+
+```text
+index="botsv1" sourcetype=suricata dest_ip=54.148.194.58 dest_port=80 event_type=alert
+```
+
+Questions 1, 2, 9 and 12 used OSINT or VirusTotal rather than a Splunk query.
+
+## Analytical Methods
+
+### Baseline Comparison
+
+- The legitimate purpose and expected path of `osk.exe` were established by OSINT (Q1, Q2) and compared with the observed `Image` path (Q4).
+
+### Aggregation
+
+- `stats count` gave the event total (Q3); `stats dc(DestinationIp)` gave the distinct destination count on port 6892 (Q7).
+
+### Field Pivoting
+
+- Field values and field summaries led from the event set to the path, host, address, user, ports and hash (Q4 to Q8).
+
+### Cross-Source Pivoting
+
+- Destination port 6892 was carried from the Sysmon events to the Fortigate UTM search (Q10). The port-80 destination address was carried to the Suricata search (Q13), where the Sysmon field `DestinationIp` corresponds to `dest_ip`.
+
+### Hash Lookup
+
+- The SHA-256 from Q8 was submitted to VirusTotal (Q9).
+
+## Notes
+
+- Collection dates for the searches are not recorded.

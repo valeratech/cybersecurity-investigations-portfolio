@@ -7,85 +7,64 @@
 
 ## Objective
 
-Document the initial alerts, anomalies, and suspicious activity that triggered the investigation.
+This document sets out the report that opened the investigation and the first values the record establishes about the suspicious binary.
 
-## Initial Trigger
+## Trigger
 
-An IT technician reported a suspicious file referenced in the Windows registry associated with the `osk.exe` binary. This triggered further investigation into potential misuse of a legitimate accessibility tool.
+**Range-supplied.** The scenario states that an IT technician reported an unexpected file in the registry of an employee they were assisting, and asks whether the file is legitimate or malicious and what it is doing. Q2 refers to it as the `osk.exe` entry reported by the technician.
+The record contains no registry query or result, so the entry's key, value and path are not recorded.
 
-## Indicators Identified
+## Indicators
 
-### 1. Suspicious Registry Reference
-
-#### Observation
-A registry entry referenced an `osk.exe` executable located outside the standard Windows system directory.
-
-#### Interpretation
-Accessibility binaries such as `osk.exe` are commonly abused for persistence due to their ability to execute at the Windows logon screen. A registry reference to a non-standard path is a strong indicator of compromise.
-
-### 2. Abnormal Execution Path
+### 1. Execution Path (Q2, Q4)
 
 #### Observation
-The `osk.exe` binary was observed executing from:
 
-`C:\Users\bob.smith.WAYNECORPINC\AppData\Roaming\{35ACA89F-933F-6A5D-2776-A3589FB99832}\osk.exe`
+**Range-accepted.** The suspicious executable's path is `C:\Users\bob.smith.WAYNECORPINC\AppData\Roaming\{35ACA89F-933F-6A5D-2776-A3589FB99832}\osk.exe`.
+**Observed.** The `Image` field summary shows this path in 49,594 events.
+**Range-accepted.** The legitimate On-Screen Keyboard is expected in `C:\Windows\System32`.
 
-Expected legitimate path:
+#### Analyst Interpretation
 
-`C:\Windows\System32\osk.exe`
+**Analyst inference.** The notes read a binary named `osk.exe` running from a user-profile `AppData\Roaming` folder with a GUID-like name, rather than from `C:\Windows\System32`, as a masquerading executable. They list persistence, privilege escalation and living-off-the-land abuse as possibilities.
 
-#### Interpretation
-Execution from a user-controlled directory with a GUID-like structure strongly indicates:
-
-- Masquerading  
-- Malware staging  
-- Persistence mechanism  
-
-### 3. Unusual Activity Volume
+### 2. Event Volume (Q3)
 
 #### Observation
-Total events associated with `osk.exe`:
 
-`49,608`
+**Range-accepted.** The Windows event log search returned 49,608 events containing `osk.exe`.
+**Observed.** 49,594 events carry the suspicious path as their `Image` value.
 
-#### Interpretation
-The On-Screen Keyboard is not typically used at this scale, suggesting automated execution or malicious activity.
+#### Analyst Interpretation
 
-### 4. Suspicious Network Behavior
+**Analyst inference.** The notes read this volume as unusual for an accessibility tool.
 
-#### Observation
-The process initiated:
-
-- High-volume outbound connections over port `6892`  
-- A single HTTP connection over port `80`  
-
-#### Interpretation
-This pattern suggests:
-
-- Command-and-control communication  
-- Botnet activity  
-- Reconnaissance behavior  
-
-### 5. Endpoint Context
+### 3. Network Activity (Q6, Q7)
 
 #### Observation
-Activity associated with:
 
-- Host: `we8105desk[.]waynecorpinc[.]local`  
-- IP: `192[.]168[.]250[.]100`  
-- User: `bob.smith`  
+**Observed.** Destination port 6892 appears in 48,196 events (99.998%) and port 80 in 1 event (0.002%), among events carrying `DestinationPort` (97.156%).
+**Range-accepted.** The destination ports are 6892 and 80 (Q6), and there are 16,384 distinct destination addresses of connection attempts on port 6892 (Q7).
 
-#### Interpretation
-The suspicious activity is tied to a specific endpoint and user account, enabling targeted investigation and containment.
+#### Analyst Interpretation
 
-## Summary of Initial Indicators
+**Analyst inference.** The notes suggest custom-service or command-and-control communication on port 6892, and read the destination count as consistent with automated scanning or botnet-like behaviour.
 
-- Registry reference to non-standard `osk.exe` path  
-- Execution of masquerading binary in AppData directory  
-- Abnormal process activity volume (~49,608 events)  
-- High-volume outbound network communication  
-- Indicators of persistence and potential privilege escalation  
+### 4. Endpoint Context (Q5)
+
+#### Observation
+
+**Range-accepted.** Host `we8105desk[.]waynecorpinc[.]local`, internal address `192[.]168[.]250[.]100`, user `bob.smith`.
+
+## Summary
+
+- **Range-supplied:** a reported registry entry for `osk.exe`, with no recorded registry detail.
+- **Range-accepted and Observed:** the `AppData\Roaming` path of the executing binary, outside `C:\Windows\System32`.
+- **Range-accepted:** 49,608 events containing `osk.exe`.
+- **Observed and Range-accepted:** destination ports 6892 and 80, and 16,384 distinct destination addresses of connection attempts on port 6892.
+- **Range-accepted:** the host, internal address and user.
 
 ## Assessment
 
-The initial indicators strongly suggest a compromised host leveraging a hijacked accessibility binary for persistence and malicious execution. These findings warranted deeper investigation into host behavior, network activity, and threat attribution.
+**Analyst inference.** Taken together, the path, the volume and the network activity mark the binary as suspicious and lead to the host, network and threat-intelligence questions that follow.
+They do not establish how the binary persisted or arrived on the host.
