@@ -7,163 +7,162 @@
 
 ## Overview
 
-This document captures the step-by-step investigative workflow, reasoning process, and intermediate findings used to reconstruct the attack lifecycle across the CyberRange environment.
+This document follows the question set in order of investigation stage. Each finding cites its question, and each recorded query is reproduced once, in the analysis tools document.
 
 ## Investigation Procedure
 
-### Step 1 – Identify Initial Indicators
+### Step 1 – Ransomware Indicators (Q1, Q2)
 
-Initial scoping focused on identifying signs of compromise across the environment.
+File-creation events and field statistics identify the encryption marker and the ransom note.
 
-#### Key Observations
-- Files appended with `.lsoc` extension
-- Presence of ransom note: `un-lock your files[.]html`
-- Spike in PowerShell activity (Event ID 4104)
+#### Findings
 
-#### Query Used
-`event.code:11 AND file.name:*.*.lsoc`
+- Encryption extension `.lsoc`
+- Ransom note `un-lock your files[.]html`, 24 records across three user profiles
 
-### Step 2 – Determine Initial Access Vector
+Recorded queries: Q1, in [Analysis Tools and Methods](analysis-tools-and-methods.md).
 
-Focused on identifying how the attacker entered the environment.
+### Step 2 – Initial Access and Beachhead (Q3, Q4)
 
-#### Key Observations
-- Repeated HTTP requests referencing TeamCity
-- Exploitation of CVE-2024-27198
-  
-#### Query Used
-```
-event.category:network and network.protocol:http and (
-  url.full:(*teamcity* or *jetbrain*) or
-  http.request.referrer:(*teamcity* or *jetbrain*)
-)
-```
+HTTP data behind the NGINX reverse proxy shows the TeamCity service; the network-diagram excerpt places the beachhead in the DMZ.
 
-#### Finding
-- Compromised host: `jb01[.]cyberrange[.]cyberdefenders[.]org`
+#### Findings
 
-### Step 3 – Identify Attacker Infrastructure
+- The question states initial access through a TeamCity server using CVE-2024-27198
+- Compromised TeamCity URL host: `jb[.]cyberrange[.]cyberdefenders[.]org`
+- Beachhead host: `JB01` (`10[.]10[.]3[.]4`)
 
-Pivoted from the beachhead host to external communication.
+Recorded queries: Q3, in [Analysis Tools and Methods](analysis-tools-and-methods.md).
 
-#### Key Observations
-- High-volume outbound traffic to 3[.]90[.]168[.]151
-- Reverse DNS resolution to AWS infrastructure
+### Step 3 – Attacker Infrastructure (Q5, Q6)
 
-#### Query Used
-```
-event.category:network and network.protocol:http
-and (destination.ip:3.90.168.151 or source.ip:10.10.3.4)
-```
+The range hint points to the external address that accounts for most non-internal traffic with the beachhead.
 
-#### Finding
-- Attacker FQDN: `ec2-3-90-168-151.compute-1.amazonaws[.]com`
+#### Findings
 
-### Step 4 – Analyze Defense Evasion Techniques
+- Attacker address: `3[.]90[.]168[.]151`
+- IP lookup: `ec2-3-90-168-151[.]compute-1[.]amazonaws[.]com`
 
-Focused on identifying how the attacker bypassed security controls.
+### Step 4 – Defence Evasion (Q7, Q8, Q10, Q11)
 
-#### Key Observations
-Defender disabled using PowerShell
-Exclusion paths added:
-- C:\TeamCity
-- C:\Windows
+PowerShell script blocks and decoded commands show changes to Defender and the firewall, and cleanup.
 
-#### Query Used
-`event.code:4104 AND message:*Set-MpPreference*`
+#### Findings
 
-#### Finding
-- MITRE Technique: T1562.001 (Impair Defenses)
+- `Set-MpPreference` disabled real-time monitoring and added exclusions `C:\TeamCity` and `C:\Windows`; technique T1562.001
+- Firewall rule allowing inbound TCP on local port 8080
+- `C:\Windows\temp\1` removed with `rmdir /S /Q`
 
-### Step 5 – Identify Persistence Mechanisms
+Recorded queries: Q7, in [Analysis Tools and Methods](analysis-tools-and-methods.md).
 
-Examined scheduled tasks and registry modifications.
+### Step 5 – Command and Control and Tool Transfer (Q9, Q13)
 
-#### Key Observations
-Scheduled tasks created:
-- `SubmitReporting`
-- `Scheduled AutoCheck`
+Process command lines on JB01 and a decoded download command show the tunnel binary and the downloaded executable.
 
-#### Query Used
-`event.code:106 AND host.ip:10[.]10[.]0[.]4` 
+#### Findings
 
-#### Finding
-- Persistence established on Domain Controller and IT workstation
+- Tunnel binary `C:\Program Files\Windows Defender Advanced Threat Protection\Sense.exe` connecting to `3[.]90[.]168[.]151:8443`; the password is recorded but withheld
+- `java64.exe` downloaded from the attacker address and saved to `C:\TeamCity\jre\bin\java64.exe`
 
-### Step 6 – Analyze Credential Access
+Recorded queries: Q9, in [Analysis Tools and Methods](analysis-tools-and-methods.md).
 
-Focused on credential dumping techniques.
+### Step 6 – Reconnaissance (Q14, Q15, Q16, Q26)
 
-#### Key Observations
-- Execution of `EDRSandblast.exe`
-- Use of vulnerable driver: `GDRV.sys`
-- Dump file created:
-  - `MpCmdRun-38-53C9D589-6B66-4F30-9BAB-9A0193B0BAFC.dmp`
+Decoded commands and command-line statistics show enumeration of drivers, domain controllers, the domain and installed software.
 
-#### Query Used
-`event.code:4104 AND message:(*downloadstring* OR *Invoke-Expression*)`
+#### Findings
 
-#### Finding
-- Successful credential dumping via LSASS access
+- `Get-WindowsDriver -Online -All`
+- `nltest /dclist` and `nltest /dsgetdc` against the domain, from a `smss64.exe` parent; the record shows both without a selection
+- PowerView on the SQL server; `wmic product get name,version` on the SQL server
 
-### Step 7 – Trace Lateral Movement
+### Step 7 – Persistence (Q17, Q18)
 
-Tracked attacker movement across internal hosts.
+Task Scheduler and Security events show scheduled tasks on DC01 and IT01.
 
-#### Key Observations
-- Use of `wmic` for remote execution
-- User impersonation:
-- `CYBERRANGE\roby`
+#### Findings
 
-#### Query Used
-`process.name:"wmic.exe" AND process.command_line:*process call create*`
+- DC01 tasks: `SubmitReporting`, `Scheduled AutoCheck`
+- IT01 task action: `rundll32.exe C:\Windows\system32\WowIcmpRemoveReg.dll`
 
-#### Finding
-- Lateral movement confirmed across multiple hosts
+Recorded queries: Q17, in [Analysis Tools and Methods](analysis-tools-and-methods.md).
 
-### Step 8 – Investigate Data Exfiltration
+### Step 8 – SQL Server Access (Q23, Q24, Q25)
 
-Analyzed staging and exfiltration techniques.
+MSSQL events on the SQL server show the brute force and a configuration change.
 
-#### Key Observations
-- Steganography used to embed data into:
-  - `jvpd2px2at1.bmp`
-- Files embedded:
-  - `ntoskrnl.exe`
-  - `wdigest.dll`
+#### Findings
 
-#### Query Used
-`event.code:4104 AND message:(Compress-Archive OR ConvertTo-SecureString)`
+- 2,062 failed logins (Event ID 18456) before a successful login
+- `xp_cmdshell` changed from 0 to 1 (Event ID 15457)
+- The URL of the binary dropped after access is not recorded (Q25)
 
-Finding
-- Data prepared for covert exfiltration
+Recorded queries: Q23, in [Analysis Tools and Methods](analysis-tools-and-methods.md).
 
-### Step 9 – Analyze Ransomware Execution
+### Step 9 – Privilege-Escalation Tooling and In-Memory Execution (Q27, Q28)
 
-Final stage of the attack lifecycle.
+A decoded download command and Sysmon image-load events on the SQL server.
 
-#### Key Observations
-- File encryption extension:
-  - `.lsoc`
-- Shadow copies deleted using:
-  - `vssadmin.exe Delete Shadows /All /Quiet`
+#### Findings
 
-#### Query Used
-`event.code:11 AND file.name:*.*.lsoc`
+- winPEAS saved to `C:\Windows\Temp\peas.exe`
+- Technique T1620 for Cobalt Strike's execute-assembly, per the question; `rundll32.exe` loads `clrjit.dll`
 
-#### Finding
-Widespread ransomware execution confirmed
+Recorded queries: Q28, in [Analysis Tools and Methods](analysis-tools-and-methods.md).
+
+### Step 10 – Credential Access (Q29 to Q33)
+
+Decoded PowerShell commands and Sysmon process events.
+
+#### Findings
+
+- `EDRSandblast` with `GDRV.sys` against `lsass.exe`; dump file `MpCmdRun-38-53C9D589-6B66-4F30-9BAB-9A0193B0BAFC.dmp`
+- Registry values `NoLMHash`, `DisableRestrictedAdmin`
+- Invoke-Mimikatz on DC01, process 5872
+- Whether any credential was obtained is not recorded
+
+### Step 11 – Lateral Movement (Q12, Q34, Q35, Q36)
+
+Process command lines show `wmic /node` execution against internal addresses.
+
+#### Findings
+
+- `wmic /node` against `10[.]10[.]0[.]4`, `10[.]10[.]0[.]5`, `10[.]10[.]0[.]7` and `10[.]10[.]1[.]4`, each running a DLL through `rundll32`
+- Impersonated account `CYBERRANGE\roby`; beacon `AddressResourcesSpec.dll` on FS01
+
+Recorded queries: Q12, Q35, in [Analysis Tools and Methods](analysis-tools-and-methods.md).
+
+### Step 12 – Exfiltration Staging (Q19 to Q22)
+
+PowerShell script blocks show files embedded and compressed for exfiltration.
+
+#### Findings
+
+- `jvpd2px2at1.bmp` on JB01, embedding `ntoskrnl.exe` and `wdigest.dll`
+- Files from `C:\Program Files\Microsoft SQL Server\MSSQL16.SQLEXPRESS\MSSQL\Binn\` on the SQL server; registry hives in `hiv1.zip` on DC01
+- No exfiltration transfer is recorded
+
+### Step 13 – Ransomware Execution (Q37, Q38)
+
+File-creation and process events from the ransomware phase.
+
+#### Findings
+
+- Shadow-copy deletion command `vssadmin.exe Delete Shadows /All /Quiet`
+- The parent process of the encrypting executable is not recorded (Q37)
+
+Recorded queries: Q37, in [Analysis Tools and Methods](analysis-tools-and-methods.md).
 
 ## Summary of Findings
-- Initial access via TeamCity exploitation
-- Rapid establishment of persistence and C2
-- Credential dumping and privilege escalation achieved
-- Lateral movement across infrastructure
-- Data exfiltration using steganography
-- Final ransomware deployment causing enterprise-wide impact
+
+- Initial access through the TeamCity service, per the question set
+- Defence evasion and a command-and-control tunnel on JB01
+- Reconnaissance, brute force and credential-dumping attempts on the SQL server; Invoke-Mimikatz on DC01
+- Scheduled-task persistence on DC01 and IT01
+- Lateral execution with `wmic /node`
+- Files staged for exfiltration; ransomware encryption with `.lsoc`
 
 ## Notes
-- All analysis performed using centralized Elastic logs
-- Evidence remained unmodified
-- All timestamps normalized to UTC
-- All indicators defanged
+
+- Queries appear once, exactly as recorded, in the analysis tools document.
+- Answers not recorded: Q25 and Q37. Q11, Q15 and Q18 are answered in screenshots only; Q15's screenshot shows two commands without a selection.

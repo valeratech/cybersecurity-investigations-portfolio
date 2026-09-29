@@ -7,136 +7,59 @@
 
 ## Overview
 
-This document provides a detailed record of how each tool, platform, and data source was utilized during the investigation. It ensures transparency, reproducibility, and traceability of all analytical actions performed.
+This document records how each tool and data source appears in the case record. Queries are reproduced in [Analysis Tools and Methods](../case-notes/analysis-tools-and-methods.md).
 
-## Elastic Stack (SIEM Platform)
+## Elastic (Kibana)
 
 ### Purpose
-Primary platform for log aggregation, querying, and correlation across all compromised hosts.
+
+The provided Elastic instance holds pre-parsed logs from the compromised systems.
 
 ### Usage
-- Queried multi-source logs including Sysmon, PowerShell, Security, and MSSQL logs
-- Performed correlation across hosts using IP addresses and process relationships
-- Filtered events using KQL to identify attacker behavior patterns
 
-### Key Capabilities Used
-- Cross-index correlation
-- Time-based filtering (UTC normalization)
-- Field-based pivoting (IP, hostname, process, command-line)
-- Event aggregation for anomaly detection
+- KQL queries in Discover, recorded in the notes for most questions
+- Field statistics (top values and counts) for fields such as `file.extension`, `process.command_line` and `http.request.referrer`
+- The time picker, to narrow a search to a time window
+- Host filters on `host.ip` and `host.name`
+- Displayed times are UTC: in two Sysmon events the displayed `@timestamp` equals the event's `UtcTime`
 
 ## Sysmon
 
-### Purpose
-Provided detailed endpoint telemetry for process execution, file activity, and network connections.
+- Event ID 1 (process creation): command lines on JB01 (Q9) and the command that reached FS01 (Q35)
+- Event ID 7 (image loaded): modules loaded by `rundll32.exe` on the SQL server (Q28)
+- Event ID 11 (file creation): file names carrying the `.lsoc` extension (Q1, Q37)
 
-### Event IDs Used
-- Event ID 1: Process Creation
-- Event ID 3: Network Connection
-- Event ID 7: Module Load
-- Event ID 10: Process Access (LSASS targeting)
-- Event ID 11: File Creation
+## PowerShell Script-Block Logging
 
-### Usage
-- Identified malicious process execution chains
-- Tracked file creation related to ransomware and payload delivery
-- Observed module loads associated with in-memory execution techniques
+- Event ID 4104 queries for download and encoded-command terms, and for `Set-MpPreference` (Q7)
+- Script blocks showing `Set-MpPreference -DisableRealtimeMonitoring` and `-ExclusionPath`
 
-## Windows Event Logs
+## Windows Security Log
 
-### Security Log
+- Event ID 4698 (scheduled task created) for the IT01 tasks (Q18)
+- Event ID 4688 appears in a recorded query (Q37); no result for it is recorded
 
-#### Event IDs Used
-- 4688: Process Creation
-- 4698: Scheduled Task Creation
+## Task Scheduler Log
 
-#### Usage
-- Validated process execution context and parent-child relationships
-- Confirmed persistence mechanisms via scheduled task creation
+- Event ID 106 on DC01 (`10[.]10[.]0[.]4`) listed the registered tasks; Event IDs 200 and 201 showed the actions they ran (Q17)
 
-### Task Scheduler Logs
+## MSSQL Log
 
-#### Event IDs Used
-- 106: Task Created
-- 200 / 201: Task Execution
+- Event ID 18456 on the SQL server: 2,062 events (Q23)
+- Event ID 15457: `show advanced options` and `xp_cmdshell` changed from 0 to 1 (Q24)
 
-#### Usage
-- Identified malicious scheduled tasks on DC01 and IT01
-- Confirmed persistence and execution timing
+## IP Lookup
 
-## PowerShell Logging
-
-### Purpose
-Captured attacker command execution via script block logging.
-
-### Event ID Used
-- 4104: Script Block Logging
-
-### Usage
-- Identified encoded PowerShell commands
-- Extracted and decoded Base64 payloads
-- Revealed:
-  - Malware download activity
-  - Defender modification commands
-  - Credential dumping techniques
-  - Data exfiltration logic
-
-## MSSQL Logs
-
-### Purpose
-Tracked authentication attempts and configuration changes on SQL Server.
-
-### Event IDs Used
-- 18456: Failed Login Attempts
-- 15457: Configuration Changes
-
-### Usage
-- Identified brute-force attack (2062 attempts)
-- Confirmed enabling of `xp_cmdshell`
-- Correlated attacker activity post-compromise
-
-## Reverse DNS Lookup
-
-### Purpose
-Resolve attacker IP address to associated domain.
-
-### Usage
-- IP: `3[.]90[.]168[.]151`
-- Result:
-  - `ec2-3-90-168-151.compute-1.amazonaws[.]com`
-
-### Finding
-- Attacker leveraged cloud-based infrastructure (AWS)
+- The attacker address `3[.]90[.]168[.]151` resolves to `ec2-3-90-168-151[.]compute-1[.]amazonaws[.]com` (Q6)
 
 ## Base64 Decoding
 
-### Purpose
-Decode obfuscated PowerShell commands used by the attacker.
+- Encoded PowerShell commands were decoded with base64decode.org; decoded output is shown for Q10, Q13, Q14, Q27, Q29 to Q31 and Q33
 
-### Usage
-- Decoded `-EncodedCommand` payloads
-- Extracted:
-  - Download URLs
-  - File paths
-  - C2 configuration
-  - Persistence commands
+## MITRE ATT&CK
 
-## MITRE ATT&CK Framework
-
-### Purpose
-Map observed attacker behavior to standardized TTPs.
-
-### Techniques Identified
-- T1562.001 – Impair Defenses
-- T1620 – Reflective Code Loading
-- T1105 – Ingress Tool Transfer
-- T1047 – Windows Management Instrumentation
-- T1053 – Scheduled Task/Job
-- T1003 – Credential Dumping
+- Recorded technique answers: T1562.001 (Q7) and T1620 (Q28)
 
 ## Notes
 
-- All tools were used in a read-only investigative capacity
-- No evidence was modified during analysis
-- All timestamps were normalized to UTC
-- All outputs were defanged for safe documentation
+- The record shows the queries and views used. It does not record tool versions or collection times.

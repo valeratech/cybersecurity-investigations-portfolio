@@ -7,115 +7,87 @@
 
 ## Executive Summary
 
-This investigation confirms a full-scope advanced persistent threat (APT) intrusion resulting in enterprise-wide ransomware deployment within the CyberRange environment.
+The scenario describes an attack on CyberRange in August 2024 by an advanced persistent threat group, ending in ransomware deployment across the network.
+The recorded answers trace initial access through a TeamCity server; defence evasion and a command-and-control tunnel on the beachhead JB01; reconnaissance and credential-dumping attempts on the SQL server and DC01; lateral execution with `wmic`; persistence through scheduled tasks; staging of files for exfiltration; and ransomware encryption.
 
-The attacker successfully achieved initial access through exploitation of a vulnerable TeamCity server, established persistence, conducted extensive reconnaissance, moved laterally across multiple systems, performed credential harvesting, and executed ransomware across the network.
-
-## Confirmed Findings and Attack Flow
+## Findings by Stage
 
 ### 1. Initial Access
-- Exploited TeamCity vulnerability (CVE-2024-27198)
-- Compromised TeamCity server:
-  - `jb01[.]cyberrange[.]cyberdefenders[.]org`
-- Attacker source:
-  - IP: `3[.]90[.]168[.]151`
-  - FQDN: `ec2-3-90-168-151.compute-1.amazonaws[.]com`
 
-### 2. Beachhead Establishment
-- Initial compromised host:
-  - `JB01 (10[.]10[.]3[.]4)`
-- Malware staged in:
-  - `C:\TeamCity\jre\bin\java64.exe`
+- The question states that the attacker used a TeamCity server to gain initial access using CVE-2024-27198.
+- Compromised TeamCity URL host: `jb[.]cyberrange[.]cyberdefenders[.]org` (an affected asset)
+- Attacker address: `3[.]90[.]168[.]151`; IP lookup returns `ec2-3-90-168-151[.]compute-1[.]amazonaws[.]com`
 
-### 3. Defense Evasion
-- Disabled Microsoft Defender:
-  - `Set-MpPreference -DisableRealtimeMonitoring $true`
-- Added exclusion paths:
-  - `C:\TeamCity`
-  - `C:\Windows`
-- MITRE Technique:
-  - T1562.001 – Impair Defenses
+### 2. Beachhead
 
-### 4. Command and Control (C2)
-- Established tunneling communication
-- Firewall rule created:
-  - Port: `8080`
-- C2 traffic tunneled to attacker-controlled infrastructure
+- Beachhead host: `JB01` (`10[.]10[.]3[.]4`)
+- Downloaded binary: `C:\TeamCity\jre\bin\java64.exe`
 
-### 5. Persistence
-- Scheduled tasks created on Domain Controller:
-  - `SubmitReporting`
-  - `Scheduled AutoCheck`
-- Additional persistence on IT workstation via scheduled tasks
+### 3. Defence Evasion
 
-### 6. Credential Access
-- LSASS credential dumping via:
-  - Tool: `EDRSandblast`
-  - Vulnerable driver: `GDRV.sys`
-- Dump file created:
-  - `MpCmdRun-38-53C9D589-6B66-4F30-9BAB-9A0193B0BAFC.dmp`
-- Registry modifications:
-  - `NoLMHash`
-  - `DisableRestrictedAdmin`
+- `Set-MpPreference -DisableRealtimeMonitoring $true` in PowerShell script blocks
+- Exclusion paths added: `C:\TeamCity`, `C:\Windows`
+- MITRE ATT&CK technique: T1562.001 (recorded answer)
+- A directory the attacker created, `C:\Windows\temp\1`, was removed with `rmdir /S /Q`
 
-### 7. Reconnaissance
-- System enumeration commands:
-  - `Get-WindowsDriver -Online -All`
-  - `wmic product get name,version`
-- Active Directory reconnaissance:
-  - Tool: PowerView
+### 4. Command and Control
+
+- Tunnel binary `C:\Program Files\Windows Defender Advanced Threat Protection\Sense.exe` connecting to `3[.]90[.]168[.]151:8443`; the password is recorded but withheld
+- Firewall rule allowing inbound TCP on local port 8080
+
+### 5. Reconnaissance
+
+- On the SQL server: PowerView for domain reconnaissance and `wmic product get name,version` for installed software
+- Driver enumeration: `Get-WindowsDriver -Online -All`
+- Domain-controller queries: `nltest /dclist` and `nltest /dsgetdc`, both shown in the record without a selection
+
+### 6. Persistence
+
+- Scheduled tasks on DC01: `SubmitReporting`, `Scheduled AutoCheck`
+- A scheduled task on IT01 runs `rundll32.exe C:\Windows\system32\WowIcmpRemoveReg.dll`
+
+### 7. Credential Access
+
+- `EDRSandblast` with the vulnerable driver `GDRV.sys` against `lsass.exe`
+- Dump file on the SQL server: `MpCmdRun-38-53C9D589-6B66-4F30-9BAB-9A0193B0BAFC.dmp`
+- Registry values modified to facilitate credential harvesting: `NoLMHash`, `DisableRestrictedAdmin`
+- Invoke-Mimikatz on DC01, run by process 5872
 
 ### 8. Lateral Movement
-- Remote execution via LOLBin:
-  - `wmic`
-- User impersonation:
-  - `CYBERRANGE\roby`
-- Beacon deployment:
-  - `AddressResourcesSpec.dll` (File Server)
-- Remote execution command:
-  - `cmd.exe /C wmic /node:10[.]10[.]1[.]4 process call create "rundll32 C:\Windows\system32\WowIcmpRemoveReg.dll WowIcmpRemoveReg"`
 
-### 9. Data Exfiltration
-- Steganography used to embed encrypted data into:
-  - `jvpd2px2at1.bmp`
-- Embedded files:
-  - `ntoskrnl.exe`
-  - `wdigest.dll`
-- SQL Server data staged from:
-  - `C:\Program Files\Microsoft SQL Server\MSSQL16.SQLEXPRESS\MSSQL\Binn\`
-- Registry hives compressed:
-  - `hiv1.zip`
+- `wmic /node` execution against four internal addresses, each running a DLL through `rundll32`
+- Impersonated account: `CYBERRANGE\roby`
+- Beacon copied to FS01: `AddressResourcesSpec.dll`
+- Beacon execution on IT01 through `wmic /node` and `rundll32`, reproduced in [Network Analysis](network-analysis.md)
 
-### 10. SQL Server Compromise
-- Brute force attempts:
-  - `2062` failed login attempts
-- Dangerous configuration enabled:
-  - `xp_cmdshell`
-- Additional malware deployment via remote download
+### 9. Exfiltration Staging
 
-### 11. Privilege Escalation
-- Tool used:
-  - `winPEASx64_ofs.exe`
-- Execution method:
-  - Reflective code loading (T1620)
+- Files embedded into `jvpd2px2at1.bmp` on JB01: `ntoskrnl.exe`, `wdigest.dll`
+- Files staged from `C:\Program Files\Microsoft SQL Server\MSSQL16.SQLEXPRESS\MSSQL\Binn\` on the SQL server
+- Registry hives compressed into `hiv1.zip` on DC01
+- No exfiltration transfer is recorded.
+
+### 10. SQL Server Access
+
+- 2,062 failed login attempts before a successful login
+- `xp_cmdshell` changed from 0 to 1
+- The URL of the binary dropped after access (Q25) is not recorded.
+
+### 11. Privilege-Escalation Tooling and In-Memory Execution
+
+- winPEAS downloaded on the SQL server and saved to `C:\Windows\Temp\peas.exe`
+- The question describes Cobalt Strike's execute-assembly running a .NET payload in memory on the SQL server; the recorded technique is T1620, and `rundll32.exe` loads `clrjit.dll`
 
 ### 12. Ransomware Execution
-- File encryption extension:
-  - `.lsoc`
-- Ransom note:
-  - `un-lock your files[.]html`
-- Shadow copies deleted:
-  - `vssadmin.exe Delete Shadows /All /Quiet`
 
-## Impact Assessment
+- Encryption extension: `.lsoc`
+- Ransom note: `un-lock your files[.]html`
+- Shadow-copy deletion command: `vssadmin.exe Delete Shadows /All /Quiet`
+- The parent process of the encrypting executable (Q37) is not recorded.
 
-- Full network compromise across DMZ, Infrastructure, and Workstations
-- Domain-level credential exposure
-- SQL Server compromise and data staging
-- Data exfiltration via covert techniques
-- Enterprise-wide ransomware deployment
-- Loss of system recoverability due to shadow copy deletion
+## Impact
 
-## Confidence Level
-
-High – Findings are supported by correlated log evidence across Sysmon, PowerShell, Task Scheduler, MSSQL, and network telemetry.
+- Files encrypted with the `.lsoc` extension and ransom notes written
+- A shadow-copy deletion command run during the ransomware phase
+- Credential-dumping attempts on the SQL server and DC01; their outcome is not recorded
+- Files staged for exfiltration; no transfer is recorded

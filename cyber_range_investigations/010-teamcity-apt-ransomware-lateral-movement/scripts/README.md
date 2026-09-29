@@ -4,25 +4,6 @@
 **Case ID:** 010-teamcity-apt-ransomware-lateral-movement  
 **Source Platform:** CyberDefenders CyberRange  
 
-## Overview
+## Purpose
 
-This directory is reserved for any scripts, automation tools, or queries developed or used during the investigation.
-
-## Current Status
-
-No custom scripts were required for this investigation.
-
-All analysis was performed using:
-- Elastic (KQL queries)
-- Built-in Windows logging (Sysmon, PowerShell, Security logs)
-- Manual decoding and correlation techniques
-
-## Future Use
-
-This directory can be used to store:
-
-- KQL query collections
-- PowerShell analysis scripts
-- Python automation tools
-- IOC extraction scripts
-- Log parsing utilities
+This directory contains no scripts. The analysis recorded for this case used Elastic KQL queries, a web Base64 decoder and IP lookup tools.

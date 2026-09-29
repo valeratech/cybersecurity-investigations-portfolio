@@ -7,179 +7,73 @@
 
 ## Objective
 
-Analyze network-based activity to identify initial access, command-and-control (C2) communication, lateral movement patterns, and data exfiltration behavior.
+Describe the network-related activity recorded for this case: initial access, attacker infrastructure, tool transfer, command and control, lateral movement and exfiltration staging.
 
 ## Data Sources
 
-- Elastic network logs (ECS normalized)
-- NGINX reverse proxy logs (`nginx_rp`)
-- Sysmon Event ID 3 (network connections)
-- PowerShell Script Block logs (Event ID 4104)
+- HTTP data in the `nginx_rp` data view (`http.request.referrer`, `url.full`)
+- Sysmon process-creation command lines (Event ID 1)
+- PowerShell script blocks (Event ID 4104) and decoded encoded commands
 
-## 1. Initial Access – TeamCity Exploitation
+## 1. Initial Access – TeamCity
 
-### Observation
-
-HTTP traffic analysis revealed repeated requests referencing a TeamCity instance within the CyberRange domain.
-
-### Key Indicators
-
-- Compromised server:
-  - `jb01[.]cyberrange[.]cyberdefenders[.]org`
-- Vulnerability exploited:
-  - CVE-2024-27198 (TeamCity authentication bypass)
-
-### Supporting Query
-
-```kql
-event.category:network and network.protocol:http and (
-  url.full:(*teamcity* or *jetbrain*) or
-  http.request.referrer:(*teamcity* or *jetbrain*)
-)
-```
-
-### Conclusion
-
-The attacker leveraged a vulnerable TeamCity server in the DMZ to gain initial access into the network.
+HTTP data behind the NGINX reverse proxy shows referrers and URLs on the TeamCity service: 515 referrer records and 16 `url.full` records.
+The question states that the attacker gained initial access through a TeamCity server using CVE-2024-27198; the recorded answer for the compromised TeamCity URL is `jb[.]cyberrange[.]cyberdefenders[.]org`.
+The beachhead host is `JB01` at `10[.]10[.]3[.]4`; the recorded network-diagram excerpt shows it in the DMZ with the WAF (NGINX) at `10[.]10[.]3[.]6`.
+The recorded query is in [Analysis Tools and Methods](../case-notes/analysis-tools-and-methods.md).
 
 ## 2. Attacker Infrastructure
-### Observation
 
-Significant outbound communication from the beachhead host (`10[.]10[.]3[.]4`) to an external IP address.
+The attacker address is `3[.]90[.]168[.]151` (Q5 answer). The range hint describes it as the address accounting for about 78% of non-internal traffic with the beachhead.
+IP lookup returns `ec2-3-90-168-151[.]compute-1[.]amazonaws[.]com` for this address (Q6).
+**Analyst inference.** The EC2 name indicates infrastructure hosted by Amazon Web Services.
 
-### Key Indicators
-Attacker IP:
-- `3[.]90[.]168[.]151`
-Reverse DNS:
-- `ec2-3-90-168-151.compute-1.amazonaws[.]com`
+## 3. Tool Transfer After Initial Access
 
-### Supporting Query
-```
-event.category:network and network.protocol:http
-and (destination.ip:3.90.168.151 or source.ip:10.10.3.4)
-```
+The recorded downloads come from decoded PowerShell commands, not from network-log results.
+- JB01: `java64.exe` from the attacker address, saved to `C:\TeamCity\jre\bin\java64.exe` and started (Q13). The question places the download after the attacker evaded defences.
+- SQL server: winPEAS from its public release URL, saved to `C:\Windows\Temp\peas.exe` (Q27).
+- DC01: the Invoke-Mimikatz script from a public URL, run in memory (Q33).
+The decoded commands are reproduced in [Analysis Tools and Methods](../case-notes/analysis-tools-and-methods.md).
 
-### Conclusion
+## 4. Command and Control
 
-The attacker operated from cloud infrastructure, using AWS-hosted systems to deliver payloads and maintain communication.
-
-## 3. Malware Delivery
-### Observation
-
-HTTP-based file downloads were observed targeting the beachhead host.
-
-### Indicators
-File types:
-- Executables (`.exe`)
-- Archives (`.zip`, `.rar`)
-MIME types:
-- `application/x-msdownload`
-- `application/octet-stream`
-
-### Supporting Query
-```
-event.category:network and network.protocol:http
-and source.ip:10.10.3.4
-and (
-  url.full:(*.exe or *.dll or *.zip or *.rar) or
-  http.response.mime_type:("application/x-msdownload" or "application/octet-stream")
-)
-```
-
-### Conclusion
-
-The attacker delivered malicious payloads via HTTP downloads to establish initial foothold.
-
-## 4. Command and Control (C2)
-### Observation
-
-Encoded PowerShell commands and persistent outbound communication patterns were observed.
-
-### Indicators
-Custom firewall rule enabled:
-- Port `8080`
-Tunneling password used (observed in decoded payloads)
-
-### Supporting Query
-```
-event.provider:"Microsoft-Windows-Sysmon"
-and event.code:1
-and process.name:"powershell.exe"
-and process.command_line:(*3.90.168.151*)
-```
-
-### Conclusion
-
-The attacker established a covert C2 channel over port `8080`, bypassing standard network controls.
+The tunnel binary `C:\Program Files\Windows Defender Advanced Threat Protection\Sense.exe` ran on JB01 with `-connect` to `3[.]90[.]168[.]151:8443` and a password argument (Q9). The password is recorded but withheld from this case.
+A firewall rule allows inbound TCP on local port 8080 (Q10, decoded command). The question describes the rule as facilitating communication with the command-and-control server.
 
 ## 5. Lateral Movement
-### Observation
 
-Remote command execution observed across internal hosts using Windows Management Instrumentation (WMI).
+Remote execution used `wmic /node` from `cmd.exe` against four internal addresses. Each target received a `Set-MpPreference -DisableRealtimeMonitoring $true` command and a DLL run by `rundll32` (Q12).
 
-### Indicators
-LOLBin used:
-- `wmic`
-Target hosts:
-- `10[.]10[.]1[.]4`
-- `10[.]10[.]0[.]7`
+| Target | DLL run by `rundll32` | Basis |
+|---|---|---|
+| `10[.]10[.]0[.]4` (DC01) | `AclNumsInvertHost.dll` | Q12 screenshot; Q17 query |
+| `10[.]10[.]0[.]5` (hostname not recorded) | `PerformanceCaptionApi.dll` | Q12 screenshot |
+| `10[.]10[.]0[.]7` (FS01) | `AddressResourcesSpec.dll` | Q12 screenshot; Q35 answer |
+| `10[.]10[.]1[.]4` (IT01) | `WowIcmpRemoveReg.dll` | Q12 screenshot; Q36 answer |
 
-### Supporting Query
-```
-process.name:"wmic.exe"
-and process.command_line: *process call create*
-```
-### Conclusion
+The recorded command for IT01 (Q36):
 
-The attacker used WMI-based remote execution to move laterally across systems.
-
-## 6. Data Exfiltration Preparation
-### Observation
-
-PowerShell activity consistent with compression and steganography was identified.
-
-### Indicators
-Output file:
-- `jvpd2px2at1.bmp`
-Embedded content:
-- System binaries (`ntoskrnl.exe`, `wdigest.dll`)
-
-### Supporting Query
-```
-event.code:4104 AND host.ip:"10.10.3.4"
-AND message:(Compress-Archive OR System.IO.Compression OR ConvertTo-SecureString)
-AND message:("*.bmp")
-``` 
-
-### Conclusion
-
-The attacker prepared sensitive data for exfiltration by embedding it within image files.
-
-## 7. Ransomware Network Impact
-### Observation
-
-Widespread network activity coincided with ransomware deployment.
-
-### Indicators
-File extension:
-- `.lsoc`
-Ransom note:
-- `un-lock your files[.]html`
-
-### Supporting Query
-```
-event.code:11
-and file.name:*.*.lsoc
+```text
+C:\Windows\system32\cmd.exe /C wmic /node:10.10.1.4 process call create "rundll32 C:\Windows\system32\WowIcmpRemoveReg.dll WowIcmpRemoveReg"
 ```
 
-### Conclusion
+The account `CYBERRANGE\roby` was impersonated during lateral movement (Q34).
 
-Ransomware execution resulted in mass file encryption across multiple hosts.
+## 6. Exfiltration Staging
+
+Files were embedded into `jvpd2px2at1.bmp` on JB01 (Q19); files from `C:\Program Files\Microsoft SQL Server\MSSQL16.SQLEXPRESS\MSSQL\Binn\` on the SQL server were compressed into a .zip file (Q21); registry hives were compressed into `hiv1.zip` on DC01 (Q22). Each question describes this as preparation for exfiltration.
+The record shows the staging; it does not record a transfer.
+
+## 7. Ransomware
+
+Encrypted files carry the `.lsoc` extension, and ransom notes are named `un-lock your files[.]html` (Q1, Q2).
 
 ## Summary
-- Initial access achieved via TeamCity exploitation
-- Payload delivery conducted over HTTP
-- C2 established via port `8080`
-- Lateral movement performed using `wmic`
-- Data staged using compression and steganography
-- Final impact: enterprise-wide ransomware encryption
+
+- Initial access through the TeamCity service, per the question's CVE-2024-27198 premise
+- Tools transferred after initial access by decoded PowerShell download commands
+- A tunnel to `3[.]90[.]168[.]151:8443` and an inbound firewall rule for TCP 8080
+- Lateral execution with `wmic /node` against four internal addresses
+- Files staged for exfiltration on JB01, the SQL server and DC01
+- Ransomware encryption with the `.lsoc` extension

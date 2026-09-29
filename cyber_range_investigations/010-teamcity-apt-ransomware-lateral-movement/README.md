@@ -4,7 +4,7 @@
 **Case Title:** TeamCity APT Ransomware – Lateral Movement & Data Exfiltration  
 **Case ID:** 010-teamcity-apt-ransomware-lateral-movement  
 **Documentation Started:** 2026-04-16  
-**Documentation Last Updated:** 2026-04-18  
+**Documentation Last Updated:** 2026-09-28  
 **Author:** Ryan Valera  
 **Time Standard:** UTC  
 **Source Platform:** CyberDefenders CyberRange  
@@ -15,7 +15,7 @@
 
 - [Findings Summary](analysis/findings-summary.md)
 - [Network Analysis](analysis/network-analysis.md)
-- [Timeline (UTC)](analysis/timeline-utc.md)
+- [Timeline](analysis/timeline-utc.md)
 
 ### Case Notes
 
@@ -37,68 +37,51 @@
 
 ### Supporting Directories
 
-Evidence-handling notes for artifacts excluded from version control: [scripts](scripts/README.md), [pcaps](pcaps/README.md), [screenshots](screenshots/README.md).
+Directory notes: [scripts](scripts/README.md), [pcaps](pcaps/README.md), [screenshots](screenshots/README.md).
 
 ## 1. Overview
 
 ### Objective
-Perform a full-scope DFIR investigation to identify initial access via TeamCity exploitation, trace attacker activity across the network, analyze lateral movement, credential access, persistence mechanisms, and ransomware execution, and extract confirmed indicators of compromise.
+
+Answer the structured question set for this scenario and document each answer with its record basis, from initial access through ransomware execution.
 
 ### Scenario Summary
-In August 2024, a sophisticated advanced persistent threat (APT) leveraged a critical vulnerability in a TeamCity server to gain initial access into the CyberRange environment. The attacker established a beachhead host in the DMZ, disabled security controls, deployed command-and-control mechanisms, and performed extensive reconnaissance across internal systems.
 
-The attack escalated to lateral movement across infrastructure systems including SQL Server, Domain Controller, and File Server. The adversary deployed multiple beacons, executed credential dumping techniques, abused Windows native tools (LOLBins), and staged data for exfiltration using steganography and compression techniques.
-
-The attack concluded with widespread ransomware deployment, encrypting files with a `.lsoc` extension and dropping ransom notes across compromised systems.
+The scenario describes an attack on CyberRange in August 2024 by an advanced persistent threat group, ending in ransomware deployment across the network. The SOC detected files encrypted with an unknown extension and a ransom note claiming data theft.
+The question set states that initial access came through a TeamCity server using CVE-2024-27198. The recorded answers name the compromised TeamCity URL host `jb[.]cyberrange[.]cyberdefenders[.]org` and the beachhead host `JB01`.
+The record then shows defence evasion and a command-and-control tunnel on JB01; reconnaissance, brute force and credential-dumping attempts on the SQL server; Invoke-Mimikatz and scheduled tasks on DC01; `wmic /node` execution against four internal addresses; files staged for exfiltration; and encryption with the `.lsoc` extension.
 
 ### Key Focus Areas
-- Network Forensics  
-- Endpoint & Host-Based Analysis  
-- Threat Hunting (Elastic / Sysmon / PowerShell Logs)  
-- Malware & Ransomware Behavior  
-- Lateral Movement & Privilege Escalation  
-- Credential Dumping & Defense Evasion  
-- Incident Reconstruction  
+
+- Log analysis in Elastic with KQL
+- PowerShell script blocks and decoded commands
+- Command and control, lateral movement and persistence
+- Credential access
+- Exfiltration staging and ransomware impact
 
 ## 2. Environment & Tools Used
 
-### Environment Description
-- Domain: `cyberrange[.]cyberdefenders[.]org`  
-- Address Space: `10[.]10[.]0[.]0/16`  
-- Firewall: pfSense  
+### Environment Shown in the Record
 
-#### Network Segments
-- DMZ: `10[.]10[.]3[.]0/24`  
-- Infrastructure: `10[.]10[.]0[.]0/24`  
-- Workstations: `10[.]10[.]1[.]0/24`  
-- Blue Team Stack: `10[.]10[.]4[.]0/24`  
-
-#### Key Systems
-- Web Server: `10[.]10[.]3[.]6`  
-- Beachhead Host (JB01): `10[.]10[.]3[.]4`  
-- Domain Controller (DC01): `10[.]10[.]0[.]4`  
-- SQL Server: `10[.]10[.]0[.]6`  
-- File Server: `10[.]10[.]0[.]7`  
-- IT Workstation (IT01): `10[.]10[.]1[.]4`  
+- Domain: `cyberrange[.]cyberdefenders[.]org`
+- DMZ `10[.]10[.]3[.]0/24`, with the WAF (NGINX) at `10[.]10[.]3[.]6` and JB01 at `10[.]10[.]3[.]4` (network-diagram excerpt)
+- SQL server: `10[.]10[.]0[.]6`
+- DC01: `10[.]10[.]0[.]4`
+- FS01: `10[.]10[.]0[.]7`
+- IT01: `10[.]10[.]1[.]4`
+- A further `wmic /node` target, `10[.]10[.]0[.]5`, whose hostname is not recorded
 
 ### Tools & Frameworks
-- Elastic (KQL Queries)  
-- Sysmon (Event IDs 1, 7, 10, 11)  
-- Windows Event Logs (Security, PowerShell 4104, Task Scheduler)  
-- PowerShell (Script Block Analysis / Base64 Decoding)  
-- MITRE ATT&CK Framework  
-- Reverse DNS Lookup  
-- Base64 Decoding Tools  
+
+- Elastic (Kibana Discover, field statistics, KQL)
+- Sysmon (Event IDs 1, 7, 11)
+- Windows event logs: PowerShell 4104, Security 4698, Task Scheduler 106, 200 and 201, MSSQL 18456 and 15457
+- A web Base64 decoder (base64decode.org)
+- IP lookup (Q6) and MITRE ATT&CK (Q7, Q28)
 
 ## 3. Evidence Collected
 
-### Evidence Artifacts
-- Pre-parsed Elastic logs (multi-host telemetry)  
-- Sysmon logs (process, file, module, network activity)  
-- PowerShell script block logs (Event ID 4104)  
-- Windows Security logs (Event IDs 4688, 4698)  
-- Task Scheduler logs (Event IDs 106, 200, 201)  
-- MSSQL logs (Event ID 18456, configuration changes)  
+The case record is the analyst's notes for the 38-question set, with embedded screenshots.
 
 See:
 - [`evidence-metadata/evidence-inventory.md`](evidence-metadata/evidence-inventory.md)
@@ -106,46 +89,49 @@ See:
 ## 4. Analysis & Findings
 
 ### 4.1 Initial Indicators
-- File encryption with `.lsoc` extension  
-- Presence of ransom note: `un-lock your files[.]html`  
-- Suspicious external IP communication: `3[.]90[.]168[.]151`  
-- Unusual PowerShell execution activity  
+
+- Files encrypted with the `.lsoc` extension
+- Ransom note `un-lock your files[.]html`
+- Attacker address `3[.]90[.]168[.]151`
+- Encoded PowerShell command lines on JB01
 
 ### 4.2 Timeline Reconstruction
+
 See:
 - [`analysis/timeline-utc.md`](analysis/timeline-utc.md)
 
 ### 4.3 Host-Based Analysis
-- Defender disabled via `Set-MpPreference`  
-- Registry modifications for credential harvesting  
-- Scheduled task persistence on DC01 and IT01  
-- LSASS credential dumping attempts  
+
+- Defender real-time monitoring disabled and exclusions added with `Set-MpPreference` (T1562.001)
+- Registry values `NoLMHash` and `DisableRestrictedAdmin` modified to facilitate credential harvesting
+- Scheduled tasks on DC01 and IT01
+- Credential dumping attempted with EDRSandblast on the SQL server and with Invoke-Mimikatz on DC01
 
 ### 4.4 Network Analysis
-- Initial access via TeamCity exploitation (CVE-2024-27198)  
-- External attacker IP: `3[.]90[.]168[.]151`  
-- Reverse DNS: `ec2-3-90-168-151.compute-1.amazonaws[.]com`  
-- C2 tunneling via port `8080`  
 
-### 4.5 Memory Analysis (if applicable)
-- In-memory execution via reflective code loading (T1620)  
+- Initial access through the TeamCity service `jb[.]cyberrange[.]cyberdefenders[.]org`; the question states CVE-2024-27198
+- Attacker address `3[.]90[.]168[.]151`; IP lookup returns `ec2-3-90-168-151[.]compute-1[.]amazonaws[.]com`
+- A firewall rule allowing inbound TCP 8080, and a tunnel to `3[.]90[.]168[.]151:8443`
+
+### 4.5 In-Memory Execution
+
+- The question describes Cobalt Strike's execute-assembly on the SQL server; the recorded technique is T1620, and `rundll32.exe` loads `clrjit.dll`
 
 ### 4.6 Malware Behavior
-- Deployment of Cobalt Strike beacons  
-- Execution via `rundll32`  
-- Use of `wmic` for remote execution  
-- Ransomware encryption and shadow copy deletion  
 
-## 5. Confirmed Findings (Executive Summary)
+- The question set describes the beacons as Cobalt Strike; the record shows `rundll32` running four DLLs through `wmic /node`
+- Ransomware encryption and the shadow-copy deletion command `vssadmin.exe Delete Shadows /All /Quiet`
 
-- Initial Access: TeamCity exploitation (CVE-2024-27198)  
-- Beachhead Host: `JB01 (10[.]10[.]3[.]4)`  
-- Defense Evasion: Disabled Defender (T1562.001)  
-- Credential Access: LSASS dumping via EDR bypass tools  
-- Lateral Movement: WMIC, DLL execution, user impersonation  
-- Persistence: Scheduled tasks and registry modifications  
-- Data Exfiltration: Steganography + compression  
-- Impact: Ransomware deployment with `.lsoc` encryption  
+## 5. Findings Summary
+
+- Initial access: TeamCity service, per the question's CVE-2024-27198 premise
+- Beachhead host: `JB01` (`10[.]10[.]3[.]4`)
+- Defence evasion: Defender disabled (T1562.001)
+- Credential access: EDRSandblast with a vulnerable driver, and Invoke-Mimikatz; outcomes not recorded
+- Lateral movement: `wmic /node`, DLLs run by `rundll32`, and an impersonated account
+- Persistence: scheduled tasks on DC01 and IT01
+- Exfiltration staging: steganography and compression; no transfer recorded
+- Impact: ransomware encryption with the `.lsoc` extension
 
 See:
 - [`analysis/findings-summary.md`](analysis/findings-summary.md)
@@ -153,10 +139,10 @@ See:
 
 ## 6. Impact Assessment
 
-- Enterprise-wide ransomware encryption  
-- Credential compromise across multiple hosts  
-- Active Directory compromise risk  
-- Data exfiltration via covert techniques  
+- Files encrypted and ransom notes written
+- A shadow-copy deletion command run during the ransomware phase
+- Credential-dumping attempts on the SQL server and DC01; their outcome is not recorded
+- Files staged for exfiltration; no transfer is recorded
 
 ## 7. Indicators of Compromise (IOCs)
 
@@ -170,5 +156,3 @@ See:
 ## 9. Case Status
 
 **Status:** Complete  
-**Confidence Level:** High  
-**Report Ready:** No  

@@ -5,33 +5,46 @@
 **Time Standard:** UTC  
 **Source Platform:** CyberDefenders CyberRange  
 
-## Overview
+## Investigation Scope
 
-This document tracks all evidence sources utilized during the investigation. All artifacts are preserved in their original state and were analyzed through centralized logging platforms.
+This investigation was conducted as a structured CyberRange question set using the artifacts available within the range. The investigation concluded when the final question was answered. Evidence or analysis outside the scope of those questions was not collected and is not treated as missing or pending investigative work.
 
-## Evidence Inventory
+## Evidence Register
 
-| Evidence ID | Artifact Type | Source System | Description | Collection Method | Integrity / Hash | Notes |
-|-------------|--------------|--------------|-------------|-------------------|------------------|-------|
-| EVT-001 | Log Data | Elastic Stack | Pre-parsed centralized logs from all hosts | Provided CyberRange dataset | N/A | Primary investigation data source |
-| EVT-002 | Sysmon Logs | Multiple Hosts | Process creation, network connections, file creation, module loads | Elastic ingestion | N/A | Event IDs 1, 3, 7, 10, 11 used extensively |
-| EVT-003 | PowerShell Logs | JB01, SQL Server, DC01 | Script block logging (Event ID 4104) for attacker commands | Elastic ingestion | N/A | Used for decoding attacker activity |
-| EVT-004 | Windows Security Logs | Multiple Hosts | Authentication, process execution, scheduled task creation | Elastic ingestion | N/A | Event IDs 4688, 4698 analyzed |
-| EVT-005 | Task Scheduler Logs | DC01, IT01 | Scheduled task creation and execution | Elastic ingestion | N/A | Event IDs 106, 200, 201 |
-| EVT-006 | MSSQL Logs | SQL Server (10[.]10[.]0[.]6) | Authentication attempts and configuration changes | Elastic ingestion | N/A | Event ID 18456 (failed logins), 15457 (config changes) |
-| EVT-007 | Network Logs | JB01 (10[.]10[.]3[.]4) | HTTP requests, external communication, malware downloads | Elastic ingestion | N/A | Used to identify attacker infrastructure |
-| EVT-008 | Reverse DNS Lookup | External | Resolution of attacker IP to FQDN | External lookup tool | N/A | Identified AWS infrastructure |
-| EVT-009 | Decoded Payloads | Multiple Hosts | Base64-decoded PowerShell commands | Manual decoding | N/A | Revealed C2, persistence, and credential access activity |
+| Evidence ID | Description | Form | Contents |
+|---|---|---|---|
+| EV-001 | Analyst notes for the 38-question set | Document | Lab title, scenario and investigation scope; for each question: question text, hints, the recorded answer where one is recorded, analyst notes, and the KQL queries used |
+| EV-002 | Screenshots in EV-001 | Images embedded in EV-001 | 44 screenshot references on 35 pages: Kibana field statistics, Discover rows and event messages, a network-diagram excerpt and web-decoder output |
 
-## Evidence Handling Notes
+## Data Sources Shown in the Record
 
-- All data was analyzed in-place via the Elastic SIEM environment.
-- No original evidence files were modified during analysis.
-- All timestamps were normalized to UTC.
-- Evidence sources were correlated across multiple hosts to reconstruct attacker activity.
+These are the data sources that the queries and views in EV-001 and EV-002 reference. They are listed as sources, not as retained evidence; exports of them are not part of the case record.
 
-## Chain of Custody Considerations
+| Source ID | Source | Events or fields | Questions |
+|---|---|---|---|
+| DS-001 | Sysmon | Event IDs 1 (process creation), 7 (image loaded) and 11 (file creation) | Q1, Q9, Q28, Q35, Q37 |
+| DS-002 | PowerShell script-block logging | Event ID 4104; `powershell.file.script_block_text`, `message` | Q7 |
+| DS-003 | Windows Security log | Event ID 4698; Event ID 4688 appears in a recorded query | Q18, Q37 |
+| DS-004 | Task Scheduler operational log | Event IDs 106, 200 and 201 | Q17 |
+| DS-005 | MSSQL log on the SQL server | Event IDs 18456 and 15457 | Q23, Q24 |
+| DS-006 | HTTP data behind the NGINX reverse proxy | `nginx_rp` data view; `http.request.referrer`, `url.full` | Q3 |
+| DS-007 | External tools | Web Base64 decoder (base64decode.org), IP lookup, MITRE ATT&CK pages | Q6, Q7, Q10, Q13, Q28 |
 
-- Data provided by CyberRange platform (trusted training environment)
-- No external evidence ingestion beyond provided dataset
-- Integrity maintained through read-only analysis within SIEM environment
+## Usage Notes
+
+- Findings cite the question number and, where relevant, the screenshot or field statistics they rest on.
+- Queries are reproduced exactly as recorded in [Analysis Tools and Methods](../case-notes/analysis-tools-and-methods.md), with typographic normalisation only (zero-width spaces removed, curly quotes straightened).
+- Indicators are defanged in prose and tables; recorded queries and commands appear as recorded inside code blocks.
+- The Q9 tunnel password is recorded in EV-001 (the Q9 answer and one screenshot) and is withheld from this case.
+
+## Enrichment
+
+- `ec2-3-90-168-151[.]compute-1[.]amazonaws[.]com` is the recorded answer to Q6, which asks for the name that IP lookup tools return for the attacker address.
+- T1562.001 (Q7) and T1620 (Q28) are recorded answers; the notes link each to its MITRE ATT&CK page.
+- `Cobalt Strike` appears only in question and hint wording (the Q28 question; the Q25 and Q37 hints).
+
+## Handling Limitations
+
+- Collection dates for the queries and screenshots are not recorded.
+- The record documents the queries run and the results viewed. It does not document how the underlying data was handled, so this inventory makes no assertion about it.
+- Screenshots referenced by this case are not published in this repository.
