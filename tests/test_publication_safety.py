@@ -287,8 +287,36 @@ class Cli(unittest.TestCase):
         self.assertNotEqual(out, "")
 
     def test_non_markdown_ignored(self):
-        rc, out = self._run({"a.txt": "<REDACTED>\n"})
+        rc, out = self._run({"a.txt": "<REDACTED>\n", "clean.md": "# Clean\n"})
         self.assertEqual(rc, 0)
+
+
+class Remediation(unittest.TestCase):
+    """Stage-6 remediation: bracketed redaction variants, underscore boundaries, minimum scope."""
+
+    _run = Cli._run
+
+    def test_bracketed_variant_outside_code_is_a_finding(self):
+        self.assertEqual(tokens("value <REDACTED - withheld> here\n"), ["<REDACTED - withheld>"])
+
+    def test_bracketed_variant_inside_inline_code_passes_placement(self):
+        self.assertEqual(tokens("value `<REDACTED - withheld>` here\n"), [])
+
+    def test_underscore_joined_ipv4_is_a_finding(self):
+        _red, ips, _open = cps.scan_text("host srv_192.0.2.10 observed\n")
+        self.assertEqual([ip for _, ip in ips], ["192.0.2.10"])
+
+    def test_letters_and_dots_still_exclude(self):
+        _red, ips, _open = cps.scan_text("v1.2.3.4beta and 1.2.3.4.5\n")
+        self.assertEqual(ips, [])
+
+    def test_empty_root_is_fatal(self):
+        rc, out = self._run({})
+        self.assertEqual(rc, 2)
+
+    def test_root_with_only_non_markdown_is_fatal(self):
+        rc, out = self._run({"a.txt": "x\n"})
+        self.assertEqual(rc, 2)
 
 
 if __name__ == "__main__":

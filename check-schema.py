@@ -103,8 +103,9 @@ PENDING_TOKENS = ["TBD", "To Be Determined", "requires further validation",
 
 # Case-insensitive redaction family. The canonical token is `<REDACTED>`
 # (backticked). Anything from this family surviving outside fenced blocks and
-# inline code spans is non-canonical.
-REDACTION_RE = re.compile(r"<\s*(redacted|sensitive|masked|not computed)\s*>",
+# inline code spans is non-canonical, and so is any variant that adds text inside
+# the brackets (for example `<REDACTED - withheld>`).
+REDACTION_RE = re.compile(r"<\s*(redacted|sensitive|masked|not computed)\b[^<>\n]*>",
                           re.IGNORECASE)
 
 # profile categories: (label, keyword alternatives) — H2+ headings only
@@ -607,6 +608,9 @@ def main():
                 check_related_documents(masked, parsed, res, rel)
             check_profile(masked, profile_type_for(tier, fields), res, rel,
                           is_overview=(relp == "README.md"))
+
+    if checked == 0:
+        res.F("cyber_range_investigations/", "no case documents found: nothing was validated")
 
     if not args.quiet:
         for label, items in (("FATAL", res.fatal), ("VIOLATION", res.viol),

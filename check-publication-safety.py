@@ -5,7 +5,9 @@ Two blocking checks:
 
 1. Redaction-marker placement (Stage 1A).
    Question: Is a redaction-family marker exposed outside an inline-code
-   span or fenced block?
+   span or fenced block? The family is the four words redacted, sensitive,
+   masked and not computed in angle brackets, alone or with further text
+   inside the brackets (for example <REDACTED - withheld>).
    Placement only. Canonical-vocabulary enforcement (the marker must be
    exactly `<REDACTED>`) remains the responsibility of check-schema.py for
    case-owned documentation and becomes gate-blocking under --strict in
@@ -13,8 +15,9 @@ Two blocking checks:
 
 2. Raw IPv4 defanging (Stage 1C).
    Question: Will future raw IPv4 publication fail the gate?
-   Every syntactically valid dotted quad outside a fenced block is a
-   finding, including occurrences in prose, headings, lists, tables, and
+   Every syntactically valid dotted quad outside a fenced block that is not
+   glued to a letter, digit or dot is a finding (underscores and other
+   punctuation are boundaries, so srv_10.0.0.1 is detected), including occurrences in prose, headings, lists, tables, and
    inline-code spans: inline code is presentation formatting, not the
    runnable-code exemption. Defanged forms (a[.]b[.]c[.]d) never match.
 
@@ -30,7 +33,8 @@ opens on a line matching ^\\s*(```+|~~~+) and closes only on a line using the
 same fence character. (CommonMark's closing-length rule is intentionally not
 implemented, so the two checkers can never disagree about what is fenced.)
 
-Exit status: 0 clean, 1 findings, 2 fatal parse errors.
+Exit status: 0 clean, 1 findings, 2 fatal (parse errors, unreadable files, or no
+Markdown file under the scanned root).
 """
 
 import argparse
@@ -40,7 +44,7 @@ from pathlib import Path
 
 FENCE_RE = re.compile(r"^\s*(```+|~~~+)")
 INLINE_CODE_RE = re.compile(r"`[^`]*`")
-REDACTION_RE = re.compile(r"<\s*(redacted|sensitive|masked|not computed)\s*>",
+REDACTION_RE = re.compile(r"<\s*(redacted|sensitive|masked|not computed)\b[^<>\n]*>",
                           re.IGNORECASE)
 
 # Anchor to the checker's own location so invoking it from the wrong working
@@ -91,13 +95,13 @@ def find_redaction_violations(masked_lines):
     return findings
 
 
-# A dotted quad is a candidate only when not glued to word characters,
-# dots, or digits on either side: '=10.0.0.1', ':10.0.0.1', '(10.0.0.1)',
+# A dotted quad is a candidate only when not glued to letters, digits or dots
+# on either side; underscores are boundaries: '_10.0.0.1', '=10.0.0.1', ':10.0.0.1', '(10.0.0.1)',
 # '\\10.0.0.1\', '10.0.0.1:443', '10.0.0.1/24' are all detected, while
 # 'version1.2.3.4beta' and '1.2.3.4.5' are not addresses. Defanged forms
 # (a[.]b[.]c[.]d) can never match the literal-dot pattern.
-IPV4_RE = re.compile(r"(?<![A-Za-z0-9._])((?:\d{1,3}\.){3}\d{1,3})"
-                     r"(?![A-Za-z0-9._])")
+IPV4_RE = re.compile(r"(?<![A-Za-z0-9.])((?:\d{1,3}\.){3}\d{1,3})"
+                     r"(?![A-Za-z0-9.])")
 
 
 def _valid_octets(ip):
@@ -179,6 +183,10 @@ def main(argv=None):
                   f"fenced block; defang as "
                   f"{ip.replace('.', '[.]')}")
             n_ip += 1
+
+    if n_files == 0:
+        print("  FATAL no Markdown files under the scanned root: nothing was checked")
+        n_fatal += 1
 
     n_findings = n_red + n_ip
     if not args.quiet or n_findings or n_fatal:

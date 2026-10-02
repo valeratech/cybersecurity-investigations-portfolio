@@ -1,51 +1,60 @@
 # ---- Evidence artifacts (never commit) ----
+# Letters are bracketed so each pattern matches every letter case: Git matches
+# .gitignore patterns case-sensitively on a case-sensitive filesystem.
 # Network captures
-*.pcap
-*.pcapng
-*.cap
+*.[pP][cC][aA][pP]
+*.[pP][cC][aA][pP][nN][gG]
+*.[cC][aA][pP]
 
 # Memory images and process dumps
-*.raw
-*.mem
-*.vmem
-*.vmss
-*.vmsn
-*.dmp
-*.lime
-*.core
+*.[rR][aA][wW]
+*.[mM][eE][mM]
+*.[vV][mM][eE][mM]
+*.[vV][mM][sS][sS]
+*.[vV][mM][sS][nN]
+*.[dD][mM][pP]
+*.[lL][iI][mM][eE]
+*.[cC][oO][rR][eE]
 
 # Disk images and forensic containers
-*.E01
-*.e01
-*.dd
-*.img
-*.ad1
+*.[eE]01
+*.[dD][dD]
+*.[iI][mM][gG]
+*.[aA][dD]1
 *.001
-*.aff4
+*.[aA][fF][fF]4
 
 # Windows artifacts
-*.evtx
-*.dat
-*.hve
-NTUSER.DAT*
-UsrClass.dat*
-$MFT
-$J
-$LogFile
+*.[eE][vV][tT][xX]
+*.[dD][aA][tT]
+*.[hH][vV][eE]
+[nN][tT][uU][sS][eE][rR].[dD][aA][tT]*
+[uU][sS][rR][cC][lL][aA][sS][sS].[dD][aA][tT]*
+$[mM][fF][tT]
+$[jJ]
+$[lL][oO][gG][fF][iI][lL][eE]
 
 # Archives and extracted samples
-*.zip
-*.7z
-*.rar
-*.tar.gz
-*.bin
-*.exe
-*.dll
+*.[zZ][iI][pP]
+*.7[zZ]
+*.[rR][aA][rR]
+*.[tT][aA][rR].[gG][zZ]
+*.[bB][iI][nN]
+*.[eE][xX][eE]
+*.[dD][lL][lL]
 
 # Tool output
-*.csv.gz
+*.[cC][sS][vV].[gG][zZ]
 KAPE_output/
 volatility_output/
+
+# ---- Raw Q/A analyst records (never commit) ----
+*.[pP][dD][fF]
+*.[dD][oO][cC][xX]
+*.[dD][oO][cC]
+
+# ---- Owner-local control data (never commit) ----
+.local/
 
 # ---- OS / editor noise ----
 .DS_Store

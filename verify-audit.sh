@@ -1,27 +1,18 @@
 #!/usr/bin/env bash
-pass=0; fail=0
-chk(){ if [ "$2" -eq 0 ]; then echo "  PASS  $1"; pass=$((pass+1));
-       else echo "  FAIL  $1 ($2 offenders)"; fail=$((fail+1)); fi; }
-
-chk "No whitespace in names"   $(find . -path ./.git -prune -o \( -name "* " -o -name " *" \) -print | wc -l)
-chk "Code fences balanced"     $(find . -path ./.git -prune -o -name "*.md" -print | while read f; do c=$(grep -c '^```' "$f"); [ $((c % 2)) -ne 0 ] && echo x; done | wc -l)
-chk "No cleartext password"    $(grep -rF --include=*.md 'MyPassw0rd123@' . | wc -l)
-chk "No full NT hash"          $(grep -rF --include=*.md '2b52d3f28841abe8c3c1d0568d945fa9' . | wc -l)
-chk "No live http:// URLs"     $(grep -rEh --include=*.md 'http://[0-9a-zA-Z]' . | wc -l)
-chk "No smart quotes"          $(grep -rlP --include=*.md '[\x{2018}\x{2019}\x{201C}\x{201D}]' . 2>/dev/null | wc -l)
-chk "README tree correct"      $(grep -c '0001-macro' README.md)
-chk "No CRLF"                  $(find . -path ./.git -prune -o -name "*.md" -print | xargs file | grep -ci crlf)
-
-echo; echo "  ---- $pass passed, $fail failed ----"
-[ $fail -eq 0 ] || exit 1
-
-# link integrity (non-zero exit fails the check)
+# Repository gate. Runs these steps in order; each step's own exit status governs and the
+# first failure stops the gate:
+#   check-hygiene.py   whitespace in names, fences, local denylist, http:// URLs, smart quotes,
+#                      retired README path, CRLF (locale-independent; unreadable input is fatal)
+#   check-links.py --quiet
+#   check-schema.py --quiet --strict      (profile notices never affect exit status)
+#   check-publication-safety.py --quiet   (redaction-marker placement, raw IPv4)
+# Arguments are passed to check-hygiene.py, for example --require-denylist.
+# Run from the repository root. Exit 0 only if every step passes.
+set -u
+if [ -f check-hygiene.py ] && [ -f check-schema.py ]; then :; else
+  echo "  FATAL run verify-audit.sh from the repository root"; exit 2
+fi
+python3 check-hygiene.py "$@" || exit 1
 python3 check-links.py --quiet || exit 1
-
-# schema validation, strict mode: violations fail the gate. Profile notices
-# remain advisory and never affect exit status.
 python3 check-schema.py --quiet --strict || exit 1
-
-# publication safety: redaction-marker placement and raw IPv4 defanging
-# (blocking). Markdown-aware checker replacing bare_markers().
 python3 check-publication-safety.py --quiet || exit 1
